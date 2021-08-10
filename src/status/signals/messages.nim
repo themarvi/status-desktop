@@ -161,7 +161,6 @@ proc toChat*(jsonChat: JsonNode): Chat =
   let chatTypeInt = jsonChat{"chatType"}.getInt
   let chatType: ChatType = if chatTypeInt >= ord(low(ChatType)) or chatTypeInt <= ord(high(ChatType)): ChatType(chatTypeInt) else: ChatType.Unknown
 
-
   result = Chat(
     id: jsonChat{"id"}.getStr,
     communityId: jsonChat{"communityId"}.getStr,
