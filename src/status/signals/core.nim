@@ -47,7 +47,9 @@ QtObject:
       return
 
     var signal: Signal = case signalType:
-      of SignalType.Message: messages.fromEvent(jsonSignal)
+      of SignalType.Message:
+          echo statusSignal
+          messages.fromEvent(jsonSignal)
       of SignalType.EnvelopeSent: envelopes.fromEvent(jsonSignal)
       of SignalType.EnvelopeExpired: expired.fromEvent(jsonSignal)
       of SignalType.WhisperFilterAdded: whisperFilter.fromEvent(jsonSignal)

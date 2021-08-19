@@ -503,9 +503,6 @@ QtObject:
   proc reorderCommunityChannel*(self: ChatModel, communityId: string, categoryId: string, chatId: string, position: int) =
     status_chat.reorderCommunityChat(communityId, categoryId, chatId, position)
 
-  proc joinCommunity*(self: ChatModel, communityId: string) =
-    status_chat.joinCommunity(communityId)
-
   proc requestCommunityInfo*(self: ChatModel, communityId: string) =
     if (not self.mailserverReady):
       self.communitiesToFetch.add(communityId)
