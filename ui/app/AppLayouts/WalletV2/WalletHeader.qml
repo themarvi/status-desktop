@@ -61,7 +61,7 @@ Item {
                 let response = JSON.parse(txResult)
 
                 if (response.uuid !== signTransactionModal.uuid) return
-                
+
                 if (!response.success) {
                     if (Utils.isInvalidPasswordMessage(response.result)){
                         signTransactionModal.transactionSigner.validationError = qsTr("Wrong password")
@@ -424,16 +424,31 @@ Item {
                         }
                         validators: [StatusAddressOrEnsValidator {}]
                         asyncValidators: [
-                            StatusEnsValidator {
-                                onEnsResolved: {
-                                    if (!!address) {
-                                        sendTransactionModal.recipient = {
-                                            address: text
+                            StatusAsyncEnsValidator {
+                                id: ens
+                                asyncOperation: function (name) {
+                                    name = name.startsWith("@") ? name.substring(1) : name
+                                    walletModel.ensView.resolveENS(name, uuid)
+                                }
+                                Connections {
+                                    target: walletModel.ensView
+                                    onEnsWasResolved: {
+                                        if (uuid !== ens.uuid) {
+                                            return
                                         }
+                                        ens.asyncComplete(resolvedAddress)
                                     }
                                 }
                             }
                         ]
+                        onValidatedValueChanged: {
+                            selectedRecipientLoader.selectedRecipient = {
+                                // TODO: We need to somehow get the name and colour
+                                name: "TODO",
+                                address: validatedValue,
+                                iconColor: "#efefef"
+                            }
+                        }
                     }
 
                     Loader {
@@ -445,7 +460,7 @@ Item {
                         anchors.right: parent.right
                         active: !!selectedRecipient
                         property var selectedRecipient
-                        
+
                         sourceComponent: StatusListItem {
                             sensor.enabled: false
                             anchors.left: parent.left
@@ -505,7 +520,7 @@ Item {
                             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                             height: 250
                             clip: true
-                  
+
                             ListView {
                                 anchors.fill: parent
                                 id: accountsList
@@ -551,7 +566,7 @@ Item {
                         property var estimateGas: Backpressure.debounce(gasSelector, 600, function() {
                             if (!sendTransactionModal.recipient && assetAndAmount.selectedAsset && assetAndAmount.selectedAsset.address &&
                                 assetAndAmount.selectedAmount) return
-                            
+
                             let gasEstimate = JSON.parse(walletModel.gasView.estimateGas(
                                 currentAccount.address,
                                 sendTransactionModal.recipient.address,
@@ -603,9 +618,9 @@ Item {
         rightButtons: [
             StatusButton {
                 text: qsTr("Sign")
-                enabled: !!sendTransactionModal.sender && 
+                enabled: !!sendTransactionModal.sender &&
                          !!sendTransactionModal.recipient &&
-                         assetAndAmount.isValid && 
+                         assetAndAmount.isValid &&
                          gasValidator.isValid
                 onClicked: {
                     signTransactionModal.sender = sendTransactionModal.sender
@@ -669,12 +684,12 @@ Item {
                          !!signTransactionModal.selectedAsset &&
                          transactionSigner.isValid
                 onClicked: sendTransaction(
-                    signTransactionModal.sender, 
-                    signTransactionModal.recipient, 
-                    signTransactionModal.gasLimit, 
-                    signTransactionModal.gasPrice, 
-                    signTransactionModal.selectedAmount, 
-                    signTransactionModal.selectedAsset, 
+                    signTransactionModal.sender,
+                    signTransactionModal.recipient,
+                    signTransactionModal.gasLimit,
+                    signTransactionModal.gasPrice,
+                    signTransactionModal.selectedAmount,
+                    signTransactionModal.selectedAsset,
                     transactionSigner.enteredPassword,
                     signTransactionModal.uuid
                 )
