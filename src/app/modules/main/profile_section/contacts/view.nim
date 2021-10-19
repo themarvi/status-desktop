@@ -35,6 +35,7 @@ QtObject:
     new(result, delete)
     result.QObject.setup
     result.delegate = delegate
+    result.model = newModel()
     result.modelVariant = newQVariant(result.model)
     result.contactList = newContactList()
     result.contactRequests = newContactList()
