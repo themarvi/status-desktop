@@ -4,6 +4,7 @@ import ./io_interface, ./view, ./controller
 import ../../../../../app/boot/global_singleton
 
 import ../../../../../app_service/service/contacts/service as contacts_service
+import ../../../../../app_service/service/contacts/dto
 import ../../../../../app_service/service/accounts/service as accounts_service
 
 
@@ -17,7 +18,7 @@ type
     viewVariant: QVariant
     moduleLoaded: bool
 
-proc newModule*[T](delegate: T, contactsService: contacts_service.ServiceInterface, accountsService: contactaccounts_services_service.ServiceInterface): Module[T] =
+proc newModule*[T](delegate: T, contactsService: contacts_service.ServiceInterface, accountsService: accounts_service.ServiceInterface): Module[T] =
   result = Module[T]()
   result.delegate = delegate
   result.view = newView(result)
@@ -39,8 +40,26 @@ method load*[T](self: Module[T]) =
 method isLoaded*[T](self: Module[T]): bool =
   return self.moduleLoaded
 
-method getContact*(self: Module[T], id: string): Dto =
+method getContact*[T](self: Module[T], id: string): Dto =
   self.controller.getContact(id)
 
-method generateAlias*(self: Module[T], publicKey: string): string =
+method generateAlias*[T](self: Module[T], publicKey: string): string =
   self.controller.generateAlias(publicKey)
+
+method addContact*[T](self: Module[T], accountKeyUID: string, publicKey: string): void =
+  self.controller.addContact(accountKeyUID, publicKey)
+
+method rejectContactRequest*[T](self: Module[T], publicKey: string): void =
+  self.controller.rejectContactRequest(publicKey)
+
+method unblockContact*[T](self: Module[T], publicKey: string): void =
+  self.controller.unblockContact(publicKey)
+
+method blockContact*[T](self: Module[T], publicKey: string): void =
+  self.controller.blockContact(publicKey)
+
+method removeContact*[T](self: Module[T], publicKey: string): void =
+  self.controller.removeContact(publicKey)
+
+method changeContactNickname*[T](self: Module[T], accountKeyUID: string, publicKey: string, nicknameToSet: string): void =
+  self.controller.changeContactNickname(accountKeyUID, publicKey, nicknameToSet)

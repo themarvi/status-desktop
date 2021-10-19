@@ -1,5 +1,6 @@
 import ./controller_interface
 import ../../../../../app_service/service/contacts/service as contacts_service
+import ../../../../../app_service/service/contacts/dto
 import ../../../../../app_service/service/accounts/service as accounts_service
 
 # import ./item as item
@@ -29,6 +30,24 @@ method getContact*(self: Controller, id: string): Dto =
 
 method generateAlias*(self: Controller, publicKey: string): string =
   return self.accountsService.generateAlias(publicKey)
+
+method addContact*(self: Controller, publicKey: string): void =
+  self.contactsService.addContact(publicKey)
+
+method rejectContactRequest*(self: Controller, publicKey: string): void =
+  self.contactsService.rejectContactRequest(publicKey)
+
+method unblockContact*(self: Controller, publicKey: string): void =
+  self.contactsService.unblockContact(publicKey)
+
+method blockContact*(self: Controller, publicKey: string): void =
+  self.contactsService.unblockContact(publicKey)
+
+method removeContact*(self: Controller, publicKey: string): void =
+  self.contactsService.removeContact(publicKey)
+
+method changeContactNickname*(self: Controller, accountKeyUID: string, publicKey: string, nicknameToSet: string): void =
+  self.contactsService.changeContactNickname(accountKeyUID, publicKey, nicknameToSet)
 
 # method getProfile*[T](self: Controller[T]): item.Item =
 #   let loggedInAccount = self.accountsService.getLoggedInAccount()

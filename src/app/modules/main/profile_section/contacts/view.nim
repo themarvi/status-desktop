@@ -1,4 +1,4 @@
-import NimQml, sequtils, sugar
+import NimQml, sequtils, sugar, json
 
 # import ./item
 import ../../../../../app_service/service/contacts/dto
@@ -183,11 +183,12 @@ QtObject:
     self.contactToAddChanged()
 
   proc addContact*(self: View, publicKey: string) {.slot.} =
-    self.status.contacts.addContact(publicKey, self.accountKeyUID)
-    self.status.chat.join(status_utils.getTimelineChatId(publicKey), ChatType.Profile, "", publicKey)
+    self.delegate.addContact(self.accountKeyUID, publicKey)
+    # TODO add back joining of timeline
+    # self.status.chat.join(status_utils.getTimelineChatId(publicKey), ChatType.Profile, "", publicKey)
 
   proc rejectContactRequest*(self: View, publicKey: string) {.slot.} =
-    self.status.contacts.rejectContactRequest(publicKey)
+    self.delegate.rejectContactRequest(publicKey)
 
   proc rejectContactRequests*(self: View, publicKeysJSON: string) {.slot.} =
     let publicKeys = publicKeysJSON.parseJson
@@ -203,21 +204,22 @@ QtObject:
     var nicknameToSet = nickname
     if (nicknameToSet == ""):
       nicknameToSet = DELETE_CONTACT
-    self.status.contacts.setNickName(publicKey, nicknameToSet, self.accountKeyUID)
+    self.delegate.changeContactNickname(publicKey, nicknameToSet, self.accountKeyUID)
 
   proc unblockContact*(self: View, publicKey: string) {.slot.} =
     self.contactListChanged()
-    self.status.contacts.unblockContact(publicKey)
+    self.delegate.unblockContact(publicKey)
 
   proc contactBlocked*(self: View, publicKey: string) {.signal.}
 
   proc blockContact*(self: View, publicKey: string) {.slot.} =
     self.contactListChanged()
     self.contactBlocked(publicKey)
-    self.status.contacts.blockContact(publicKey)
+    self.delegate.blockContact(publicKey)
 
   proc removeContact*(self: View, publicKey: string) {.slot.} =
-    self.status.contacts.removeContact(publicKey)
-    let channelId = status_utils.getTimelineChatId(publicKey)
-    if self.status.chat.hasChannel(channelId):
-      self.status.chat.leave(channelId)
+    self.delegate.removeContact(publicKey)
+    # TODO add back leaving timeline
+    # let channelId = status_utils.getTimelineChatId(publicKey)
+    # if self.status.chat.hasChannel(channelId):
+    #   self.status.chat.leave(channelId)
