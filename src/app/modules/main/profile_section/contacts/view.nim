@@ -1,7 +1,9 @@
-import NimQml
+import NimQml, sequtils, sugar
 
 # import ./item
-# import ./model
+import ../../../../../app_service/service/contacts/dto
+import ./model
+import status/types/profile
 import models/[contact_list]
 import ./io_interface
 
@@ -11,13 +13,13 @@ QtObject:
   type
     View* = ref object of QObject
       delegate: io_interface.AccessInterface
-    #   model: Model
-    #   modelVariant: QVariant
+      model: Model
+      modelVariant: QVariant
       contactList*: ContactList
       contactRequests*: ContactList
       addedContacts*: ContactList
       blockedContacts*: ContactList
-      contactToAdd*: Profile
+      contactToAdd*: Dto
       accountKeyUID*: string
 
   proc delete*(self: View) =
@@ -26,24 +28,19 @@ QtObject:
     self.addedContacts.delete
     self.contactRequests.delete
     self.blockedContacts.delete
-    # self.modelVariant.delete
+    self.modelVariant.delete
     self.QObject.delete
 
   proc newView*(delegate: io_interface.AccessInterface): View =
     new(result, delete)
     result.QObject.setup
     result.delegate = delegate
-    # result.model = newModel()
-    # result.modelVariant = newQVariant(result.model)
+    result.modelVariant = newQVariant(result.model)
     result.contactList = newContactList()
     result.contactRequests = newContactList()
     result.addedContacts = newContactList()
     result.blockedContacts = newContactList()
-    result.contactToAdd = Profile(
-      username: "",
-      alias: "",
-      ensName: ""
-    )
+    result.contactToAdd = Dto()
 
 #   proc modelChanged*(self: View) {.signal.}
 
@@ -76,7 +73,9 @@ QtObject:
         self.contactRequests.updateContact(contact)
 
       if not requestAlreadyAdded and contact.requestReceived():
-        self.contactRequestAdded(status_ens.userNameOrAlias(contact), contact.address)
+        # TODO add back userNameOrAlias call
+        self.contactRequestAdded(contact.username, contact.address)
+        # self.contactRequestAdded(status_ens.userNameOrAlias(contact), contact.address)
 
     self.contactListChanged()
 
@@ -128,8 +127,8 @@ QtObject:
   proc getContactToAddUsername(self: View): QVariant {.slot.} =
     var username = self.contactToAdd.alias;
 
-    if self.contactToAdd.ensVerified and self.contactToAdd.ensName != "":
-      username = self.contactToAdd.ensName
+    if self.contactToAdd.ensVerified and self.contactToAdd.name != "":
+      username = self.contactToAdd.name
 
     return newQVariant(username)
 
@@ -138,7 +137,8 @@ QtObject:
     notify = contactToAddChanged
 
   proc getContactToAddPubKey(self: View): QVariant {.slot.} =
-    return newQVariant(self.contactToAdd.address)
+    # TODO cofirm that id is the pubKey
+    return newQVariant(self.contactToAdd.id)
 
   QtProperty[QVariant] contactToAddPubKey:
     read = getContactToAddPubKey
@@ -170,16 +170,14 @@ QtObject:
       self.contactToAddChanged()
       return
 
-    let contact = self.status.contacts.getContactByID(id)
+    let contact = self.delegate.getContact(id)
 
     if contact != nil:
       self.contactToAdd = contact
     else:
-      self.contactToAdd = Profile(
-        address: id,
-        username: "",
-        alias: generateAlias(id),
-        ensName: "",
+      self.contactToAdd = Dto(
+        id: id,
+        alias: self.delegate.generateAlias(id),
         ensVerified: false
       )
     self.contactToAddChanged()

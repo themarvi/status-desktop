@@ -1,7 +1,8 @@
 import ./controller_interface
 import ../../../../../app_service/service/contacts/service as contacts_service
+import ../../../../../app_service/service/accounts/service as accounts_service
 
-import ./item as item
+# import ./item as item
 
 export controller_interface
 
@@ -9,17 +10,25 @@ type
   Controller*[T: controller_interface.DelegateInterface] = ref object of controller_interface.AccessInterface
     delegate: T
     contactsService: contacts_service.ServiceInterface
+    accountsService: accounts_service.ServiceInterface
 
-proc newController*[T](delegate: T, contactsService: accounts_service.ServiceInterface): Controller[T] =
+proc newController*[T](delegate: T, contactsService: contacts_service.ServiceInterface, accountsService: accounts_service.ServiceInterface): Controller[T] =
   result = Controller[T]()
   result.delegate = delegate
   result.contactsService = contactsService
+  result.accountsService = accountsService
 
 method delete*[T](self: Controller[T]) =
   discard
 
 method init*[T](self: Controller[T]) = 
   discard
+
+method getContact*(self: Controller, id: string): Dto =
+  return self.contactsService.getContact(id)
+
+method generateAlias*(self: Controller, publicKey: string): string =
+  return self.accountsService.generateAlias(publicKey)
 
 # method getProfile*[T](self: Controller[T]): item.Item =
 #   let loggedInAccount = self.accountsService.getLoggedInAccount()

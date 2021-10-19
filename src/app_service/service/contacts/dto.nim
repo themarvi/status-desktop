@@ -32,8 +32,8 @@ proc `$`(self: Images): string =
 proc `$`*(self: Dto): string =
   result = fmt"""ContactDto(
     id: {self.id}, 
-    name: {self.name}, 
-    ensVerified: {self.ensVerified}, 
+    name: {self.name},
+    ensVerified: {self.ensVerified},
     alias: {self.alias}, 
     identicon: {self.identicon}, 
     lastUpdated: {self.lastUpdated}, 

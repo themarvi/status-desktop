@@ -1,5 +1,5 @@
 import ../../../../../app_service/service/profile/service as profile_service
-import ./item
+# import ./item
 
 type 
   AccessInterface* {.pure inheritable.} = ref object of RootObj
@@ -11,7 +11,13 @@ method delete*(self: AccessInterface) {.base.} =
 method init*(self: AccessInterface) {.base.} =
   raise newException(ValueError, "No implementation available")
 
-method getProfile*(self: AccessInterface): Item {.base.} =
+# method getProfile*(self: AccessInterface): Item {.base.} =
+#   raise newException(ValueError, "No implementation available")
+
+method getContact*(self: AccessInterface, id: string): Dto =
+  raise newException(ValueError, "No implementation available")
+
+method generateAlias*(self: AccessInterface, publicKey: string): string =
   raise newException(ValueError, "No implementation available")
 
 type
