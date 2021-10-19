@@ -9,6 +9,7 @@ import "../panels"
 Item {
     id: noContactsRect
     width: 260
+    height: childrenRect.height
     //% "You don’t have any contacts yet. Invite your friends to start chatting."
     property string text: qsTrId("you-don-t-have-any-contacts-yet--invite-your-friends-to-start-chatting-")
     property alias textColor: noContacts.color
