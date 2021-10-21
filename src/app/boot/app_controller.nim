@@ -17,6 +17,7 @@ import ../core/local_account_settings
 import ../../app_service/service/profile/service as profile_service
 import ../../app_service/service/settings/service as settings_service
 import ../../app_service/service/contacts/service as contacts_service
+import ../../app_service/service/language/service as language_service
 import ../../app_service/service/about/service as about_service
 import ../modules/startup/module as startup_module
 import ../modules/main/module as main_module
@@ -81,6 +82,7 @@ type
     settingsService: settings_service.Service
     contactsService: contacts_service.Service
     aboutService: about_service.Service
+    languageService: language_service.Service
     # Modules
     startupModule: startup_module.AccessInterface
     mainModule: main_module.AccessInterface
@@ -143,6 +145,7 @@ proc newAppController*(appService: AppService): AppController =
   result.settingsService = settings_service.newService()
   result.contactsService = contacts_service.newService()
   result.aboutService = about_service.newService()
+  result.languageService = language_service.newService()
 
   # Core
   result.localAccountSettingsVariant = newQVariant(
@@ -172,6 +175,7 @@ proc newAppController*(appService: AppService): AppController =
     result.settingsService,
     result.contactService,
     result.aboutService,
+    result.languageService
   )
 
   #################################################
