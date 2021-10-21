@@ -12,6 +12,7 @@ import ../../app_service/service/collectible/service as collectible_service
 import ../../app_service/service/wallet_account/service as wallet_account_service
 import ../../app_service/service/setting/service as setting_service
 import ../../app_service/service/bookmarks/service as bookmark_service
+import ../../app_service/service/mnemonic/service as mnemonic_service
 
 import ../core/local_account_settings
 import ../../app_service/service/profile/service as profile_service
@@ -83,6 +84,7 @@ type
     contactsService: contacts_service.Service
     aboutService: about_service.Service
     languageService: language_service.Service
+    mnemonicService: mnemonic_service.Service
     # Modules
     startupModule: startup_module.AccessInterface
     mainModule: main_module.AccessInterface
@@ -146,6 +148,7 @@ proc newAppController*(appService: AppService): AppController =
   result.contactsService = contacts_service.newService()
   result.aboutService = about_service.newService()
   result.languageService = language_service.newService()
+  result.mnemonicService = mnemonic_service.newService()
 
   # Core
   result.localAccountSettingsVariant = newQVariant(
@@ -175,7 +178,8 @@ proc newAppController*(appService: AppService): AppController =
     result.settingsService,
     result.contactService,
     result.aboutService,
-    result.languageService
+    result.languageService,
+    result.mnemonicService
   )
 
   #################################################

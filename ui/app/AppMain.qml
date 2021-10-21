@@ -23,7 +23,6 @@ import StatusQ.Controls 0.1
 import StatusQ.Layout 0.1
 import StatusQ.Popups 0.1
 
-
 Item {
     id: appMain
     anchors.fill: parent
@@ -339,7 +338,7 @@ Item {
                     checked: appView.currentIndex == Utils.getAppSectionIndex(Constants.profile)
                     onClicked: appMain.changeAppSection(Constants.profile)
 
-                    badge.visible: !profileModel.mnemonic.isBackedUp
+                    badge.visible: !mnemonicModule.isBackedUp
                     badge.anchors.rightMargin: 4
                     badge.anchors.topMargin: 5
                     badge.border.color: hovered ? Theme.palette.statusBadge.hoverBorderColor : Theme.palette.statusAppNavBar.backgroundColor
@@ -581,7 +580,7 @@ Item {
             ignoreUnknownSignals: true
             enabled: removeMnemonicAfterLogin
             onInitialized: {
-                profileModel.mnemonic.remove()
+                mnemonicModule.remove()
             }
         }
 
