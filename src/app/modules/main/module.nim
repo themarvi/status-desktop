@@ -27,6 +27,7 @@ import ../../../app_service/service/contacts/service as contacts_service
 import ../../../app_service/service/about/service as about_service
 import ../../../app_service/service/language/service as language_service
 import ../../../app_service/service/mnemonic/service as mnemonic_service
+import ../../../app_service/service/privacy/service as privacy_service
 
 export io_interface
 
@@ -71,7 +72,8 @@ proc newModule*[T](
   contactsService: contacts_service.ServiceInterface,
   aboutService: about_service.ServiceInterface,
   languageService: language_service.ServiceInterface,
-  mnemonicService: mnemonic_service.ServiceInterface
+  mnemonicService: mnemonic_service.ServiceInterface,
+  privacyService: privacy_service.ServiceInterface
 ): Module[T] =
   result = Module[T]()
   result.delegate = delegate
@@ -102,7 +104,7 @@ proc newModule*[T](
   )
 
   result.browserSectionModule = browser_section_module.newModule(result, bookmarkService)
-  result.profileSectionModule = profile_section_module.newModule(result, accountsService, settingsService, profileService, contactsService, aboutService, languageService, mnemonicService)
+  result.profileSectionModule = profile_section_module.newModule(result, accountsService, settingsService, profileService, contactsService, aboutService, languageService, mnemonicService, privacyService)
 
 method delete*[T](self: Module[T]) =
   self.chatSectionModule.delete
