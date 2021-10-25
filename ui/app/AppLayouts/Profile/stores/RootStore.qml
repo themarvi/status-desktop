@@ -11,6 +11,7 @@ QtObject {
     property var aboutModuleInst: aboutModule
     property var languageModuleInst: languageModule
     property var mnemonicModuleInst: mnemonicModule
+    property var appearanceModuleInst: appearanceModule
 
     property var chatsModelInst: chatsModel
     property var utilsModelInst: utilsModel
@@ -361,11 +362,11 @@ QtObject {
     }
 
     function readTextFile(path) {
-        return utilsModelInst.readTextFile(path)
+        return appearanceModuleInst.readTextFile(path)
     }
 
     function writeTextFile(path, value) {
-        utilsModelInst.writeTextFile(path, value)
+        appearanceModuleInst.writeTextFile(path, value)
     }
 
     function setMessagesFromContactsOnly(checked) {
