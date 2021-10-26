@@ -16,6 +16,7 @@ import ../../app_service/service/mnemonic/service as mnemonic_service
 import ../../app_service/service/privacy/service as privacy_service
 import ../../app_service/service/appearance/service as appearance_service
 import ../../app_service/service/syncnode/service as syncnode_service
+import ../../app_service/service/devicesync/service as devicesync_service
 
 import ../core/local_account_settings
 import ../../app_service/service/profile/service as profile_service
@@ -41,7 +42,6 @@ import status/[fleet]
 import ../profile/core as profile
 import status/types/[account]
 #################################################
-
 
 var i18nPath = ""
 if defined(development):
@@ -91,6 +91,7 @@ type
     privacyService: privacy_service.Service
     appearanceService: appearance_service.Service
     syncnodeService: syncnode_service.Service
+    deviceSyncService: devicesync_service.Service
     # Modules
     startupModule: startup_module.AccessInterface
     mainModule: main_module.AccessInterface
@@ -158,6 +159,7 @@ proc newAppController*(appService: AppService): AppController =
   result.privacyService = privacy_service.newService()
   result.appearanceService = appearance_service.newService()
   result.syncnodeService = syncnode_service.newService()
+  result.deviceSyncService = devicesync_service.newService()
 
   # Core
   result.localAccountSettingsVariant = newQVariant(
@@ -191,7 +193,8 @@ proc newAppController*(appService: AppService): AppController =
     result.mnemonicService,
     result.privacyService,
     result.appearanceService,
-    result.syncnodeService
+    result.syncnodeService,
+    result.deviceSyncService
   )
 
   #################################################
@@ -242,6 +245,7 @@ proc delete*(self: AppController) =
   self.walletAccountService.delete
   self.aboutService.delete
   self.syncnodeService.delete
+  self.deviceSyncService.delete
 
 proc startupDidLoad*(self: AppController) =
   #################################################
