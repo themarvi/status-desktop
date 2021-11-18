@@ -5,10 +5,12 @@ import view, controller, item, sub_item, model, sub_model
 import ../../../global/global_singleton
 
 import chat_content/module as chat_content_module
+import stickers/module as stickers_module
 
 import ../../../../app_service/service/chat/service as chat_service
 import ../../../../app_service/service/community/service as community_service
 import ../../../../app_service/service/message/service as message_service
+import ../../../../app_service/service/stickers/service as stickers_service
 
 import eventemitter
 
@@ -24,12 +26,20 @@ type
     viewVariant: QVariant
     controller: controller.AccessInterface
     chatContentModule: OrderedTable[string, chat_content_module.AccessInterface]
+    stickersModule: stickers_module.AccessInterface
     moduleLoaded: bool
 
-proc newModule*(delegate: delegate_interface.AccessInterface, events: EventEmitter, sectionId: string, isCommunity: bool, 
-  chatService: chat_service.Service, communityService: community_service.Service, 
-  messageService: message_service.Service): 
-  Module =
+
+proc newModule*(
+    delegate: delegate_interface.AccessInterface,
+    events: EventEmitter,
+    sectionId: string,
+    isCommunity: bool, 
+    chatService: chat_service.Service,
+    communityService: community_service.Service, 
+    messageService: message_service.Service,
+    stickersService: stickers_service.Service
+  ): Module =
   result = Module()
   result.delegate = delegate
   result.view = view.newView(result)
@@ -38,12 +48,14 @@ proc newModule*(delegate: delegate_interface.AccessInterface, events: EventEmitt
   messageService)
   result.moduleLoaded = false
   
+  result.stickersModule = stickers_module.newModule(result, events, stickersService)
   result.chatContentModule = initOrderedTable[string, chat_content_module.AccessInterface]()
 
 method delete*(self: Module) =
   for cModule in self.chatContentModule.values:
     cModule.delete
   self.chatContentModule.clear
+  self.stickersModule.delete
   self.view.delete
   self.viewVariant.delete
   self.controller.delete
@@ -140,6 +152,7 @@ proc buildCommunityUI(self: Module, events: EventEmitter, chatService: chat_serv
 method load*(self: Module, events: EventEmitter, chatService: chat_service.Service, 
   communityService: community_service.Service, messageService: message_service.Service) =
   self.controller.init()
+  self.stickersModule.load()
   self.view.load()
   
   if(self.controller.isCommunity()):

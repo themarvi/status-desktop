@@ -14,6 +14,7 @@ QtObject {
     property var profileModelInst: profileModel
     property var profileModuleInst: profileModule
     property var contactsModuleInst: contactsModule
+    property var stcikersModuleInst: stickersModule
 
     property var activeCommunity: chatsModelInst.communities.activeCommunity
 

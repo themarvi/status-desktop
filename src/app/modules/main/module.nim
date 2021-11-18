@@ -29,6 +29,7 @@ import ../../../app_service/service/about/service as about_service
 import ../../../app_service/service/language/service as language_service
 import ../../../app_service/service/mnemonic/service as mnemonic_service
 import ../../../app_service/service/privacy/service as privacy_service
+import ../../../app_service/service/stickers/service as stickers_service
 
 import eventemitter
 
@@ -69,7 +70,8 @@ proc newModule*[T](
   dappPermissionsService: dapp_permissions_service.ServiceInterface,
   languageService: language_service.ServiceInterface,
   mnemonicService: mnemonic_service.ServiceInterface,
-  privacyService: privacy_service.ServiceInterface
+  privacyService: privacy_service.ServiceInterface,
+  stickers_service: stickers_service.Service
   ): Module[T] =
   result = Module[T]()
   result.delegate = delegate
@@ -81,7 +83,7 @@ proc newModule*[T](
 
   # Submodules
   result.chatSectionModule = chat_section_module.newModule(result, events, conf.CHAT_SECTION_ID, false, chatService, 
-  communityService, messageService)
+  communityService, messageService, stickers_service)
   result.communitySectionsModule = initOrderedTable[string, chat_section_module.AccessInterface]()
   result.walletSectionModule = wallet_section_module.newModule[Module[T]](result, events, tokenService, 
     transactionService, collectible_service, walletAccountService, settingService)
@@ -105,17 +107,32 @@ method delete*[T](self: Module[T]) =
   self.viewVariant.delete
   self.controller.delete
 
-method load*[T](self: Module[T], events: EventEmitter, chatService: chat_service.Service,
-  communityService: community_service.Service, messageService: message_service.Service) =
+method load*[T](
+    self: Module[T],
+    events: EventEmitter,
+    chatService: chat_service.Service,
+    communityService: community_service.Service,
+    messageService: message_service.Service,
+    stickersService: stickers_service.Service
+  ) =
   singletonInstance.engine.setRootContextProperty("mainModule", self.viewVariant)
   self.controller.init()
   self.view.load()
 
   # Create community modules here, since we don't know earlier how many communities we have.
   let communities = self.controller.getCommunities()
+
   for c in communities:
-    self.communitySectionsModule[c.id] = chat_section_module.newModule(self, events, c.id, true, chatService, 
-    communityService, messageService)
+    self.communitySectionsModule[c.id] = chat_section_module.newModule(
+      self,
+      events,
+      c.id,
+      true,
+      chatService, 
+      communityService,
+      messageService,
+      stickersService
+    )
 
   var activeSection: Item
   var activeSectionId = singletonInstance.localAccountSensitiveSettings.getActiveSection()

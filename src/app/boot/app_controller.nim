@@ -1,6 +1,7 @@
 import NimQml, os, strformat
 
 import ../../app_service/service/os_notification/service as os_notification_service
+import ../../app_service/service/eth/service as eth_service
 import ../../app_service/service/keychain/service as keychain_service
 import ../../app_service/service/accounts/service as accounts_service
 import ../../app_service/service/contacts/service as contacts_service
@@ -19,6 +20,7 @@ import ../../app_service/service/mnemonic/service as mnemonic_service
 import ../../app_service/service/privacy/service as privacy_service
 import ../../app_service/service/profile/service as profile_service
 import ../../app_service/service/settings/service as settings_service
+import ../../app_service/service/stickers/service as stickers_service
 import ../../app_service/service/about/service as about_service
 
 import ../modules/startup/module as startup_module
@@ -80,6 +82,7 @@ type
     # Services
     osNotificationService: os_notification_service.Service
     keychainService: keychain_service.Service
+    ethService: eth_service.Service
     accountsService: accounts_service.Service
     contactsService: contacts_service.Service
     chatService: chat_service.Service
@@ -94,6 +97,7 @@ type
     dappPermissionsService: dapp_permissions_service.Service
     profileService: profile_service.Service
     settingsService: settings_service.Service
+    stickersService: stickers_service.Service
     aboutService: about_service.Service
     languageService: language_service.Service
     mnemonicService: mnemonic_service.Service
@@ -161,6 +165,7 @@ proc newAppController*(statusFoundation: StatusFoundation): AppController =
   # Services
   result.osNotificationService = os_notification_service.newService(statusFoundation.status.events)
   result.keychainService = keychain_service.newService(statusFoundation.status.events)
+  result.ethService = eth_service.newService()
   result.settingService = setting_service.newService()
   result.accountsService = accounts_service.newService()
   result.contactsService = contacts_service.newService(statusFoundation.status.events, statusFoundation.threadpool)
@@ -176,6 +181,7 @@ proc newAppController*(statusFoundation: StatusFoundation): AppController =
   result.bookmarkService = bookmark_service.newService()
   result.profileService = profile_service.newService()
   result.settingsService = settings_service.newService()
+  result.stickersService = stickers_service.newService(statusFoundation.status.events, statusFoundation.threadpool, result.ethService, result.settingsService, result.walletAccountService, result.transactionService, result.chatService)
   result.aboutService = about_service.newService()
   result.dappPermissionsService = dapp_permissions_service.newService()
   result.languageService = language_service.newService()
@@ -211,7 +217,8 @@ proc newAppController*(statusFoundation: StatusFoundation): AppController =
     result.dappPermissionsService,
     result.languageService,
     result.mnemonicService,
-    result.privacyService
+    result.privacyService,
+    result.stickersService
   )
 
   #################################################
@@ -247,6 +254,7 @@ proc delete*(self: AppController) =
   self.bookmarkService.delete
   self.startupModule.delete
   self.mainModule.delete
+  self.ethService.delete
   
   #################################################
   # At the end of refactoring this will be moved to appropriate place or removed:
@@ -308,6 +316,7 @@ proc start*(self: AppController) =
   self.keycard.init()
   #################################################
 
+  self.ethService.init()
   self.accountsService.init()
   
   self.startupModule.load()
@@ -331,7 +340,14 @@ proc load*(self: AppController) =
   self.dappPermissionsService.init()
   self.walletAccountService.init()
   self.transactionService.init()
-  self.mainModule.load(self.statusFoundation.status.events, self.chatService, self.communityService, self.messageService)
+  self.stickersService.init()
+  self.mainModule.load(
+    self.statusFoundation.status.events,
+    self.chatService,
+    self.communityService,
+    self.messageService,
+    self.stickersService
+  )
 
 proc userLoggedIn*(self: AppController) =
   #################################################

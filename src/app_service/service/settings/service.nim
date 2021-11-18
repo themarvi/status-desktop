@@ -21,22 +21,17 @@ const DEFAULT_NETWORK_NAME = "mainnet_rpc"
 
 type 
   Service* = ref object of ServiceInterface
-    # profile: Dto
+    eip1559Enabled*: bool
 
 method delete*(self: Service) =
   discard
 
 proc newService*(): Service =
   result = Service()
+  result.eip1559Enabled = false
 
 method init*(self: Service) =
-  try:
-    echo "init"
-
-  except Exception as e:
-    let errDesription = e.msg
-    error "error: ", errDesription
-    return
+  discard
 
 method getPubKey*(self: Service): string=
   return status_go_settings.getSetting(Setting.PublicKey, "0x0")
@@ -76,3 +71,21 @@ method getCurrentNetworkDetails*(self: Service): NetworkDetails =
   for n in networks:
     if n.id == currNetwork:
       return n
+
+
+proc isEIP1559Enabled*(self: Service, blockNumber: int): bool =
+  let networkId = self.getCurrentNetworkDetails().config.networkId
+  let activationBlock = case networkId:
+    of 3: 10499401 # Ropsten
+    of 4: 8897988 # Rinkeby
+    of 5: 5062605 # Goerli
+    of 1: 12965000 # Mainnet
+    else: -1
+  if activationBlock > -1 and blockNumber >= activationBlock:
+    result = true
+  else:
+    result = false
+  self.eip1559Enabled = result
+
+proc isEIP1559Enabled*(self: Service): bool =
+  result = self.eip1559Enabled

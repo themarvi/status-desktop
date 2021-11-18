@@ -47,3 +47,9 @@ method setDappsAddress*(self: ServiceInterface, address: string): bool {.base.} 
 
 method getCurrentNetworkDetails*(self: ServiceInterface): NetworkDetails {.base.} =
   raise newException(ValueError, "No implementation available")
+
+method isEIP1559Enabled*(self: ServiceInterface, blockNumber: int): bool {.base.} =
+  raise newException(ValueError, "No implementation available")
+
+method isEIP1559Enabled*(self: ServiceInterface): bool {.base.} =
+  raise newException(ValueError, "No implementation available")
