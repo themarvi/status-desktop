@@ -94,6 +94,9 @@ QtObject:
   proc addRecentStickerToList*(self: View, sticker: StickerDto) =
     self.recentStickers.addStickerToList(sticker)
 
+  proc installedStickerPacksLoaded*(self: View) =
+    self.installedStickerPacksUpdated()
+
   proc allPacksLoaded*(self: View) =
     self.stickerPacksLoaded()
     self.installedStickerPacksUpdated()

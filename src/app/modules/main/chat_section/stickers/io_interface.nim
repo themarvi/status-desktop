@@ -36,6 +36,9 @@ method clearStickerPacks*(self: AccessInterface) {.base.} =
 method getNumInstalledStickerPacks*(self: AccessInterface): int {.base.} =
   raise newException(ValueError, "No implementation available")
 
+method installedStickerPacksLoaded*(self: AccessInterface) {.base.} =
+  raise newException(ValueError, "No implementation available")
+
 method allPacksLoaded*(self: AccessInterface) {.base.} =
   raise newException(ValueError, "No implementation available")
 

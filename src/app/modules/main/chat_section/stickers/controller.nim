@@ -30,6 +30,8 @@ method delete*[T](self: Controller[T]) =
   discard
 
 method init*[T](self: Controller[T]) =
+  let installedStickerPacks = self.stickerService.getInstalledStickerPacks()
+  self.delegate.installedStickerPacksLoaded()
   let recentStickers = self.stickerService.getRecentStickers()
   for sticker in recentStickers:
     self.delegate.addRecentStickerToList(sticker)

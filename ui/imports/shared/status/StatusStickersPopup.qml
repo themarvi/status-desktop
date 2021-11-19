@@ -262,6 +262,9 @@ Popup {
     }
     Connections {
         target: stickersModule
+        onInstalledStickerPacksUpdated: {
+            console.log("WOOOOHOOOO")
+        }
         onStickerPacksLoaded: {
             root.stickerPacksLoaded = true
             stickerPackListView.visible = true

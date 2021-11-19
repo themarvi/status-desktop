@@ -75,6 +75,9 @@ method addRecentStickerToList*[T](self: Module[T], sticker: StickerDto) =
 method clearStickerPacks*[T](self: Module[T]) =
   self.view.clearStickerPacks()
 
+method installedStickerPacksLoaded*[T](self: Module[T]) =
+  self.view.installedStickerPacksLoaded()
+
 method allPacksLoaded*[T](self: Module[T]) =
   self.view.allPacksLoaded()
 
