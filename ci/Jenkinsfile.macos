@@ -1,4 +1,4 @@
-library 'status-jenkins-lib@v1.3.3'
+library 'status-jenkins-lib@desktop-make-jobs'
 
 pipeline {
   agent {
@@ -28,7 +28,7 @@ pipeline {
   environment {
     TARGET = 'macos'
     /* Improve make performance */
-    MAKEFLAGS = '-j4'
+    MAKEFLAGS = "-j${utils.getProcCount()}"
     /* Disable colors in Nim compiler logs */
     NIMFLAGS = '--colors:off'
     /* Qt location is pre-defined */
@@ -70,7 +70,7 @@ pipeline {
 
     stage('Package') {
       steps { script {
-        macos.bundle()
+        macos.bundle('pkg-macos')
       } }
     }
 
