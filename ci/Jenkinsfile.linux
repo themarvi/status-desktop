@@ -33,7 +33,7 @@ pipeline {
   environment {
     TARGET = 'linux'
     /* Improve make performance */
-    MAKEFLAGS = '-j4'
+    MAKEFLAGS = '-j4 V=1'
     /* Disable colors in Nim compiler logs */
     NIMFLAGS = '--colors:off'
     /* Makefile assumes the compiler folder is included */
