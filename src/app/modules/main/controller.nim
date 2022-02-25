@@ -147,12 +147,12 @@ proc init*(self: Controller) =
 
   self.events.on(SIGNAL_COMMUNITY_EDITED) do(e:Args):
     let args = CommunityArgs(e)
-    self.delegate.communityEdited(args.community)
+    self.delegate.communityEdited(args.community, self.communityService)
 
   self.events.on(SIGNAL_COMMUNITIES_UPDATE) do(e:Args):
     let args = CommunitiesArgs(e)
     for community in args.communities:
-      self.delegate.communityEdited(community)
+      self.delegate.communityEdited(community, self.communityService)
 
   self.events.on(SIGNAL_ENS_RESOLVED) do(e: Args):
     var args = ResolvedContactArgs(e)
@@ -199,6 +199,9 @@ proc getJoinedCommunities*(self: Controller): seq[CommunityDto] =
 
 proc getChannelGroups*(self: Controller): seq[ChannelGroupDto] =
   return self.chatService.getChannelGroups()
+
+proc getCommunitiesSettings*(self: Controller): seq[CommunitySettingsDto] =
+  return self.communityService.getCommunitiesSettings()
 
 proc checkForStoringPassword*(self: Controller) =
   # This proc is called once user is logged in irrespective he is logged in

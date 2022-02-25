@@ -106,7 +106,7 @@ method communityJoined*(self: AccessInterface, community: CommunityDto, events: 
   mailserversService: mailservers_service.Service) {.base.} =
   raise newException(ValueError, "No implementation available")
 
-method communityEdited*(self: AccessInterface, community: CommunityDto) {.base.} =
+method communityEdited*(self: AccessInterface, community: CommunityDto, communityService: community_service.Service) {.base.} =
   raise newException(ValueError, "No implementation available")
 
 method communityLeft*(self: AccessInterface, communityId: string) {.base.} =

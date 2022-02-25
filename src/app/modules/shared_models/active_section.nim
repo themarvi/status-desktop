@@ -125,6 +125,12 @@ QtObject:
   QtProperty[bool] ensOnly:
     read = ensOnly
 
+  proc historyArchiveSupportEnabled(self: ActiveSection): bool {.slot.} =
+    return self.item.historyArchiveSupportEnabled
+
+  QtProperty[bool] historyArchiveSupportEnabled:
+    read = historyArchiveSupportEnabled
+
   proc members(self: ActiveSection): QVariant {.slot.} =
     if (self.item.id == ""):
       # FIXME (Jo) I don't know why but the Item is sometimes empty and doing anything here crashes the app

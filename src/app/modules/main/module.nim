@@ -171,7 +171,7 @@ method delete*[T](self: Module[T]) =
   self.viewVariant.delete
   self.controller.delete
 
-proc createChannelGroupItem[T](self: Module[T], c: ChannelGroupDto): SectionItem =
+proc createChannelGroupItem[T](self: Module[T], c: ChannelGroupDto, s: CommunitySettingsDto): SectionItem =
   let isCommunity = c.channelGroupType == ChannelGroupType.Community
   var communityDetails: CommunityDto
   var unviewedCount, mentionsCount: int
@@ -226,8 +226,11 @@ proc createChannelGroupItem[T](self: Module[T], c: ChannelGroupDto): SectionItem
       x.communityId,
       x.state,
       x.our
-    )) else: @[]
+    )) else: @[],
+    s.historyArchiveSupportEnabled
   )
+
+
 
 method load*[T](
   self: Module[T],
@@ -264,7 +267,8 @@ method load*[T](
       gifService,
       mailserversService
     )
-    let channelGroupItem = self.createChannelGroupItem(channelGroup)
+    let settings = communityService.getCommunitySettingsById(channelGroup.id)
+    let channelGroupItem = self.createChannelGroupItem(channelGroup, settings)
     self.view.model().addItem(channelGroupItem)
     if(activeSectionId == channelGroupItem.id):
       activeSection = channelGroupItem
@@ -578,7 +582,8 @@ method communityJoined*[T](
     communityService, messageService, gifService, mailserversService)
 
   let channelGroup = community.toChannelGroupDto()
-  let communitySectionItem = self.createChannelGroupItem(channelGroup)
+  let communitySettings = communityService.getCommunitySettingsById(community.id)
+  let communitySectionItem = self.createChannelGroupItem(channelGroup, communitySettings)
   if (firstCommunityJoined):
     # If there are no other communities, add the first community after the Chat section in the model so that the order is respected
     self.view.model().addItem(communitySectionItem,
@@ -602,9 +607,11 @@ method communityLeft*[T](self: Module[T], communityId: string) =
 
 method communityEdited*[T](
     self: Module[T],
-    community: CommunityDto) =
+    community: CommunityDto,
+    communityService: community_service.Service) =
   let channelGroup = community.toChannelGroupDto()
-  self.view.editItem(self.createChannelGroupItem(channelGroup))
+  let communitySettings = communityService.getCommunitySettingsById(community.id)
+  self.view.editItem(self.createChannelGroupItem(channelGroup, communitySettings))
 
 method getContactDetailsAsJson*[T](self: Module[T], publicKey: string): string =
   let contact =  self.controller.getContact(publicKey)

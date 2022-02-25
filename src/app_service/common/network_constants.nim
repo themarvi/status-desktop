@@ -1,4 +1,5 @@
 import json, os, chronicles, utils
+import ../../constants as main_constants
 
 # set via `nim c` param `-d:INFURA_TOKEN:[token]`; should be set in CI/release builds
 const INFURA_TOKEN {.strdefine.} = ""
@@ -253,7 +254,13 @@ var NODE_CONFIG* = %* {
       "layer":   2,
       "enabled": true,
     }
-  ]
+  ],
+  "TorrentConfig": {
+    "Enabled": false,
+    "Port": 9026,
+    "DataDir": joinPath(main_constants.defaultDataDir(), "data", "archivedata"),
+    "TorrentDir": joinPath(main_constants.defaultDataDir(), "data", "torrents"),
+  }
 }
 
 proc getNetworkConfig*(currentNetwork: string): JsonNode =
