@@ -1,9 +1,21 @@
 pragma Singleton
 
 import QtQuick 2.13
+import utils 1.0
 
 QtObject {
+    id: root
+    property var profileSectionModuleInst: profileSectionModule
+    property var profileModule:  profileSectionModuleInst.profileModule
     property var onBoardingModul: onboardingModule
+
+    property url profImgUrl: ""
+    property real profImgAX: 0.0
+    property real profImgAY: 0.0
+    property real profImgBX: 0.0
+    property real profImgBY: 0.0
+
+    property bool showBeforeGetStartedPopup: true
 
     function importMnemonic(mnemonic) {
         onBoardingModul.importMnemonic(mnemonic)
@@ -12,6 +24,30 @@ QtObject {
     function setCurrentAccountAndDisplayName(selectedAccountIdx, displayName) {
         onBoardingModul.setDisplayName(displayName)
         onBoardingModul.setSelectedAccountByIndex(selectedAccountIdx)
+    }
+
+    function saveImage() {
+        return root.profileModule.upload(root.profImgUr, root.profImgAX, root.profImgAY, root.profImgBX, root.profImgBY);
+    }
+
+    function uploadImage(source, aX, aY, bX, bY) {
+        root.profImgUrl = source;
+        root.profImgAX = aX;
+        root.profImgAY = aY;
+        root.profImgBX = bX;
+        root.profImgBY = bY;
+    }
+
+    function removeImage() {
+        return root.profileModule.remove();
+    }
+
+    function finishCreatingAccount(pass) {
+        root.onBoardingModul.storeSelectedAccountAndLogin(pass);
+    }
+
+    function storeToKeyChain(pass) {
+        mainModule.storePassword(pass);
     }
 
     property ListModel accountsSampleData: ListModel {

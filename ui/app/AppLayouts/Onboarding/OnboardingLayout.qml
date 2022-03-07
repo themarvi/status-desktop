@@ -8,6 +8,8 @@ import "stores"
 QtObject {
     id: root
     property bool hasAccounts
+    property string keysMainSetState: ""
+
     signal loadApp()
     signal onBoardingStepChanged(var view, string state)
 
@@ -18,16 +20,33 @@ QtObject {
 
         DSM.State {
             id: onboardingState
-            initialState: root.hasAccounts ? stateLogin : keysMainState
+            initialState: root.hasAccounts ? stateLogin : welcomeMainState
+
+            DSM.State {
+                id: welcomeMainState
+                onEntered: { onBoardingStepChanged(welcomeMain, ""); }
+
+                DSM.SignalTransition {
+                    targetState: keysMainState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "KeyMain"
+                }
+            }
 
             DSM.State {
                 id: keysMainState
-                onEntered: { onBoardingStepChanged(welcomeMain, ""); }
+                onEntered: { onBoardingStepChanged(keysMain, root.keysMainSetState); }
 
                 DSM.SignalTransition {
                     targetState: genKeyState
                     signal: Global.applicationWindow.navigateTo
                     guard: path === "GenKey"
+                }
+
+                DSM.SignalTransition {
+                    targetState: welcomeMainState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "Welcome"
                 }
             }
 
@@ -40,16 +59,27 @@ QtObject {
                     signal: startupModule.appStateChanged
                     guard: state === Constants.appState.main
                 }
+
+                DSM.SignalTransition {
+                    targetState: welcomeMainState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "Welcome"
+                }
             }
 
             DSM.State {
                 id: genKeyState
                 onEntered: { onBoardingStepChanged(genKey, ""); }
+                DSM.SignalTransition {
+                    targetState: welcomeMainState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "Welcome"
+                }
 
                 DSM.SignalTransition {
                     targetState: appState
-                    signal: startupModule.appStateChanged
-                    guard: state === Constants.appState.main
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "LoggedIn"
                 }
             }
 
@@ -110,33 +140,21 @@ QtObject {
             }
 
             DSM.SignalTransition {
-                targetState: existingKeyState
-                signal: Global.applicationWindow.navigateTo
-                guard: path === "ExistingKey"
-            }
-
-            DSM.SignalTransition {
                 targetState: keysMainState
                 signal: Global.applicationWindow.navigateTo
                 guard: path === "KeysMain"
             }
 
             DSM.SignalTransition {
+                targetState: existingKeyState
+                signal: Global.applicationWindow.navigateTo
+                guard: path === "ExistingKey"
+            }
+
+            DSM.SignalTransition {
                 targetState: keycardState
                 signal: Global.applicationWindow.navigateTo
                 guard: path === "KeycardFlowSelection"
-            }
-
-            DSM.SignalTransition {
-                targetState: createPasswordState
-                signal: applicationWindow.navigateTo
-                guard: path === "CreatePassword"
-            }
-
-            DSM.SignalTransition {
-                targetState: confirmPasswordState
-                signal: applicationWindow.navigateTo
-                guard: path === "ConfirmPassword"
             }
 
             DSM.FinalState {
@@ -159,10 +177,12 @@ QtObject {
         id: welcomeMain
         WelcomeView {
             onBtnNewUserClicked: {
-                onBoardingStepChanged(keysMain, "getkeys");
+                root.keysMainSetState = "getkeys";
+                Global.applicationWindow.navigateTo("KeyMain");
             }
             onBtnExistingUserClicked: {
-                onBoardingStepChanged(keysMain, "connectkeys");
+                root.keysMainSetState = "connectkeys";
+                Global.applicationWindow.navigateTo("KeyMain");
             }
         }
     }
@@ -180,7 +200,7 @@ QtObject {
                 Global.applicationWindow.navigateTo("ExistingKey");
             }
             onBackClicked: {
-                onBoardingStepChanged(welcomeMain, "");
+                Global.applicationWindow.navigateTo("Welcome");
             }
         }
     }
@@ -188,7 +208,7 @@ QtObject {
     property var existingKeyComponent: Component {
         id: existingKey
         ExistingKeyView {
-            onShowCreatePasswordView: { Global.applicationWindow.navigateTo("CreatePassword") }
+            onShowCreatePasswordView: { console.warn("TODO: Navigation to Create Password Screen!!! It is now part of the GenKeyView flow...")}
             onClosed: function () {
                 if (root.hasAccounts) {
                     Global.applicationWindow.navigateTo("InitialState")
@@ -202,13 +222,11 @@ QtObject {
     property var genKeyComponent: Component {
         id: genKey
         GenKeyView {
-            onShowCreatePasswordView: { Global.applicationWindow.navigateTo("CreatePassword") }
-            onClosed: function () {
-                if (root.hasAccounts) {
-                    Global.applicationWindow.navigateTo("InitialState")
-                } else {
-                    Global.applicationWindow.navigateTo("KeysMain")
-                }
+            onExit: {
+                Global.applicationWindow.navigateTo("KeysMain");
+            }
+            onKeysGenerated: {
+                Global.applicationWindow.navigateTo("LoggedIn")
             }
         }
     }
@@ -236,39 +254,5 @@ QtObject {
                 Global.applicationWindow.navigateTo("ExistingKey")
             }
         }
-    }
-
-    property var d: QtObject {
-        property string newPassword
-        property string confirmationPassword
-    }
-
-    property var createPasswordComponent: Component {
-        id: createPassword
-        CreatePasswordView {
-            newPassword: d.newPassword
-            confirmationPassword: d.confirmationPassword
-
-            onPasswordCreated: {
-                d.newPassword = newPassword
-                d.confirmationPassword = confirmationPassword
-                applicationWindow.navigateTo("ConfirmPassword")
-            }
-            onBackClicked: {
-                d.newPassword = ""
-                d.confirmationPassword = ""
-                applicationWindow.navigateTo("InitialState");
-                console.warn("TODO: Integration with onboarding flow!")
-            }
-        }
-    }
-
-     property var confirmPasswordComponent: Component {
-        id: confirmPassword
-        ConfirmPasswordView {
-            password: d.newPassword
-
-            onBackClicked: { applicationWindow.navigateTo("CreatePassword") }
-        }
-    }
+    } 
 }

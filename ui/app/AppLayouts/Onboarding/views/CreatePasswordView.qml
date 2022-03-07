@@ -8,15 +8,15 @@ import StatusQ.Core.Theme 0.1
 import utils 1.0
 
 import "../../Profile/views"
+import "../controls"
 
-Page {
+OnboardingBasePage {
     id: root
 
     property string newPassword
     property string confirmationPassword
 
     signal passwordCreated(string newPassword, string confirmationPassword)
-    signal backClicked()
 
     Component.onCompleted: { view.forceNewPswInputFocus() }
 
@@ -45,7 +45,11 @@ Page {
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Create password")
             enabled: view.ready
-            onClicked: { passwordCreated(view.newPswText, view.confirmationPswText) }
+            onClicked: {
+                root.newPassword = view.newPswText
+                root.confirmationPassword = view.confirmationPswText
+                root.finished()
+            }
         }
     }
 
@@ -66,4 +70,4 @@ Page {
         z: d.zBehind // Behind focusable components
         onClicked: { view.checkPasswordMatches() }
     }
-}
+ }

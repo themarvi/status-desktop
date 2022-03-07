@@ -12,13 +12,12 @@ import StatusQ.Core 0.1
 import StatusQ.Core.Theme 0.1
 
 import "../stores"
+import "../controls"
 
-Page {
+OnboardingBasePage {
     id: root
 
     property string password
-
-    signal backClicked()
 
     anchors.fill: parent
 
@@ -72,9 +71,7 @@ Page {
 
             width: parent.width
             enabled: !submitBtn.loading
-            placeholderText: submitBtn.loading ?
-                             qsTr("Connecting...") :
-                             qsTr("Confirm you password (again)")
+            placeholderText: qsTr("Confirm you password (again)")
             textField.echoMode: showPassword ? TextInput.Normal : TextInput.Password
             textField.validator: RegExpValidator { regExp: /^[!-~]+$/ } // That incudes NOT extended ASCII printable characters less space
             keepHeight: true
@@ -105,31 +102,14 @@ Page {
             id: submitBtn
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Finalize Status Password Creation")
-            enabled: !submitBtn.loading && confPswInput.text === root.password
+            enabled: confPswInput.text === root.password
 
-            property Timer sim: Timer {
-                id: pause
-                interval: 20
-                onTriggered: {
-                    // Create new password call action to the backend
-                    OnboardingStore.onBoardingModul.storeSelectedAccountAndLogin(root.password)
-                    Global.applicationWindow.prepareForStoring(root.password, false)
-                }
-            }
-
-            onClicked: {
-                confPswInput.text = ""
-                submitBtn.loading = true
-                // Create password operation blocks the UI so loading = true; will never have any affect until changePassword/createPassword is done.
-                // Getting around it with a small pause (timer) in order to get the desired behavior
-                pause.start()
-            }
+            onClicked: { root.finished() }
         }
     }
 
     // Back button:
     StatusRoundButton {
-        enabled: !submitBtn.loading
         anchors.left: parent.left
         anchors.leftMargin: Style.current.padding
         anchors.bottom: parent.bottom
