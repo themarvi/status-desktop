@@ -85,6 +85,10 @@ proc init*(self: Controller) =
     let account = self.accountsService.getLoggedInAccount()
     singletonInstance.localAccountSettings.setFileName(account.name)
 
+  if self.accountsService.isFirstTimeAccountLogin():
+    let d31 = 31*86400 # 31 days
+    discard self.settingsService.setDefaultSyncPeriod(d31)
+
   self.events.on("keychainServiceSuccess") do(e:Args):
     let args = KeyChainServiceArg(e)
     self.delegate.emitStoringPasswordSuccess()

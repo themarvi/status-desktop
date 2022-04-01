@@ -429,6 +429,12 @@ proc saveAutoMessageEnabled*(self: Service, value: bool): bool =
     return true
   return false
 
+proc setDefaultSyncPeriod*(self: Service, value: int): bool =
+  if(self.saveSetting(KEY_DEFAULT_SYNC_PERIOD,value)):
+    self.settings.defaultSyncPeriod = value
+    return true
+  return false
+
 proc autoMessageEnabled*(self: Service): bool =
   return self.settings.autoMessageEnabled
 
