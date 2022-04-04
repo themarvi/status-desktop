@@ -43,8 +43,7 @@ Item {
             id: inviteButton
             anchors.horizontalCenter: parent.horizontalCenter
             visible: root.community.amISectionAdmin
-            //% "Invite People"
-            title: qsTrId("invite-people")
+            title: qsTr("Invite People")
             icon.name: "share-ios"
             type: StatusListItem.Type.Secondary
             sensor.onClicked: root.inviteButtonClicked()
@@ -65,8 +64,7 @@ Item {
             visible: root.community.amISectionAdmin && nbRequests > 0
             anchors.horizontalCenter: parent.horizontalCenter
 
-            //% "Membership requests"
-            title: qsTrId("membership-requests")
+            title: qsTr("Membership requests")
             requestsCount: nbRequests
             sensor.onClicked: Global.openPopup(membershipRequestPopup, {
                 communitySectionModule: root.communitySectionModule
@@ -96,8 +94,7 @@ Item {
 
             StatusBaseText {
                 anchors.centerIn: parent
-                //% "Community members will appear here"
-                text: qsTrId("community-members-will-appear-here")
+                text: qsTr("Community members will appear here")
                 font.pixelSize: 15
                 color: Theme.palette.baseColor1
             }
@@ -110,8 +107,7 @@ Item {
 
             StatusBaseText {
                 anchors.centerIn: parent
-                //% "No contacts found"
-                text: qsTrId("no-contacts-found")
+                text: qsTr("No contacts found")
                 font.pixelSize: 15
                 color: Theme.palette.baseColor1
             }
@@ -140,8 +136,7 @@ Item {
                             return !model.name.endsWith(".eth") ?
                                 model.name : Utils.removeStatusEns(model.name)
                         }
-                        //% "You"
-                        return qsTrId("You")
+                        return qsTr("You")
                     }
 
                     components: [
@@ -166,8 +161,7 @@ Item {
                                 }
 
                                 StatusMenuItem {
-                                    //% "View Profile"
-                                    text: qsTrId("view-profile")
+                                    text: qsTr("View Profile")
                                     icon.name: "channel"
                                     onTriggered: Global.openProfilePopup(model.id)
                                 }
@@ -177,8 +171,7 @@ Item {
                                 }
 
                                 StatusMenuItem {
-                                    //% "Kick"
-                                    text: qsTrId("kick")
+                                    text: qsTr("Kick")
                                     icon.name: "arrow-right"
                                     iconRotation: 180
                                     type: StatusMenuItem.Type.Danger
@@ -187,8 +180,7 @@ Item {
                                 }
 
                                 StatusMenuItem {
-                                    //% "Ban"
-                                    text: qsTrId("ban")
+                                    text: qsTr("Ban")
                                     icon.name: "cancel"
                                     type: StatusMenuItem.Type.Danger
                                     enabled: root.community.amISectionAdmin

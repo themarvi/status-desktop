@@ -91,8 +91,7 @@ Flickable {
             spacing: 8
 
             StatusBaseText {
-                //% "Thumbnail image"
-                text: qsTrId("thumbnail-image")
+                text: qsTr("Thumbnail image")
                 font.pixelSize: 15
                 color: Theme.palette.directColor1
             }
@@ -115,11 +114,9 @@ Flickable {
 
                     FileDialog {
                         id: imageDialog
-                        //% "Please choose an image"
-                        title: qsTrId("please-choose-an-image")
+                        title: qsTr("Please choose an image")
                         folder: shortcuts.pictures
-                        nameFilters: [//% "Image files (*.jpg *.jpeg *.png)"
-                            qsTrId("image-files----jpg---jpeg---png-")]
+                        nameFilters: [qsTr("Image files (*.jpg *.jpeg *.png)")]
                         onAccepted: {
                             addImageButton.selectedImage = imageDialog.fileUrls[0]
                             imageCropperModal.open()
@@ -170,8 +167,7 @@ Flickable {
 
                         StatusBaseText {
                             id: uploadText
-                            //% "Upload"
-                            text: qsTrId("upload")
+                            text: qsTr("Upload")
                             anchors.top: imageImg.bottom
                             anchors.topMargin: 5
                             font.pixelSize: 15
@@ -210,7 +206,7 @@ Flickable {
             spacing: 8
 
             StatusBaseText {
-                text: qsTrId("Community colour")
+                text: qsTr("Upload")
                 font.pixelSize: 15
                 color: Theme.palette.directColor1
             }

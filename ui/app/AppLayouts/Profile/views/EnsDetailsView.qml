@@ -141,7 +141,7 @@ Item {
         anchors.topMargin: 24
         anchors.left: parent.left
         anchors.leftMargin: 24
-        text: qsTrId("Release username")
+        text: qsTr("Release username")
         onClicked: {
             Global.openPopup(transactionDialogComponent)
         }
@@ -162,8 +162,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: Style.current.padding
         anchors.horizontalCenter: parent.horizontalCenter
-        //% "Back"
-        text: qsTrId("back")
+        text: qsTr("Back")
         onClicked: backBtnClicked()
     }
 }

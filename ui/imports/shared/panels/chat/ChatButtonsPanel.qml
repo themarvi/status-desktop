@@ -78,8 +78,7 @@ Rectangle {
                 height: 32
                 icon.name: "reaction-b"
                 type: StatusFlatRoundButton.Type.Tertiary
-                //% "Add reaction"
-                tooltip.text: qsTrId("add-reaction")
+                tooltip.text: qsTr("Add reaction")
                 onClicked: {
                     setMessageActive(messageId, true)
                     // Set parent, X & Y positions for the messageContextMenu
@@ -100,8 +99,7 @@ Rectangle {
                 height: 32
                 icon.name: "reply"
                 type: StatusFlatRoundButton.Type.Tertiary
-                //% "Reply"
-                tooltip.text: qsTrId("message-reply")
+                tooltip.text: qsTr("Reply")
                 onClicked: {
                     buttonsContainer.replyClicked(messageId, fromAuthor);
                     if (messageContextMenu.closeParentPopup) {
@@ -122,8 +120,7 @@ Rectangle {
                 height: 32
                 icon.source: Style.svg("edit-message")
                 type: StatusFlatRoundButton.Type.Tertiary
-                //% "Edit"
-                tooltip.text: qsTrId("edit")
+                tooltip.text: qsTr("Edit")
                 onClicked: messageStore.setEditModeOn(messageId)
                 onHoveredChanged: buttonsContainer.hoverChanged(btn.hovered)
             }
@@ -136,8 +133,7 @@ Rectangle {
             visible: buttonsContainer.showMoreButton
             icon.name: "more"
             type: StatusFlatRoundButton.Type.Tertiary
-            //% "More"
-            tooltip.text: qsTrId("more")
+            tooltip.text: qsTr("More")
             onClicked: {
                 if (typeof isMessageActive !== "undefined") {
                     setMessageActive(messageId, true)

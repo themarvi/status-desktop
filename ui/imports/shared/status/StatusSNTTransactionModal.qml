@@ -34,13 +34,11 @@ ModalPopup {
 
     height: 540
 
-    //% "Authorize %1 %2"
-    title: qsTrId("authorize--1--2").arg(Utils.stripTrailingZeros(assetPrice)).arg(asset.symbol)
+    title: qsTr("Authorize %1 %2").arg(Utils.stripTrailingZeros(assetPrice)).arg(asset.symbol)
 
     property MessageDialog sendingError: MessageDialog {
         id: sendingError
-        //% "Error sending the transaction"
-        title: qsTrId("error-sending-the-transaction")
+        title: qsTr("Error sending the transaction")
         icon: StandardIcon.Critical
         standardButtons: StandardButton.Ok
     }
@@ -64,8 +62,7 @@ ModalPopup {
         let response = JSON.parse(responseStr)
         if (!response.success) {
             if (Utils.isInvalidPasswordMessage(response.result)){
-                //% "Wrong password"
-                transactionSigner.validationError = qsTrId("wrong-password")
+                transactionSigner.validationError = qsTr("Wrong password")
                 return
             }
             sendingError.text = response.result
@@ -90,10 +87,8 @@ ModalPopup {
         }
         TransactionFormGroup {
             id: group1
-            //% "Authorize %1 %2"
-            headerText: qsTrId("authorize--1--2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
-            //% "Continue"
-            footerText: qsTrId("continue")
+            headerText: qsTr("Authorize %1 %2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
+            footerText: qsTr("Continue")
             showBackBtn: false
             StatusAccountSelector {
                 id: selectFromAccount
@@ -107,8 +102,7 @@ ModalPopup {
                 }
                 currency: walletSection.currentCurrency
                 width: stack.width
-                //% "Choose account"
-                label: qsTrId("choose-account")
+                label: qsTr("Choose account")
                 showBalanceForAssetSymbol: root.asset.symbol
                 minRequiredAssetBalance: root.assetPrice
                 onSelectedAccountChanged: if (isValid) { gasSelector.estimateGas() }
@@ -161,10 +155,8 @@ ModalPopup {
         }
         TransactionFormGroup {
             id: group2
-            //% "Authorize %1 %2"
-            headerText: qsTrId("authorize--1--2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
-            //% "Sign with password"
-            footerText: qsTrId("sign-with-password")
+            headerText: qsTr("Authorize %1 %2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
+            footerText: qsTr("Sign with password")
 
             TransactionPreview {
                 id: pvwTransaction
@@ -186,10 +178,8 @@ ModalPopup {
         }
         TransactionFormGroup {
             id: group3
-            //% "Send %1 %2"
-            headerText: qsTrId("send--1--2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
-            //% "Sign with password"
-            footerText: qsTrId("sign-with-password")
+            headerText: qsTr("Send %1 %2").arg(Utils.stripTrailingZeros(root.assetPrice)).arg(root.asset.symbol)
+            footerText: qsTr("Sign with password")
 
             TransactionSigner {
                 id: transactionSigner
@@ -232,8 +222,7 @@ ModalPopup {
         StatusButton {
             id: btnNext
             anchors.right: parent.right
-            //% "Next"
-            text: qsTrId("next")
+            text: qsTr("Next")
             enabled: stack.currentGroup.isValid && !stack.currentGroup.isPending
             loading: stack.currentGroup.isPending
             onClicked: {

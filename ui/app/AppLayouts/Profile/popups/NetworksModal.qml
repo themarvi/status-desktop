@@ -16,8 +16,7 @@ import StatusQ.Controls 0.1 as StatusQControls
 // TODO: replace with StatusQ component
 ModalPopup {
     id: popup
-    //% "Network"
-    title: qsTrId("network")
+    title: qsTr("Network")
 
     property var advancedStore
 
@@ -53,8 +52,7 @@ ModalPopup {
 
                 StyledText {
                     id: usernameText
-                    //% "Add network"
-                    text: qsTrId("add-network")
+                    text: qsTr("Add network")
                     color: Style.current.blue
                     anchors.left: addButton.right
                     anchors.leftMargin: Style.current.padding
@@ -95,8 +93,7 @@ ModalPopup {
 
 
                 StatusSectionHeadline {
-                    //% "Main networks"
-                    text: qsTrId("main-networks")
+                    text: qsTr("Main networks")
                 }
 
 
@@ -119,8 +116,7 @@ ModalPopup {
                 }
 
                 StatusSectionHeadline {
-                    //% "Test networks"
-                    text: qsTrId("test-networks")
+                    text: qsTr("Test networks")
                     anchors.leftMargin: -Style.current.padding
                     anchors.rightMargin: -Style.current.padding
                 }
@@ -144,8 +140,7 @@ ModalPopup {
                 }
 
                 StatusSectionHeadline {
-                    //% "Custom Networks"
-                    text: qsTrId("custom-networks")
+                    text: qsTr("Custom Networks")
                     anchors.leftMargin: -Style.current.padding
                     anchors.rightMargin: -Style.current.padding
                 }
@@ -166,7 +161,6 @@ ModalPopup {
     StyledText {
         anchors.top: svNetworks.bottom
         anchors.topMargin: Style.current.padding
-        //% "Under development\nNOTE: You will be logged out and all installed\nsticker packs will be removed and will\nneed to be reinstalled. Purchased sticker\npacks will not need to be re-purchased."
-        text: qsTrId("under-development-nnote--you-will-be-logged-out-and-all-installed-nsticker-packs-will-be-removed-and-will-nneed-to-be-reinstalled--purchased-sticker-npacks-will-not-need-to-be-re-purchased-")
+        text: qsTr("Under development\nNOTE: You will be logged out and all installed\nsticker packs will be removed and will\nneed to be reinstalled. Purchased sticker\npacks will not need to be re-purchased.")
     }
 }

@@ -34,8 +34,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Network"
-                text: qsTrId("network")
+                text: qsTr("Network")
                 visible: !localAccountSensitiveSettings.isMultiNetworkEnabled
                 currentValue: root.advancedStore.currentNetworkName
                 onClicked: networksModal.open()
@@ -45,8 +44,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Fleet"
-                text: qsTrId("fleet")
+                text: qsTr("Fleet")
                 currentValue: root.advancedStore.fleet
                 onClicked: fleetModal.open()
             }
@@ -55,8 +53,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Minimize on close"
-                text: qsTrId("minimize-on-close")
+                text: qsTr("Minimize on close")
                 isSwitch: true
                 switchChecked: !localAccountSensitiveSettings.quitOnClose
                 onClicked: function (checked) {
@@ -70,7 +67,6 @@ SettingsContentBase {
                 anchors.right: parent.right
                 anchors.leftMargin: Style.current.padding
                 anchors.rightMargin: Style.current.padding
-                //% "Application Logs"
                 text: qsTr("Application Logs")
                 font.pixelSize: 15
                 font.underline: mouseArea.containsMouse
@@ -103,8 +99,7 @@ SettingsContentBase {
                 anchors.right: parent.right
                 anchors.leftMargin: Style.current.padding
                 anchors.rightMargin: Style.current.padding
-                //% "Experimental features"
-                text: qsTrId("experimental-features")
+                text: qsTr("Experimental features")
                 topPadding: Style.current.bigPadding
                 bottomPadding: Style.current.padding
             }
@@ -113,8 +108,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Wallet"
-                text: qsTrId("wallet")
+                text: qsTr("Wallet")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.isWalletEnabled
                 onClicked: {
@@ -131,8 +125,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Dapp Browser"
-                text: qsTrId("dapp-browser")
+                text: qsTr("Dapp Browser")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.isBrowserEnabled
                 onClicked: {
@@ -149,8 +142,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Communities"
-                text: qsTrId("communities")
+                text: qsTr("Communities")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.communitiesEnabled
                 onClicked: {
@@ -166,8 +158,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Communities"
-                text: qsTrId("Community History Archive Protocol")
+                text: qsTr("Communities")
                 isSwitch: true
                 switchChecked: root.advancedStore.isCommunityHistoryArchiveSupportEnabled
                 onClicked: {
@@ -184,8 +175,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Activity Center"
-                text: qsTrId("activity-center")
+                text: qsTr("Activity Center")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.isActivityCenterEnabled
                 onClicked: {
@@ -202,8 +192,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Node Management"
-                text: qsTrId("node-management")
+                text: qsTr("Node Management")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.nodeManagementEnabled
                 onClicked: {
@@ -237,7 +226,6 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Keycard"
                 text: qsTr("Keycard")
                 isSwitch: true
                 switchChecked: localAccountSettings.isKeycardEnabled
@@ -252,8 +240,7 @@ SettingsContentBase {
                 anchors.leftMargin: Style.current.padding
                 anchors.rightMargin: Style.current.padding
                 visible: !root.advancedStore.isWakuV2
-                //% "Bloom filter level"
-                text: qsTrId("bloom-filter-level")
+                text: qsTr("Bloom filter level")
                 topPadding: Style.current.bigPadding
                 bottomPadding: Style.current.padding
             }
@@ -272,10 +259,8 @@ SettingsContentBase {
                         property string mode: "normal"
 
                         id: confirmDialog
-                        //% "Warning!"
-                        header.title: qsTrId("close-app-title")
-                        //% "The account will be logged out. When you login again, the selected mode will be enabled"
-                        confirmationText: qsTrId("the-account-will-be-logged-out--when-you-login-again--the-selected-mode-will-be-enabled")
+                        header.title: qsTr("Warning!")
+                        confirmationText: qsTr("The account will be logged out. When you login again, the selected mode will be enabled")
                         onConfirmButtonClicked: {
                             root.advancedStore.setBloomLevel(mode)
                         }
@@ -298,8 +283,7 @@ SettingsContentBase {
                     id: btnBloomLight
                     buttonGroup: bloomGroup
                     checkedByDefault: root.advancedStore.bloomLevel == "light"
-                    //% "Light Node"
-                    btnText: qsTrId("light-node")
+                    btnText: qsTr("Light Node")
                     onToggled: {
                         if (root.advancedStore.bloomLevel != "light") {
                             Global.openPopup(bloomConfirmationDialogComponent, {mode: "light"})
@@ -313,8 +297,7 @@ SettingsContentBase {
                     id: btnBloomNormal
                     buttonGroup: bloomGroup
                     checkedByDefault: root.advancedStore.bloomLevel == "normal"
-                    //% "Normal"
-                    btnText: qsTrId("normal")
+                    btnText: qsTr("Normal")
                     onToggled: {
                         if (root.advancedStore.bloomLevel != "normal") {
                             Global.openPopup(bloomConfirmationDialogComponent, {mode: "normal"})
@@ -328,8 +311,7 @@ SettingsContentBase {
                     id: btnBloomFull
                     buttonGroup: bloomGroup
                     checkedByDefault: root.advancedStore.bloomLevel == "full"
-                    //% "Full Node"
-                    btnText: qsTrId("full-node")
+                    btnText: qsTr("Full Node")
                     onToggled: {
                         if (root.advancedStore.bloomLevel != "full") {
                             Global.openPopup(bloomConfirmationDialogComponent, {mode: "full"})
@@ -364,8 +346,7 @@ SettingsContentBase {
                         property bool mode: false
 
                         id: confirmDialog
-                        //% "The account will be logged out. When you login again, the selected mode will be enabled"
-                        confirmationText: qsTrId("the-account-will-be-logged-out--when-you-login-again--the-selected-mode-will-be-enabled")
+                        confirmationText: qsTr("The account will be logged out. When you login again, the selected mode will be enabled")
                         onConfirmButtonClicked: {
                             root.advancedStore.setWakuV2LightClientEnabled(mode)
                         }
@@ -388,8 +369,7 @@ SettingsContentBase {
                     id: btnWakuV2Light
                     buttonGroup: wakuV2Group
                     checkedByDefault: root.advancedStore.wakuV2LightClientEnabled
-                    //% "Light Node"
-                    btnText: qsTrId("light-node")
+                    btnText: qsTr("Light Node")
                     onToggled: {
                         if (!root.advancedStore.wakuV2LightClientEnabled) {
                             Global.openPopup(wakuV2ModeConfirmationDialogComponent, {mode: true})
@@ -403,8 +383,7 @@ SettingsContentBase {
                     id: btnWakuV2Full
                     buttonGroup: wakuV2Group
                     checkedByDefault: !root.advancedStore.wakuV2LightClientEnabled
-                    //% "Full Node"
-                    btnText: qsTrId("full-node")
+                    btnText: qsTr("Full Node")
                     onToggled: {
                         if (root.advancedStore.wakuV2LightClientEnabled) {
                             Global.openPopup(wakuV2ModeConfirmationDialogComponent, {mode: false})
@@ -599,10 +578,8 @@ SettingsContentBase {
             id: confirmationPopup
             property string experimentalFeature: ""
             showCancelButton: true
-            //% "This feature is experimental and is meant for testing purposes by core contributors and the community. It's not meant for real use and makes no claims of security or integrity of funds or data. Use at your own risk."
-            confirmationText: qsTrId("this-feature-is-experimental-and-is-meant-for-testing-purposes-by-core-contributors-and-the-community--it-s-not-meant-for-real-use-and-makes-no-claims-of-security-or-integrity-of-funds-or-data--use-at-your-own-risk-")
-            //% "I understand"
-            confirmButtonLabel: qsTrId("i-understand")
+            confirmationText: qsTr("This feature is experimental and is meant for testing purposes by core contributors and the community. It's not meant for real use and makes no claims of security or integrity of funds or data. Use at your own risk.")
+            confirmButtonLabel: qsTr("I understand")
             onConfirmButtonClicked: {
                 root.advancedStore.toggleExperimentalFeature(experimentalFeature)
                 experimentalFeature = ""

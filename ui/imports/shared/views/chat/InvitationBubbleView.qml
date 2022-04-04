@@ -56,10 +56,8 @@ Item {
             property string settingsProp: ""
             property var onConfirmed: (function(){})
             showCancelButton: true
-            //% "This feature is experimental and is meant for testing purposes by core contributors and the community. It's not meant for real use and makes no claims of security or integrity of funds or data. Use at your own risk."
-            confirmationText: qsTrId("this-feature-is-experimental-and-is-meant-for-testing-purposes-by-core-contributors-and-the-community--it-s-not-meant-for-real-use-and-makes-no-claims-of-security-or-integrity-of-funds-or-data--use-at-your-own-risk-")
-            //% "I understand"
-            confirmButtonLabel: qsTrId("i-understand")
+            confirmationText: qsTr("This feature is experimental and is meant for testing purposes by core contributors and the community. It's not meant for real use and makes no claims of security or integrity of funds or data. Use at your own risk.")
+            confirmButtonLabel: qsTr("I understand")
             onConfirmButtonClicked: {
                 localAccountSensitiveSettings.communitiesEnabled = true
                 onConfirmed()
@@ -105,8 +103,7 @@ Item {
                         when: invitedCommunity.ensOnly && !userProfile.ensName
                         PropertyChanges {
                             target: joinBtn
-                            //% "Membership requires an ENS username"
-                            text: qsTrId("membership-requires-an-ens-username")
+                            text: qsTr("Membership requires an ENS username")
                             enabled: false
                         }
                     },
@@ -115,8 +112,7 @@ Item {
                         when: invitedCommunity.access === Constants.communityChatInvitationOnlyAccess
                         PropertyChanges {
                             target: joinBtn
-                            //% "You need to be invited"
-                            text: qsTrId("you-need-to-be-invited")
+                            text: qsTr("You need to be invited")
                             enabled: false
                         }
                     },
@@ -126,8 +122,7 @@ Item {
                               rectangleBubble.isPendingRequest
                         PropertyChanges {
                             target: joinBtn
-                            //% "Pending"
-                            text: qsTrId("invite-chat-pending")
+                            text: qsTr("Pending")
                             enabled: false
                         }
                     },
@@ -138,8 +133,7 @@ Item {
                                 invitedCommunity.joined)
                         PropertyChanges {
                             target: joinBtn
-                            //% "View"
-                            text: qsTrId("view")
+                            text: qsTr("View")
                         }
                     },
                     State {
@@ -149,8 +143,7 @@ Item {
                               invitedCommunity.canRequestAccess
                         PropertyChanges {
                             target: joinBtn
-                            //% "Request Access"
-                            text: qsTrId("request-access")
+                            text: qsTr("Request Access")
 
                         }
                     },
@@ -162,8 +155,7 @@ Item {
                                 !invitedCommunity.joined)
                         PropertyChanges {
                             target: joinBtn
-                            //% "Join"
-                            text: qsTrId("join")
+                            text: qsTr("Join")
                         }
                     }
                 ]
@@ -183,10 +175,8 @@ Item {
                     id: title
                     color: invitedCommunity.verifed ? Theme.palette.primaryColor1 : Theme.palette.baseColor1
                     text: invitedCommunity.verifed ?
-                              //% "Verified community invitation"
-                              qsTrId("verified-community-invitation") :
-                              //% "Community invitation"
-                              qsTrId("community-invitation")
+                              qsTr("Verified community invitation") :
+                              qsTr("Community invitation")
                     font.weight: Font.Medium
                     anchors.top: parent.top
                     anchors.topMargin: Style.current.halfPadding
@@ -203,15 +193,15 @@ Item {
 //                        if (root.store.chatsModelInst.channelView.activeChannel.chatType === Constants.chatType.oneToOne) {
 //                            return isCurrentUser ?
 //                                        //% "You invited %1 to join a community"
-//                                        qsTrId("you-invited--1-to-join-a-community").arg(root.store.chatsModelInst.userNameOrAlias(root.store.chatsModelInst.channelView.activeChannel.id))
+//                                        qsTr("Community invitation").arg(root.store.chatsModelInst.userNameOrAlias(root.store.chatsModelInst.channelView.activeChannel.id))
 //                                        //% "%1 invited you to join a community"
-//                                      : qsTrId("-1-invited-you-to-join-a-community").arg(displayUserName)
+//                                      : qsTr("Community invitation").arg(displayUserName)
 //                        } else {
 //                            return isCurrentUser ?
 //                                        //% "You shared a community"
-//                                        qsTrId("you-shared-a-community")
+//                                        qsTr("Community invitation")
 //                                        //% "A community has been shared"
-//                                      : qsTrId("a-community-has-been-shared")
+//                                      : qsTr("Community invitation")
 //                        }
                     }
                     anchors.top: title.bottom
@@ -264,8 +254,7 @@ Item {
                 StatusBaseText {
                     id: communityNbMembers
                     // TODO add the plural support
-                    //% "%1 members"
-                    text: qsTrId("-1-members").arg(invitedCommunity.nbMembers)
+                    text: qsTr("%1 members").arg(invitedCommunity.nbMembers)
                     anchors.top: communityDesc.bottom
                     anchors.topMargin: 2
                     anchors.left: parent.left
@@ -294,8 +283,7 @@ Item {
                         width: parent.width
                         height: 54
                         enabled: true
-                        //% "Unsupported state"
-                        text: qsTrId("unsupported-state")
+                        text: qsTr("Unsupported state")
                         onClicked: {
                             let onBtnClick = function(){
                                 let error
@@ -328,8 +316,7 @@ Item {
 
                         MessageDialog {
                             id: joiningError
-                            //% "Error joining the community"
-                            title: qsTrId("error-joining-the-community")
+                            title: qsTr("Error joining the community")
                             icon: StandardIcon.Critical
                             standardButtons: StandardButton.Ok
                         }

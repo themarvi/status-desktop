@@ -10,8 +10,7 @@ import StatusQ.Controls 0.1
 
 StatusModal {
     id: addNetworkPopup
-    //% "Add network"
-    header.title: qsTrId("add-network")
+    header.title: qsTr("Add network")
     height: 644
 
     property var advancedStore
@@ -28,28 +27,22 @@ StatusModal {
         networkValidationError = "";
 
         if (nameInput.text === "") {
-            //% "You need to enter a name"
-            nameValidationError = qsTrId("you-need-to-enter-a-name")
+            nameValidationError = qsTr("You need to enter a name")
         }
 
         if (rpcInput.text === "") {
-            //% "You need to enter the RPC endpoint URL"
-            rpcValidationError = qsTrId("you-need-to-enter-the-rpc-endpoint-url")
+            rpcValidationError = qsTr("You need to enter the RPC endpoint URL")
         } else if(!Utils.isURL(rpcInput.text)) {
-            //% "Invalid URL"
-            rpcValidationError = qsTrId("invalid-url")
+            rpcValidationError = qsTr("Invalid URL")
         }
 
         if (customRadioBtn.checked) {
             if (networkInput.text === "") {
-                //% "You need to enter the network id"
-                networkValidationError = qsTrId("you-need-to-enter-the-network-id")
+                networkValidationError = qsTr("You need to enter the network id")
             } else if (isNaN(networkInput.text)){
-                //% "Should be a number"
-                networkValidationError = qsTrId("should-be-a-number");
+                networkValidationError = qsTr("Should be a number");
             } else if (parseInt(networkInput.text, 10) <= 4){
-                //% "Invalid network id"
-                networkValidationError = qsTrId("invalid-network-id");
+                networkValidationError = qsTr("Invalid network id");
             }
         }
         return !nameValidationError && !rpcValidationError && !networkValidationError
@@ -70,8 +63,7 @@ StatusModal {
 
     rightButtons: [
         StatusButton {
-            //% "Save"
-            text: qsTrId("save")
+            text: qsTr("Save")
             enabled: nameInput.text !== "" && rpcInput.text !== ""
             onClicked: {
                 if (!addNetworkPopup.validate()) {
@@ -101,19 +93,15 @@ StatusModal {
         }
         Input {
             id: nameInput
-            //% "Name"
-            label: qsTrId("name")
-            //% "Specify a name"
-            placeholderText: qsTrId("specify-name")
+            label: qsTr("Name")
+            placeholderText: qsTr("Specify a name")
             validationError: addNetworkPopup.nameValidationError
         }
 
         Input {
             id: rpcInput
-            //% "RPC URL"
-            label: qsTrId("rpc-url")
-            //% "Specify a RPC URL"
-            placeholderText: qsTrId("specify-rpc-url")
+            label: qsTr("RPC URL")
+            placeholderText: qsTr("Specify a RPC URL")
             validationError: addNetworkPopup.rpcValidationError
             anchors.top: nameInput.bottom
             anchors.topMargin: Style.current.padding
@@ -121,8 +109,7 @@ StatusModal {
 
         StatusSectionHeadline {
             id: networkChainHeadline
-            //% "Network chain"
-            text: qsTrId("network-chain")
+            text: qsTr("Network chain")
             anchors.top: rpcInput.bottom
             anchors.topMargin: Style.current.padding
         }
@@ -142,9 +129,8 @@ StatusModal {
 
             RadioButtonSelector {
                 id: mainnetRadioBtn
-                //% "Main network"
                 objectName: "main"
-                title: qsTrId("mainnet-network")
+                title: qsTr("Main network")
                 buttonGroup: networkChainGroup
                 checked: true
                 onCheckedChanged: {
@@ -156,8 +142,7 @@ StatusModal {
             }
 
             RadioButtonSelector {
-                //% "Ropsten test network"
-                title: qsTrId("ropsten-network")
+                title: qsTr("Ropsten test network")
                 buttonGroup: networkChainGroup
                 onCheckedChanged: {
                     if (checked) {
@@ -168,8 +153,7 @@ StatusModal {
             }
 
             RadioButtonSelector {
-                //% "Rinkeby test network"
-                title: qsTrId("rinkeby-network")
+                title: qsTr("Rinkeby test network")
                 buttonGroup: networkChainGroup
                 onCheckedChanged: {
                     if (checked) {
@@ -181,9 +165,8 @@ StatusModal {
 
             RadioButtonSelector {
                 id: customRadioBtn
-                //% "Custom"
                 objectName: "custom"
-                title: qsTrId("custom")
+                title: qsTr("Custom")
                 buttonGroup: networkChainGroup
                 onCheckedChanged: {
                     if (checked) {
@@ -199,10 +182,8 @@ StatusModal {
             anchors.top: radioButtonsColumn.bottom
             anchors.topMargin: Style.current.halfPadding
             visible: false
-            //% "Network Id"
-            label: qsTrId("network-id")
-            //% "Specify the network id"
-            placeholderText: qsTrId("specify-the-network-id")
+            label: qsTr("Network Id")
+            placeholderText: qsTr("Specify the network id")
             validationError: addNetworkPopup.networkValidationError
         }
     }

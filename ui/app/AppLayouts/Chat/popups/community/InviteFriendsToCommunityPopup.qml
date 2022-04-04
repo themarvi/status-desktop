@@ -33,8 +33,7 @@ StatusModal {
         contentItem.contactListSearch.noContactsRect.visible = !contentItem.contactListSearch.existingContacts.visible;
     }
 
-    //% "Invite friends"
-    header.title: qsTrId("invite-friends")
+    header.title: qsTr("Invite friends")
 
     contentItem: CommunityProfilePopupInviteFriendsPanel {
         id: contactFieldAndList
@@ -59,8 +58,7 @@ StatusModal {
     rightButtons: [
         StatusButton {
             enabled: popup.contentItem.contactListSearch.pubKeys.length > 0
-            //% "Invite"
-            text: qsTrId("invite-button")
+            text: qsTr("Invite")
             onClicked : {
                 popup.contentItem.sendInvites(popup.contentItem.contactListSearch.pubKeys)
             }

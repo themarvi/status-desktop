@@ -50,7 +50,7 @@ OnboardingBasePage {
 
         StyledText {
             id: txtTitle
-            text: qsTrId("intro-wizard-title1")
+            text: qsTr("intro-wizard-title1")
             anchors.topMargin: Style.current.padding
             font.bold: true
             anchors.horizontalCenter: parent.horizontalCenter
@@ -62,7 +62,7 @@ OnboardingBasePage {
         StyledText {
             id: txtDesc
             color: Style.current.secondaryText
-            text: qsTrId("a-set-of-keys-controls-your-account.-your-keys-live-on-your-device,-so-only-you-can-use-them.")
+            text: qsTr("a-set-of-keys-controls-your-account.-your-keys-live-on-your-device,-so-only-you-can-use-them.")
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             anchors.right: parent.right

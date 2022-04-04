@@ -27,8 +27,7 @@ SettingsContentBase {
         StatusListItem {
             id: backupSeedPhrase
             Layout.fillWidth: true
-            //% "Backup Seed Phrase"
-            title: qsTrId("backup-seed-phrase")
+            title: qsTr("Backup Seed Phrase")
             enabled: !root.privacyStore.mnemonicBackedUp
             implicitHeight: 52
             components: [

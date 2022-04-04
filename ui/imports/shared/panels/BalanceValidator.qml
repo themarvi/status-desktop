@@ -47,8 +47,7 @@ Column {
     }
     StyledText {
         id: txtValidationError
-        //% "Insufficient balance"
-        text: qsTrId("insufficient-balance")
+        text: qsTr("Insufficient balance")
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 13

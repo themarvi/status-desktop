@@ -32,10 +32,8 @@ RadioButtonSelector {
         id: confirmDialogComponent
         ConfirmationDialog {
             id: confirmDialog
-            //% "Warning!"
-            header.title: qsTrId("close-app-title")
-            //% "The account will be logged out. When you unlock it again, the selected network will be used"
-            confirmationText: qsTrId("logout-app-content")
+            header.title: qsTr("Warning!")
+            confirmationText: qsTr("The account will be logged out. When you unlock it again, the selected network will be used")
             onConfirmButtonClicked: {
                 root.advancedStore.setNetworkName(root.newNetwork)
             }

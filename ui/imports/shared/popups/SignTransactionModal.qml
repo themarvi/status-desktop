@@ -16,8 +16,7 @@ import AppLayouts.Wallet 1.0
 
 StatusModal {
     id: root
-    //% "Send"
-    header.title: qsTrId("command-button-send")
+    header.title: qsTr("Send")
     height: 540
 
     property var store
@@ -66,16 +65,14 @@ StatusModal {
 
         // TODO remove this else once the thread and connection are back
 //        if(!success){
-//            //% "Invalid transaction parameters"
-//            sendingError.text = qsTrId("invalid-transaction-parameters")
+//            sendingError.text = qsTr("Invalid transaction parameters")
 //            sendingError.open()
 //        }
     }
 
     property MessageDialog sendingError: MessageDialog {
         id: sendingError
-        //% "Error sending the transaction"
-        title: qsTrId("error-sending-the-transaction")
+        title: qsTr("Error sending the transaction")
         icon: StandardIcon.Critical
         standardButtons: StandardButton.Ok
     }
@@ -105,13 +102,11 @@ StatusModal {
 //                    if(trxData.startsWith("0x095ea7b3")){
 //                        const approveData = JSON.parse(root.store.walletModelInst.tokensView.decodeTokenApproval(selectedRecipient.address, trxData))
 //                        if(approveData.symbol)
-//                            //% "Authorize %1 %2"
-//                            return qsTrId("authorize--1--2").arg(approveData.amount).arg(approveData.symbol)
+//                            return qsTr("Authorize %1 %2").arg(approveData.amount).arg(approveData.symbol)
 //                    }
                     return qsTr("Send");
                 }
-                //% "Continue"
-                footerText: qsTrId("continue")
+                footerText: qsTr("Continue")
                 showNextBtn: false
                 onBackClicked: function() {
                     if(validate()) {
@@ -124,8 +119,7 @@ StatusModal {
                     currency: root.store.currentCurrency
                     width: stack.width
                     selectedAccount: root.selectedAccount
-                    //% "Choose account"
-                    label: qsTrId("choose-account")
+                    label: qsTr("Choose account")
                     showBalanceForAssetSymbol: root.selectedAsset.symbol
                     minRequiredAssetBalance: parseFloat(root.selectedAmount)
                     onSelectedAccountChanged: if (isValid) { gasSelector.estimateGas() }
@@ -142,8 +136,7 @@ StatusModal {
             }
             TransactionFormGroup {
                 id: groupSelectGas
-                //% "Network fee"
-                headerText: qsTrId("network-fee")
+                headerText: qsTr("Network fee")
                 footerText: qsTr("Continue")
                 showNextBtn: false
                 onBackClicked: function() {
@@ -198,10 +191,8 @@ StatusModal {
 
             TransactionFormGroup {
                 id: groupPreview
-                //% "Transaction preview"
-                headerText: qsTrId("transaction-preview")
-                //% "Sign with password"
-                footerText: qsTrId("sign-with-password")
+                headerText: qsTr("Transaction preview")
+                footerText: qsTr("Sign with password")
                 showBackBtn: false
                 onNextClicked: function() {
                     stack.push(groupSignTx, StackView.Immediate)
@@ -250,10 +241,8 @@ StatusModal {
             }
             TransactionFormGroup {
                 id: groupSignTx
-                //% "Sign with password"
-                headerText: qsTrId("sign-with-password")
-                //% "Send %1 %2"
-                footerText: qsTrId("send--1--2").arg(root.selectedAmount).arg(!!root.selectedAsset ? root.selectedAsset.symbol : "")
+                headerText: qsTr("Sign with password")
+                footerText: qsTr("Send %1 %2").arg(root.selectedAmount).arg(!!root.selectedAsset ? root.selectedAsset.symbol : "")
                 onBackClicked: function() {
                     stack.pop()
                 }
@@ -288,8 +277,7 @@ StatusModal {
     rightButtons: [
         StatusButton {
             id: btnNext
-            //% "Next"
-            text: qsTrId("next")
+            text: qsTr("Next")
             enabled: stack.currentGroup.isValid && !stack.currentGroup.isPending
             visible: stack.currentGroup.showNextBtn
             onClicked: {
@@ -352,8 +340,7 @@ StatusModal {
 
                 if (!response.success) {
                     if (Utils.isInvalidPasswordMessage(transactionId)){
-                        //% "Wrong password"
-                        transactionSigner.validationError = qsTrId("wrong-password")
+                        transactionSigner.validationError = qsTr("Wrong password")
                         return
                     }
                     sendingError.text = transactionId
@@ -363,8 +350,7 @@ StatusModal {
                 if(isARequest)
                     root.store.acceptRequestTransaction(transactionId, msgId, root.store.getPubkey() + transactionId.substr(2))
 
-                //% "Transaction pending..."
-                Global.toastMessage.title = qsTrId("ens-transaction-pending")
+                Global.toastMessage.title = qsTr("Transaction pending...")
                 Global.toastMessage.source = Style.svg("loading")
                 Global.toastMessage.iconColor = Style.current.primary
                 Global.toastMessage.iconRotates = true

@@ -303,8 +303,7 @@ Item {
                     }
 
                     StatusMenuItem {
-                        //% "Invite People"
-                        text: qsTrId("invite-people")
+                        text: qsTr("Invite People")
                         icon.name: "share-ios"
                         enabled: model.canManageUsers
                         onTriggered: Global.openPopup(inviteFriendsToCommunityPopup, {
@@ -315,8 +314,7 @@ Item {
                     }
 
                     StatusMenuItem {
-                        //% "View Community"
-                        text: qsTrId("view-community")
+                        text: qsTr("View Community")
                         icon.name: "group-chat"
                         onTriggered: Global.openPopup(communityProfilePopup, {
                             store: appMain.rootStore,
@@ -327,8 +325,7 @@ Item {
 
                     StatusMenuItem {
                         enabled: model.amISectionAdmin
-                        //% "Edit Community"
-                        text: qsTrId("edit-community")
+                        text: qsTr("Edit Community")
                         icon.name: "edit"
                         onTriggered: Global.openPopup(editCommunityPopup, {
                             store: appMain.rootStore,
@@ -340,8 +337,7 @@ Item {
                     StatusMenuSeparator {}
 
                     StatusMenuItem {
-                        //% "Leave Community"
-                        text: qsTrId("leave-community")
+                        text: qsTr("Leave Community")
                         icon.name: "arrow-right"
                         icon.width: 14
                         iconRotation: 180

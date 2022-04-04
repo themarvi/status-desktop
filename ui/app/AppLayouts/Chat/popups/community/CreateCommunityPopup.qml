@@ -125,8 +125,7 @@ StatusModal {
 
             StatusBaseText {
                 id: thumbnailText
-                //% "Thumbnail image"
-                text: qsTrId("thumbnail-image")
+                text: qsTr("Thumbnail image")
                 font.pixelSize: 15
                 color: Theme.palette.directColor1
                 anchors.left: parent.left
@@ -149,12 +148,10 @@ StatusModal {
 
                     FileDialog {
                         id: imageDialog
-                        //% "Please choose an image"
-                        title: qsTrId("please-choose-an-image")
+                        title: qsTr("Please choose an image")
                         folder: shortcuts.pictures
                         nameFilters: [
-                            //% "Image files (*.jpg *.jpeg *.png)"
-                            qsTrId("image-files----jpg---jpeg---png-")
+                            qsTr("Image files (*.jpg *.jpeg *.png)")
                         ]
                         onAccepted: {
                             addImageButton.selectedImage = imageDialog.fileUrls[0]
@@ -206,8 +203,7 @@ StatusModal {
 
                         StatusBaseText {
                             id: uploadText
-                            //% "Upload"
-                            text: qsTrId("upload")
+                            text: qsTr("Upload")
                             anchors.top: imageImg.bottom
                             anchors.topMargin: 5
                             font.pixelSize: 15
@@ -350,10 +346,8 @@ StatusModal {
             id: btnCreateEdit
             enabled: isFormValid()
             text: isEdit ?
-                //% "Save"
-                qsTrId("Save") :
-                //% "Create"
-                qsTrId("create")
+                qsTr("Save") :
+                qsTr("Create")
             onClicked: {
                 if (!isFormValid()) {
                     popup.contentItem.scrollBackUp()
@@ -403,8 +397,7 @@ StatusModal {
 
     MessageDialog {
         id: creatingError
-        //% "Error creating the community"
-        title: qsTrId("error-creating-the-community")
+        title: qsTr("Error creating the community")
         icon: StandardIcon.Critical
         standardButtons: StandardButton.Ok
     }

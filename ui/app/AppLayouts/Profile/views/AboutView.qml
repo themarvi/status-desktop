@@ -25,10 +25,8 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "App version"
-            name: qsTrId("version")
-            //% "Version: %1"
-            description: qsTrId("version---1").arg(root.store.getCurrentVersion())
+            name: qsTr("App version")
+            description: qsTr("Version: %1").arg(root.store.getCurrentVersion())
             tooltipUnder: true
             store: root.globalStore
         }
@@ -38,8 +36,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Node version "
-            name: qsTrId("node-version-")
+            name: qsTr("Node version ")
             description: root.store.nodeVersion()
             store: root.globalStore
         }
@@ -48,8 +45,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             leftPadding: Style.current.padding
             rightPadding: Style.current.padding
-            //% "Check for updates"
-            text: qsTrId("check-for-updates")
+            text: qsTr("Check for updates")
             loading: root.store.fetchingUpdate
             onClicked: root.store.checkForUpdates()
             icon.width: 0
@@ -59,8 +55,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Privacy Policy"
-            text: qsTrId("privacy-policy")
+            text: qsTr("Privacy Policy")
             font.pixelSize: 15
             color: Theme.palette.primaryColor1
 

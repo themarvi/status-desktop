@@ -54,8 +54,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 16
         anchors.horizontalCenter: parent.horizontalCenter
-        //% "Chat"
-        text: qsTrId("chat")
+        text: qsTr("Chat")
     }
 
     RowLayout {
@@ -75,8 +74,7 @@ Item {
             Layout.leftMargin: 17
             implicitHeight: 36
             topPadding: 9
-            //% "Search"
-            placeholderText: qsTrId("search")
+            placeholderText: qsTr("Search")
             icon.name: "search"
             MouseArea {
                 anchors.fill: parent
@@ -95,15 +93,13 @@ Item {
                  id: publicChatCommunityContextMenu
                  closePolicy: Popup.CloseOnReleaseOutsideParent | Popup.CloseOnEscape
                  StatusMenuItem {
-                     //% "Join public chat"
-                     text: qsTrId("new-public-group-chat")
+                     text: qsTr("Join public chat")
                      icon.name: "public-chat"
                      onTriggered: Global.openPopup(publicChatPopupComponent)
                  }
 
                  StatusMenuItem {
-                     //% "Communities"
-                     text: qsTrId("communities")
+                     text: qsTr("Communities")
                      icon.name: "communities"
                      onTriggered: Global.openPopup(communitiesPopupComponent)
                      enabled: localAccountSensitiveSettings.communitiesEnabled
@@ -145,8 +141,7 @@ Item {
         visible: nbRequests > 0
         height: visible ? implicitHeight : 0
 
-        //% "Contact requests"
-        title: qsTrId("contact-requests")
+        title: qsTr("Contact requests")
         requestsCount: nbRequests
 
         sensor.onClicked: Global.openPopup(contactRequestsPopup)
@@ -379,16 +374,14 @@ Item {
 
             if (state === Constants.communityImported)
             {
-                //% "Community imported"
-                Global.toastMessage.title = qsTrId("community-imported")
+                Global.toastMessage.title = qsTr("Community imported")
                 Global.toastMessage.source = ""
                 Global.toastMessage.iconRotates = false
                 Global.toastMessage.dissapearInMs = 4000
             }
             else if (state === Constants.communityImportingInProgress)
             {
-                //% "Importing community is in progress"
-                Global.toastMessage.title = qsTrId("importing-community-is-in-progress")
+                Global.toastMessage.title = qsTr("Importing community is in progress")
                 Global.toastMessage.source = Style.svg("loading")
                 Global.toastMessage.iconRotates = true
                 Global.toastMessage.dissapearInMs = -1

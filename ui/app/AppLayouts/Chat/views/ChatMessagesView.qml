@@ -312,8 +312,7 @@ Item {
     MessageDialog {
         id: sendingMsgFailedPopup
         standardButtons: StandardButton.Ok
-        //% "Failed to send message."
-        text: qsTrId("failed-to-send-message-")
+        text: qsTr("Failed to send message.")
         icon: StandardIcon.Critical
     }
 }

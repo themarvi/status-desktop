@@ -57,8 +57,7 @@ Rectangle {
 
     property int chatType
 
-    //% "Type a message."
-    property string chatInputPlaceholder: qsTrId("type-a-message-")
+    property string chatInputPlaceholder: qsTr("Type a message.")
 
     property alias textInput: messageInputField
     property bool isStatusUpdateInput: chatType === Constants.chatType.profile
@@ -642,13 +641,11 @@ Rectangle {
 
     FileDialog {
         id: imageDialog
-        //% "Please choose an image"
-        title: qsTrId("please-choose-an-image")
+        title: qsTr("Please choose an image")
         folder: shortcuts.pictures
         selectMultiple: true
         nameFilters: [
-            //% "Image files (%1)"
-            qsTrId("image-files---1-").arg(Constants.acceptedDragNDropImageExtensions.map(img => "*" + img).join(" "))
+            qsTr("Image files (%1)").arg(Constants.acceptedDragNDropImageExtensions.map(img => "*" + img).join(" "))
         ]
         onAccepted: {
             imageBtn.highlighted = false
@@ -667,11 +664,9 @@ Rectangle {
 
     MessageDialog {
         id: messageTooLongDialog
-        //% "Your message is too long."
-        title: qsTrId("your-message-is-too-long.")
+        title: qsTr("Your message is too long.")
         icon: StandardIcon.Critical
-        //% "Please make your message shorter. We have set the limit to 2000 characters to be courteous of others."
-        text: qsTrId("please-make-your-message-shorter.-we-have-set-the-limit-to-2000-characters-to-be-courteous-of-others.")
+        text: qsTr("Please make your message shorter. We have set the limit to 2000 characters to be courteous of others.")
         standardButtons: StandardButton.Ok
     }
 
@@ -1060,8 +1055,7 @@ Rectangle {
                     StatusChatInputTextFormationAction {
                         wrapper: "**"
                         icon.name: "bold"
-                        //% "Bold"
-                        text: qsTrId("bold")
+                        text: qsTr("Bold")
                         selectedTextWithFormationChars: RootStore.getSelectedTextWithFormationChars(messageInputField)
                         onActionTriggered: checked ?
                                          unwrapSelection(wrapper, RootStore.getSelectedTextWithFormationChars(messageInputField)) :
@@ -1070,8 +1064,7 @@ Rectangle {
                     StatusChatInputTextFormationAction {
                         wrapper: "*"
                         icon.name: "italic"
-                        //% "Italic"
-                        text: qsTrId("italic")
+                        text: qsTr("Italic")
                         selectedTextWithFormationChars: RootStore.getSelectedTextWithFormationChars(messageInputField)
                         checked: (surroundedBy("*") && !surroundedBy("**")) || surroundedBy("***")
                         onActionTriggered: checked ?
@@ -1081,8 +1074,7 @@ Rectangle {
                     StatusChatInputTextFormationAction {
                         wrapper: "~~"
                         icon.name: "strikethrough"
-                        //% "Strikethrough"
-                        text: qsTrId("strikethrough")
+                        text: qsTr("Strikethrough")
                         selectedTextWithFormationChars: RootStore.getSelectedTextWithFormationChars(messageInputField)
                         onActionTriggered: checked ?
                                          unwrapSelection(wrapper, RootStore.getSelectedTextWithFormationChars(messageInputField)) :
@@ -1091,8 +1083,7 @@ Rectangle {
                     StatusChatInputTextFormationAction {
                         wrapper: "`"
                         icon.name: "code"
-                        //% "Code"
-                        text: qsTrId("code")
+                        text: qsTr("Code")
                         selectedTextWithFormationChars: RootStore.getSelectedTextWithFormationChars(messageInputField)
                         onActionTriggered: checked ?
                                          unwrapSelection(wrapper, RootStore.getSelectedTextWithFormationChars(messageInputField)) :

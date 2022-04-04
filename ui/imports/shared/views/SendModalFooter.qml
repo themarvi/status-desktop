@@ -12,7 +12,6 @@ import StatusQ.Core.Theme 0.1
 Rectangle {
     id: footer
 
-    //% "Unknown"
     property string estimatedTime: qsTr("Unknown")
     property string maxFiatFees: ""
     property bool currentGroupPending: true
@@ -49,7 +48,6 @@ Rectangle {
             StatusBaseText {
                 font.pixelSize: 15
                 color: Theme.palette.directColor5
-                //% "Estimated Time:"
                 text: qsTr("Estimated Time:")
                 wrapMode: Text.WordWrap
             }
@@ -74,7 +72,6 @@ Rectangle {
                 StatusBaseText {
                     font.pixelSize: 15
                     color: Theme.palette.directColor5
-                    //% "Max Fees:"
                     text: qsTr("Max Fees:")
                     wrapMode: Text.WordWrap
                 }
@@ -88,8 +85,7 @@ Rectangle {
 
             StatusFlatButton {
                 icon.name: isLastGroup ? "" : "password"
-                //% "Send"
-                text: qsTrId("command-button-send")
+                text: qsTr("Send")
                 size: StatusBaseButton.Size.Large
                 normalColor: Theme.palette.primaryColor2
                 disaledColor: Theme.palette.baseColor2

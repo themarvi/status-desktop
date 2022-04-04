@@ -26,15 +26,12 @@ Item {
         id: modeSelectionTabBar
         anchors.horizontalCenter: parent.horizontalCenter
         StatusSwitchTabButton {
-            //% "Simple"
             text: qsTr("Simple")
         }
         StatusSwitchTabButton {
-            //% "Advanced"
             text: qsTr("Advanced")
         }
         StatusSwitchTabButton {
-            //% "Custom"
             text: qsTr("Custom")
         }
     }
@@ -77,7 +74,6 @@ Item {
                                 font.pixelSize: 15
                                 font.weight: Font.Medium
                                 color: Theme.palette.directColor1
-                                //% "Networks"
                                 text: qsTr("Networks")
                                 wrapMode: Text.WordWrap
                             }
@@ -85,7 +81,6 @@ Item {
                                 Layout.maximumWidth: 410
                                 font.pixelSize: 15
                                 color: Theme.palette.baseColor1
-                                //% "The networks where the receipient will receive tokens. Amounts calculated automatically for the lowest cost."
                                 text: qsTr("The networks where the receipient will receive tokens. Amounts calculated automatically for the lowest cost.")
                                 wrapMode: Text.WordWrap
                             }
@@ -136,7 +131,6 @@ Item {
                             font.pixelSize: 15
                             font.weight: Font.Medium
                             color: Theme.palette.directColor1
-                            //% "Fees"
                             text: qsTr("Fees")
                             wrapMode: Text.WordWrap
                         }
@@ -165,7 +159,6 @@ Item {
                                             StatusBaseText {
                                                 font.pixelSize: 15
                                                 color: Theme.palette.baseColor1
-                                                //% "Slow"
                                                 text: qsTr("Slow")
                                                 wrapMode: Text.WordWrap
                                             }

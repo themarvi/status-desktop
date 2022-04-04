@@ -20,8 +20,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Sound volume"
-            text: qsTrId("sound-volume") + " " + volume.value.toPrecision(1)
+            text: qsTr("Sound volume") + " " + volume.value.toPrecision(1)
             font.pixelSize: 15
             color: Theme.palette.directColor1
         }

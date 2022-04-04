@@ -30,9 +30,7 @@ Rectangle {
     QtObject {
         id: _internal
         property string maxFiatBalance: Utils.stripTrailingZeros(parseFloat(assetSelector.selectedAsset.balance).toFixed(4))
-        //% "Please enter a valid amount"
         property string sendAmountInputErrorMessage: qsTr("Please enter a valid amount")
-        //% "Max:"
         property string maxString: qsTr("Max: ")
     }
 
@@ -95,14 +93,12 @@ Rectangle {
             RowLayout {
                 spacing: 16
                 StatusBaseText {
-                    //% "Send"
-                    text: qsTrId("command-button-send")
+                    text: qsTr("Send")
                     font.pixelSize: 15
                     color: Theme.palette.directColor1
                     Layout.alignment: Qt.AlignVCenter
                 }
                 StatusListItemTag {
-                    //% "No balances active"
                     title: assetSelector.selectedAsset.balance > 0 ? _internal.maxString + (assetSelector.selectedAsset ? _internal.maxFiatBalance : "0.00") : qsTr("No balances active")
                     closeButtonVisible: false
                     titleText.font.pixelSize: 12
@@ -203,7 +199,6 @@ Rectangle {
             //% To
             label: qsTr("To")
             Layout.fillWidth: true
-            //% "Enter an ENS name or address"
             input.placeholderText: qsTr("Enter an ENS name or address")
             input.anchors.leftMargin: 0
             input.anchors.rightMargin: 0

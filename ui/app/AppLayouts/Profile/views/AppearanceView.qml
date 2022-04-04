@@ -59,8 +59,7 @@ SettingsContentBase {
 
         StatusSectionHeadline {
             id: sectionHeadlinePreview
-            //% "Preview"
-            text: qsTrId("preview")
+            text: qsTr("Preview")
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
@@ -89,8 +88,7 @@ SettingsContentBase {
                 messageTimestamp:Date.now()
                 senderDisplayName: "@vitalik"
                 senderIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAb0lEQVR4Ae3UQQqAIBRF0Wj9ba9Bq6l5JBQqfn/ngDMH3YS3AAB/tO3H+XRG3b9bR/+gVoREI2RapVXpfd5+X5oXERKNkHS+rk3tOpWkeREh0QiZVu91ql2zNC8iJBoh0yqtSqt1slpCghICANDPBc0ESPh0bHkHAAAAAElFTkSuQmCC"
-                //% "Blockchains will drop search costs, causing a kind of decomposition that allows you to have markets of entities that are horizontally segregated and vertically segregated."
-                message: qsTrId("blockchains-will-drop-search-costs--causing-a-kind-of-decomposition-that-allows-you-to-have-markets-of-entities-that-are-horizontally-segregated-and-vertically-segregated-")
+                message: qsTr("Blockchains will drop search costs, causing a kind of decomposition that allows you to have markets of entities that are horizontally segregated and vertically segregated.")
                 messageContentType: Constants.messageContentType.messageType
                 placeholderMessage: true
             }
@@ -98,8 +96,7 @@ SettingsContentBase {
 
         StatusSectionHeadline {
             id: sectionHeadlineFontSize
-            //% "Size"
-            text: qsTrId("size")
+            text: qsTr("Size")
             anchors.top: preview.bottom
             anchors.topMargin: Style.current.padding
             anchors.left: parent.left
@@ -112,8 +109,7 @@ SettingsContentBase {
             anchors.topMargin: Style.current.padding
             anchors.left: parent.left
             font.pixelSize: 15
-            //% "Change font size"
-            text: qsTrId("change-font-size")
+            text: qsTr("Change font size")
             color: Theme.palette.directColor1
         }
 
@@ -142,16 +138,14 @@ SettingsContentBase {
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "XS"
-                    text: qsTrId("xs")
+                    text: qsTr("XS")
                     Layout.preferredWidth: fontSizeSlider.width/6
                     color: Theme.palette.directColor1
                 }
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "S"
-                    text: qsTrId("s")
+                    text: qsTr("S")
                     Layout.preferredWidth: fontSizeSlider.width/6
                     Layout.leftMargin: 2
                     color: Theme.palette.directColor1
@@ -159,8 +153,7 @@ SettingsContentBase {
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "M"
-                    text: qsTrId("m")
+                    text: qsTr("M")
                     Layout.preferredWidth: fontSizeSlider.width/6
                     Layout.leftMargin: 2
                     color: Theme.palette.directColor1
@@ -168,8 +161,7 @@ SettingsContentBase {
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "L"
-                    text: qsTrId("l")
+                    text: qsTr("L")
                     Layout.preferredWidth: fontSizeSlider.width/6
                     Layout.leftMargin: 2
                     color: Theme.palette.directColor1
@@ -177,8 +169,7 @@ SettingsContentBase {
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "XL"
-                    text: qsTrId("xl")
+                    text: qsTr("XL")
                     Layout.preferredWidth: fontSizeSlider.width/6
                     Layout.leftMargin: 0
                     color: Theme.palette.directColor1
@@ -186,8 +177,7 @@ SettingsContentBase {
 
                 StatusBaseText {
                     font.pixelSize: 15
-                    //% "XXL"
-                    text: qsTrId("xxl")
+                    text: qsTr("XXL")
                     Layout.alignment: Qt.AlignRight
                     Layout.leftMargin: -Style.current.smallPadding
                     color: Theme.palette.directColor1
@@ -293,8 +283,7 @@ SettingsContentBase {
 
         StatusSectionHeadline {
             id: sectionHeadlineAppearance
-            //% "Appearance"
-            text: qsTrId("appearance")
+            text: qsTr("Appearance")
             // anchors.top: chatModeSection.bottom
             anchors.top: zoomSlider.bottom
             anchors.topMargin: Style.current.padding*3
@@ -315,8 +304,7 @@ SettingsContentBase {
                 height: 184
                 image.source: Style.png("appearance-light")
                 image.height: 128
-                //% "Light"
-                control.text: qsTrId("Light")
+                control.text: qsTr("Light")
                 control.checked: localAppSettings.theme === Universal.Light
                 onRadioCheckedChanged: {
                     if (checked) {
@@ -331,8 +319,7 @@ SettingsContentBase {
                 height: 184
                 image.source: Style.png("appearance-dark")
                 image.height: 128
-                //% "Dark"
-                control.text: qsTrId("dark")
+                control.text: qsTr("Dark")
                 control.checked: localAppSettings.theme === Universal.Dark
                 onRadioCheckedChanged: {
                     if (checked) {
@@ -347,8 +334,7 @@ SettingsContentBase {
                 height: 184
                 image.source: Style.png("appearance-system")
                 image.height: 128
-                //% "System"
-                control.text: qsTrId("system")
+                control.text: qsTr("System")
                 control.checked: localAppSettings.theme === Universal.System
                 onRadioCheckedChanged: {
                     if (checked) {

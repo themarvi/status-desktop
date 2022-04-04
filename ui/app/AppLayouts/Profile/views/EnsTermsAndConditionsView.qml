@@ -25,8 +25,7 @@ Item {
 
     StatusBaseText {
         id: sectionTitle
-        //% "ENS usernames"
-        text: qsTrId("ens-usernames")
+        text: qsTr("ENS usernames")
         anchors.left: parent.left
         anchors.leftMargin: 24
         anchors.top: parent.top
@@ -79,8 +78,7 @@ Item {
     // TODO: Replace with StatusModal
     ModalPopup {
         id: popup
-        //% "Terms of name registration"
-        title: qsTrId("ens-terms-header")
+        title: qsTr("Terms of name registration")
 
         ScrollView {
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -96,8 +94,7 @@ Item {
 
 
                 StatusBaseText {
-                    //% "Funds are deposited for 1 year. Your SNT will be locked, but not spent."
-                    text: qsTrId("ens-terms-point-1")
+                    text: qsTr("Funds are deposited for 1 year. Your SNT will be locked, but not spent.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -105,8 +102,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "After 1 year, you can release the name and get your deposit back, or take no action to keep the name."
-                    text: qsTrId("ens-terms-point-2")
+                    text: qsTr("After 1 year, you can release the name and get your deposit back, or take no action to keep the name.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -114,8 +110,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "If terms of the contract change — e.g. Status makes contract upgrades — user has the right to release the username regardless of time held."
-                    text: qsTrId("ens-terms-point-3")
+                    text: qsTr("If terms of the contract change — e.g. Status makes contract upgrades — user has the right to release the username regardless of time held.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -123,8 +118,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "The contract controller cannot access your deposited funds. They can only be moved back to the address that sent them."
-                    text: qsTrId("ens-terms-point-4")
+                    text: qsTr("The contract controller cannot access your deposited funds. They can only be moved back to the address that sent them.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -132,8 +126,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "Your address(es) will be publicly associated with your ENS name."
-                    text: qsTrId("ens-terms-point-5")
+                    text: qsTr("Your address(es) will be publicly associated with your ENS name.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -141,8 +134,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "Usernames are created as subdomain nodes of stateofus.eth and are subject to the ENS smart contract terms."
-                    text: qsTrId("ens-terms-point-6")
+                    text: qsTr("Usernames are created as subdomain nodes of stateofus.eth and are subject to the ENS smart contract terms.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -150,8 +142,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "You authorize the contract to transfer SNT on your behalf. This can only occur when you approve a transaction to authorize the transfer."
-                    text: qsTrId("ens-terms-point-7")
+                    text: qsTr("You authorize the contract to transfer SNT on your behalf. This can only occur when you approve a transaction to authorize the transfer.")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -159,8 +150,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "These terms are guaranteed by the smart contract logic at addresses:"
-                    text: qsTrId("ens-terms-point-8")
+                    text: qsTr("These terms are guaranteed by the smart contract logic at addresses:")
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -169,8 +159,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "%1 (Status UsernameRegistrar)."
-                    text: qsTrId("-1--status-usernameregistrar--").arg(root.ensUsernamesStore.getEnsRegisteredAddress())
+                    text: qsTr("%1 (Status UsernameRegistrar).").arg(root.ensUsernamesStore.getEnsRegisteredAddress())
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -179,8 +168,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "<a href='%1%2'>Look up on Etherscan</a>"
-                    text: qsTrId("-a-href---1-2--look-up-on-etherscan--a-")
+                    text: qsTr("<a href='%1%2'>Look up on Etherscan</a>")
                     .arg(root.ensUsernamesStore.getEtherscanLink())
                     .arg(root.ensUsernamesStore.getEnsRegisteredAddress())
                     anchors.left: parent.left
@@ -195,8 +183,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "%1 (ENS Registry)."
-                    text: qsTrId("-1--ens-registry--").arg(root.ensUsernamesStore.getEnsRegistry())
+                    text: qsTr("%1 (ENS Registry).").arg(root.ensUsernamesStore.getEnsRegistry())
                     wrapMode: Text.WordWrap
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -205,8 +192,7 @@ Item {
                 }
 
                 StatusBaseText {
-                    //% "<a href='%1%2'>Look up on Etherscan</a>"
-                    text: qsTrId("-a-href---1-2--look-up-on-etherscan--a-")
+                    text: qsTr("<a href='%1%2'>Look up on Etherscan</a>")
                     .arg(root.ensUsernamesStore.getEtherscanLink())
                     .arg(root.ensUsernamesStore.getEnsRegistry())
                     anchors.left: parent.left
@@ -277,8 +263,7 @@ Item {
 
             StatusDescriptionListItem {
                 id: walletAddressLbl
-                //% "Wallet address"
-                title: qsTrId("wallet-address")
+                title: qsTr("Wallet address")
                 subTitle: root.ensUsernamesStore.getWalletDefaultAddress()
                 tooltip.text: qsTr("Copied to clipboard!")
                 icon.name: "copy"
@@ -292,8 +277,7 @@ Item {
 
             StatusDescriptionListItem {
                 id: keyLbl
-                //% "Key"
-                title: qsTrId("key")
+                title: qsTr("Key")
                 subTitle: {
                     let pubKey = root.ensUsernamesStore.pubkey;
                     return pubKey.substring(0, 20) + "..." + pubKey.substring(pubKey.length - 20);
@@ -317,8 +301,7 @@ Item {
             }
 
             StatusBaseText {
-                //% "Agree to <a href=\"#\">Terms of name registration.</a> I understand that my wallet address will be publicly connected to my username."
-                text: qsTrId("agree-to--a-href-------terms-of-name-registration---a--i-understand-that-my-wallet-address-will-be-publicly-connected-to-my-username-")
+                text: qsTr("Agree to <a href=\"#\">Terms of name registration.</a> I understand that my wallet address will be publicly connected to my username.")
                 anchors.left: termsAndConditionsCheckbox.right
                 anchors.right: parent.right
                 wrapMode: Text.WordWrap
@@ -339,8 +322,7 @@ Item {
         anchors.bottomMargin: Style.current.padding
         anchors.left: parent.left
         anchors.leftMargin: Style.current.padding
-        //% "Back"
-        text: qsTrId("back")
+        text: qsTr("Back")
         onClicked: backBtnClicked()
     }
 
@@ -360,8 +342,7 @@ Item {
 
         StatusBaseText {
             id: ensPriceLbl
-            //% "10 SNT"
-            text: qsTrId("ens-10-SNT")
+            text: qsTr("10 SNT")
             anchors.left: image1.right
             anchors.leftMargin: 5
             anchors.top: image1.top
@@ -370,8 +351,7 @@ Item {
         }
 
         StatusBaseText {
-            //% "Deposit"
-            text: qsTrId("ens-deposit")
+            text: qsTr("Deposit")
             anchors.left: image1.right
             anchors.leftMargin: 5
             anchors.topMargin: 5
@@ -388,10 +368,8 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: Style.current.padding
         text: parseFloat(root.ensUsernamesStore.getSntBalance()) < 10 ?
-          //% "Not enough SNT"
-          qsTrId("not-enough-snt") :
-          //% "Register"
-          qsTrId("ens-register")
+          qsTr("Not enough SNT") :
+          qsTr("Register")
         enabled: parseFloat(root.ensUsernamesStore.getSntBalance()) >= 10 && termsAndConditionsCheckbox.checked
         onClicked: transactionDialog.open()
     }

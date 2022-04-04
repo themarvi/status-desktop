@@ -31,8 +31,7 @@ StatusModal {
 
     signal afterAddAccount()
 
-    //% "Generate an account"
-    header.title: qsTrId("generate-a-new-account")
+    header.title: qsTr("Generate an account")
 
     QtObject {
         id: _internal
@@ -58,8 +57,7 @@ StatusModal {
         function showPasswordError(errMessage) {
             if (errMessage) {
                 if (Utils.isInvalidPasswordMessage(errMessage)) {
-                    //% "Wrong password"
-                    popup.passwordValidationError = qsTrId("wrong-password")
+                    popup.passwordValidationError = qsTr("Wrong password")
                 } else {
                     accountError.text = errMessage;
                     accountError.open();
@@ -74,11 +72,9 @@ StatusModal {
         }
 
         if (passwordInput.text === "") {
-            //% "You need to enter a password"
-            passwordValidationError = qsTrId("you-need-to-enter-a-password")
+            passwordValidationError = qsTr("You need to enter a password")
         } else if (passwordInput.text.length < 6) {
-            //% "Password needs to be 6 characters or more"
-            passwordValidationError = qsTrId("password-needs-to-be-6-characters-or-more")
+            passwordValidationError = qsTr("Password needs to be 6 characters or more")
         } else {
             passwordValidationError = ""
         }
@@ -131,10 +127,8 @@ StatusModal {
                     anchors.leftMargin: Style.current.padding
                     anchors.rightMargin: Style.current.padding
 
-                    //% "Enter your password…"
-                    placeholderText: qsTrId("enter-your-password…")
-                    //% "Password"
-                    label: qsTrId("password")
+                    placeholderText: qsTr("Enter your password…")
+                    label: qsTr("Password")
                     textField.echoMode: TextInput.Password
                     validationError: popup.passwordValidationError
                     inputLabel.font.pixelSize: 15
@@ -148,10 +142,8 @@ StatusModal {
 
             StatusInput {
                 id: accountNameInput
-                //% "Enter an account name..."
-                input.placeholderText: qsTrId("enter-an-account-name...")
-                //% "Account name"
-                label: qsTrId("account-name")
+                input.placeholderText: qsTr("Enter an account name...")
+                label: qsTr("Account name")
                 input.isIconSelectable: true
                 input.icon.color: colorSelectionGrid.selectedColor ? colorSelectionGrid.selectedColor : Theme.palette.directColor1
                 input.leftPadding: 16
@@ -163,8 +155,7 @@ StatusModal {
                 }
                 validators: [
                     StatusMinLengthValidator {
-                        //% "You need to enter an account name"
-                        errorMessage: qsTrId("you-need-to-enter-an-account-name")
+                        errorMessage: qsTr("You need to enter an account name")
                         minLength: 1
                     }
                 ]
@@ -219,10 +210,8 @@ StatusModal {
         StatusButton {
             id: nextButton
             text: loading ?
-                      //% "Loading..."
-                      qsTrId("loading") :
-                      //% "Add account"
-                      qsTrId("add-account")
+                      qsTr("Loading...") :
+                      qsTr("Add account")
 
             enabled: {
                 if (loading) {

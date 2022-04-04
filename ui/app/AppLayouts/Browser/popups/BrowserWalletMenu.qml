@@ -71,12 +71,9 @@ Popup {
             id: networkText
             text: {
                 switch (Web3ProviderStore.currentNetwork) {
-                //% "Mainnet"
-                case Constants.networkMainnet: return qsTrId("mainnet");
-                //% "Ropsten"
-                case Constants.networkRopsten: return qsTrId("ropsten");
-                //% "Unknown"
-                default: return qsTrId("active-unknown")
+                case Constants.networkMainnet: return qsTr("Mainnet");
+                case Constants.networkRopsten: return qsTr("Ropsten");
+                default: return qsTr("Unknown")
                 }
             }
             font.pixelSize: 15
@@ -87,8 +84,7 @@ Popup {
 
         StatusBaseText {
             id: disconectBtn
-            //% "Disconnect"
-            text: qsTrId("disconnect")
+            text: qsTr("Disconnect")
             font.pixelSize: 15
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
@@ -193,8 +189,7 @@ Popup {
 
             StatusTabButton {
                 id: assetBtn
-                //% "Assets"
-                btnText: qsTrId("wallet-assets")
+                btnText: qsTr("Assets")
                 anchors.top: parent.top
             }
             StatusTabButton {
@@ -202,8 +197,7 @@ Popup {
                 anchors.top: parent.top
                 anchors.left: assetBtn.right
                 anchors.leftMargin: 32
-                //% "History"
-                btnText: qsTrId("history")
+                btnText: qsTr("History")
             }
         }
 

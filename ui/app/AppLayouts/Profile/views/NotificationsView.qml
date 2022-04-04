@@ -51,8 +51,7 @@ SettingsContentBase {
             RadioButtonSelector {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "All messages"
-                title: qsTrId("all-messages")
+                title: qsTr("All messages")
                 buttonGroup: notificationSetting
                 checked: localAccountSensitiveSettings.notificationSetting === Constants.notifyAllMessages
                 onCheckedChanged: {
@@ -65,8 +64,7 @@ SettingsContentBase {
             RadioButtonSelector {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Just @mentions"
-                title: qsTrId("just--mentions")
+                title: qsTr("Just @mentions")
                 buttonGroup: notificationSetting
                 checked:  localAccountSensitiveSettings.notificationSetting === Constants.notifyJustMentions
                 onCheckedChanged: {
@@ -79,8 +77,7 @@ SettingsContentBase {
             RadioButtonSelector {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Nothing"
-                title: qsTrId("nothing")
+                title: qsTr("Nothing")
                 buttonGroup: notificationSetting
                 checked:  localAccountSensitiveSettings.notificationSetting === Constants.notifyNone
                 onCheckedChanged: {
@@ -101,8 +98,7 @@ SettingsContentBase {
 
         StatusSectionHeadline {
             id: sectionHeadlineSound
-            //% "Appearance"
-            text: qsTrId("appearance")
+            text: qsTr("Appearance")
             anchors.top: separator.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -122,8 +118,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Play a sound when receiving a notification"
-                text: qsTrId("play-a-sound-when-receiving-a-notification")
+                text: qsTr("Play a sound when receiving a notification")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.notificationSoundsEnabled
                 onClicked: {
@@ -135,8 +130,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Use your operating system's notifications"
-                text: qsTrId("use-your-operating-system-s-notifications")
+                text: qsTr("Use your operating system's notifications")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.useOSNotifications
                 onClicked: {
@@ -145,8 +139,7 @@ SettingsContentBase {
 
                 StatusBaseText {
                     id: detailText
-                    //% "Setting this to false will instead use Status' notification style as seen below"
-                    text: qsTrId("setting-this-to-false-will-instead-use-status--notification-style-as-seen-below")
+                    text: qsTr("Setting this to false will instead use Status' notification style as seen below")
                     color: Theme.palette.baseColor1
                     width: parent.width
                     font.pixelSize: 12
@@ -168,8 +161,7 @@ SettingsContentBase {
             anchors.right: parent.right
 
             StatusBaseText {
-                //% "Message preview"
-                text: qsTrId("message-preview")
+                text: qsTr("Message preview")
                 font.pixelSize: 15
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -184,11 +176,9 @@ SettingsContentBase {
                 spacing: 10
 
                 NotificationAppearancePreviewPanel {
-                    //% "Anonymous"
-                    name: qsTrId("anonymous")
+                    name: qsTr("Anonymous")
                     notificationTitle: "Status"
-                    //% "You have a new message"
-                    notificationMessage: qsTrId("you-have-a-new-message")
+                    notificationMessage: qsTr("You have a new message")
                     buttonGroup: messageSetting
                     checked: localAccountSensitiveSettings.notificationMessagePreviewSetting === Constants.notificationPreviewAnonymous
                     onRadioCheckedChanged: {
@@ -199,11 +189,9 @@ SettingsContentBase {
                 }
 
                 NotificationAppearancePreviewPanel {
-                    //% "Name only"
-                    name: qsTrId("name-only")
+                    name: qsTr("Name only")
                     notificationTitle: "Vitalik Buterin"
-                    //% "You have a new message"
-                    notificationMessage: qsTrId("you-have-a-new-message")
+                    notificationMessage: qsTr("You have a new message")
                     buttonGroup: messageSetting
                     checked: localAccountSensitiveSettings.notificationMessagePreviewSetting === Constants.notificationPreviewNameOnly
                     onRadioCheckedChanged: {
@@ -214,11 +202,9 @@ SettingsContentBase {
                 }
 
                 NotificationAppearancePreviewPanel {
-                    //% "Name & Message"
-                    name: qsTrId("name---message")
+                    name: qsTr("Name & Message")
                     notificationTitle: "Vitalik Buterin"
-                    //% "Hi there! Yes, no problem, let me know if I can help."
-                    notificationMessage: qsTrId("hi-there--yes--no-problem--let-me-know-if-i-can-help-")
+                    notificationMessage: qsTr("Hi there! Yes, no problem, let me know if I can help.")
                     buttonGroup: messageSetting
                     checked: localAccountSensitiveSettings.notificationMessagePreviewSetting === Constants.notificationPreviewNameAndMessage
                     onRadioCheckedChanged: {
@@ -230,8 +216,7 @@ SettingsContentBase {
             }
 
             StatusBaseText {
-                //% "No preview or Advanced? Go to Notification Center"
-                text: qsTrId("no-preview-or-advanced--go-to-notification-center")
+                text: qsTr("No preview or Advanced? Go to Notification Center")
                 font.pixelSize: 15
                 anchors.left: parent.left
                 anchors.leftMargin: Style.current.padding
@@ -250,8 +235,7 @@ SettingsContentBase {
 
         StatusSectionHeadline {
             id: sectionHeadlineContacts
-            //% "Contacts & Users"
-            text: qsTrId("contacts---users")
+            text: qsTr("Contacts & Users")
             anchors.top: separator2.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -271,8 +255,7 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Notify on new requests"
-                text: qsTrId("notify-on-new-requests")
+                text: qsTr("Notify on new requests")
                 isSwitch: true
                 switchChecked: localAccountSensitiveSettings.notifyOnNewRequests
                 onClicked: {
@@ -284,19 +267,15 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Muted users"
-                text: qsTrId("muted-users")
+                text: qsTr("Muted users")
                 currentValue: root.notificationsStore.mutedContactsModel.count > 0 ?
-                                  //% "None"
-                                  root.notificationsStore.mutedContactsModel.count : qsTrId("none")
+                                  root.notificationsStore.mutedContactsModel.count : qsTr("None")
                 isSwitch: false
                 onClicked: {
                     const mutedChatsModal = notificationsContainer.mutedChatsModalComponent.createObject(notificationsContainer)
                     mutedChatsModal.model = root.notificationsStore.notificationsModule.mutedContactsModel
-                    //% "Muted contacts"
-                    mutedChatsModal.title = qsTrId("muted-contacts");
-                    //% "Muted contacts will appear here"
-                    mutedChatsModal.noContentText = qsTrId("muted-contacts-will-appear-here");
+                    mutedChatsModal.title = qsTr("Muted contacts");
+                    mutedChatsModal.noContentText = qsTr("Muted contacts will appear here");
 
                     mutedChatsModal.unmuteChat.connect(function(chatId){
                         root.notificationsStore.unmuteChat(chatId)
@@ -310,19 +289,15 @@ SettingsContentBase {
             StatusSettingsLineButton {
                 anchors.leftMargin: 0
                 anchors.rightMargin: 0
-                //% "Muted chats"
-                text: qsTrId("muted-chats")
+                text: qsTr("Muted chats")
                 currentValue: root.notificationsStore.mutedChatsModel.count > 0 ?
-                                  //% "None"
-                                  root.notificationsStore.mutedChatsModel.count : qsTrId("none")
+                                  root.notificationsStore.mutedChatsModel.count : qsTr("None")
                 isSwitch: false
                 onClicked: {
                     const mutedChatsModal = notificationsContainer.mutedChatsModalComponent.createObject(notificationsContainer)
                     mutedChatsModal.model = root.notificationsStore.notificationsModule.mutedChatsModel
-                    //% "Muted chats"
-                    mutedChatsModal.title = qsTrId("muted-chats");
-                    //% "Muted chats will appear here"
-                    mutedChatsModal.noContentText = qsTrId("muted-chats-will-appear-here");
+                    mutedChatsModal.title = qsTr("Muted chats");
+                    mutedChatsModal.noContentText = qsTr("Muted chats will appear here");
 
                     mutedChatsModal.unmuteChat.connect(function(chatId){
                         root.notificationsStore.unmuteChat(chatId)
@@ -332,8 +307,7 @@ SettingsContentBase {
                 }
 
                 StatusBaseText {
-                    //% "You can limit what gets shown in notifications"
-                    text: qsTrId("you-can-limit-what-gets-shown-in-notifications")
+                    text: qsTr("You can limit what gets shown in notifications")
                     color: Theme.palette.baseColor1
                     width: parent.width
                     font.pixelSize: 12
@@ -368,8 +342,7 @@ SettingsContentBase {
                 anchors.right: parent.right
                 anchors.leftMargin: Style.current.padding
                 anchors.rightMargin: Style.current.padding
-                //% "Reset notification settings"
-                text: qsTrId("reset-notification-settings")
+                text: qsTr("Reset notification settings")
                 font.pixelSize: 15
                 color: Theme.palette.dangerColor1
                 MouseArea {
@@ -396,8 +369,7 @@ SettingsContentBase {
                 anchors.right: parent.right
                 anchors.leftMargin: Style.current.padding
                 anchors.rightMargin: Style.current.padding
-                //% "Restore default notification settings and unmute all chats and users"
-                text: qsTrId("restore-default-notification-settings-and-unmute-all-chats-and-users")
+                text: qsTr("Restore default notification settings and unmute all chats and users")
                 font.pixelSize: 15
                 color: Theme.palette.baseColor1
             }

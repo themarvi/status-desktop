@@ -13,7 +13,7 @@ StatusModal {
     id: popup
 
     anchors.centerIn: parent
-    header.title: qsTrId("before-you-get-started---")
+    header.title: qsTr("")
     hasCloseButton: false
     closePolicy: Popup.NoAutoClose
 
@@ -33,7 +33,7 @@ StatusModal {
                 id: acknowledge
                 objectName: "acknowledgeCheckBox"
                 width: parent.width
-                text: qsTrId("i-acknowledge-that-status-desktop-is-in-beta-and-by-using-it--i-take-the-full-responsibility-for-all-risks-concerning-my-data-and-funds-")
+                text: qsTr("")
             }
 
             StatusCheckBox {
@@ -51,7 +51,7 @@ StatusModal {
 
                     StatusBaseText {
                         objectName: "termsOfUseLink"
-                        text: qsTrId("terms-of-service")
+                        text: qsTr("")
                         color: Theme.palette.primaryColor1
 
                         MouseArea {
@@ -107,7 +107,7 @@ StatusModal {
             id: getStartedButton
             objectName: "getStartedStatusButton"
             enabled: acknowledge.checked && termsOfUse.checked
-            text: qsTrId("get-started")
+            text: qsTr("")
             onClicked: {
                 popup.close()
             }

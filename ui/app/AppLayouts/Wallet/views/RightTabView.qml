@@ -54,22 +54,19 @@ Item {
                 }
                 StatusTabButton {
                     id: assetBtn
-                    //% "Assets"
-                    btnText: qsTrId("wallet-assets")
+                    btnText: qsTr("Assets")
                 }
                 StatusTabButton {
                     id: collectiblesBtn
                     anchors.left: assetBtn.right
                     anchors.leftMargin: 32
-                    //% "Collectibles"
-                    btnText: qsTrId("wallet-collectibles")
+                    btnText: qsTr("Collectibles")
                 }
                 StatusTabButton {
                     id: historyBtn
                     anchors.left: collectiblesBtn.right
                     anchors.leftMargin: 32
-                    //% "History"
-                    btnText: qsTrId("history")
+                    btnText: qsTr("History")
                 }
             }
 

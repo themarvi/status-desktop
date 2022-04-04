@@ -19,8 +19,7 @@ StatusModal {
 
     property alias selectedAccount: accountSelector.selectedAccount
 
-    //% "Receive"
-    header.title: qsTrId("receive")
+    header.title: qsTr("Receive")
     contentHeight: layout.implicitHeight
     width: 556
 

@@ -33,8 +33,7 @@ ModalPopup {
         height: 50
         StyledText {
             id: lblTitle
-            //% "Back up seed phrase"
-            text: qsTrId("back-up-seed-phrase")
+            text: qsTr("Back up seed phrase")
             font.pixelSize: 17
             font.bold: true
             anchors.left: parent.left
@@ -42,8 +41,7 @@ ModalPopup {
         StyledText {
             anchors.top: lblTitle.bottom
             anchors.topMargin: Style.current.smallPadding
-            //% "Step %1 of 3"
-            text: qsTrId("step--1-of-3").arg(seedWord2Idx > -1 ? 3 : (seedWord1Idx > -1 ? 2 : 1))
+            text: qsTr("Step %1 of 3").arg(seedWord2Idx > -1 ? 3 : (seedWord1Idx > -1 ? 2 : 1))
             font.pixelSize: 14
             anchors.left: parent.left
         }
@@ -132,8 +130,7 @@ ModalPopup {
         anchors.right: parent.right
         StyledText {
             id: lblLoseSeed
-            //% "If you lose your seed phrase you lose your data and funds"
-            text: qsTrId("your-data-belongs-to-you")
+            text: qsTr("If you lose your seed phrase you lose your data and funds")
             wrapMode: Text.WordWrap
             font.pixelSize: 17
             font.bold: true
@@ -144,8 +141,7 @@ ModalPopup {
             anchors.top: lblLoseSeed.bottom
             anchors.topMargin: Style.current.smallPadding
             wrapMode: Text.WordWrap
-            //% "If you lose access, for example by losing your phone, you can only access your keys with your seed phrase. No one, but you has your seed phrase. Write it down. Keep it safe"
-            text: qsTrId("your-data-belongs-to-you-description")
+            text: qsTr("If you lose access, for example by losing your phone, you can only access your keys with your seed phrase. No one, but you has your seed phrase. Write it down. Keep it safe")
             anchors.left: parent.left
             anchors.right: parent.right
         }
@@ -167,12 +163,10 @@ ModalPopup {
 
         StyledText {
             id: txtChk
-            //% "Check your seed phrase"
-            text: qsTrId("check-your-recovery-phrase")
+            text: qsTr("Check your seed phrase")
         }
         StyledText {
-            //% "Word #%1"
-            text: qsTrId("word---1").arg((seedWord2Idx > -1 ? seedWord2Idx : seedWord1Idx) + 1)
+            text: qsTr("Word #%1").arg((seedWord2Idx > -1 ? seedWord2Idx : seedWord1Idx) + 1)
             anchors.left: txtChk.right
             anchors.leftMargin: 5
             color: Style.current.secondaryText
@@ -184,8 +178,7 @@ ModalPopup {
             anchors.topMargin: Style.current.padding
             anchors.left: txtChk.left
             anchors.right: parent.right
-            //% "Enter word"
-            placeholderText: qsTrId("enter-word")
+            placeholderText: qsTr("Enter word")
             text: ""
             validationError: popup.validationError
         }
@@ -196,8 +189,7 @@ ModalPopup {
             wrapMode: Text.WordWrap
             anchors.left: parent.left
             anchors.right: parent.right
-            //% "In order to check if you have backed up your seed phrase correctly, enter the word #%1 above"
-            text: qsTrId("in-order-to-check-if-you-have-backed-up-your-seed-phrase-correctly--enter-the-word---1-above").arg((seedWord2Idx > -1 ? seedWord2Idx : seedWord1Idx) + 1)
+            text: qsTr("In order to check if you have backed up your seed phrase correctly, enter the word #%1 above").arg((seedWord2Idx > -1 ? seedWord2Idx : seedWord1Idx) + 1)
             color: Style.current.secondaryText
         }
 
@@ -205,10 +197,8 @@ ModalPopup {
             id: removeSeedPhraseConfirmDialogComponent
             ConfirmationDialog {
                 id: confirmPopup
-                //% "Are you sure?"
-                header.title: qsTrId("are-you-sure?")
-                //% "You will not be able to see the whole seed phrase again"
-                confirmationText: qsTrId("are-you-sure-description")
+                header.title: qsTr("Are you sure?")
+                confirmationText: qsTr("You will not be able to see the whole seed phrase again")
                 onConfirmButtonClicked: {
                     popup.privacyStore.removeMnemonic()
                     popup.close();
@@ -224,9 +214,7 @@ ModalPopup {
     StyledText {
         id: confirmationsInfo
         visible: !showWarning && seedWord1Idx == -1
-        //% "With this 12 words you can always get your key back. Write it down. Keep it safe, offline, and separate from this device."
-        text: qsTrId(
-                  "with-this-12-words-you-can-always-get-your-key-back.-write-it-down.-keep-it-safe,-offline,-and-separate-from-this-device.")
+        text: qsTr("With this 12 words you can always get your key back. Write it down. Keep it safe, offline, and separate from this device.")
         font.pixelSize: 14
         font.weight: Font.Medium
         color: Style.current.secondaryText
@@ -244,10 +232,8 @@ ModalPopup {
     footer: StatusButton {
         id: confirmButton
         text: showWarning ?
-                //% "Okay, continue"
-                qsTrId("ok-continue") :
-                //% "Next"
-                qsTrId("next")
+                qsTr("Okay, continue") :
+                qsTr("Next")
         anchors.right: parent.right
         anchors.rightMargin: Style.current.smallPadding
         anchors.bottom: parent.bottom
@@ -264,8 +250,7 @@ ModalPopup {
                 } else {
                     if(seedWord2Idx == -1){
                         if(popup.privacyStore.getMnemonicWordAtIndex(seedWord1Idx) !== txtFieldWord.text){
-                            //% "Wrong word"
-                            validationError = qsTrId("wrong-word");
+                            validationError = qsTr("Wrong word");
                             return;
                         }
 
@@ -277,8 +262,7 @@ ModalPopup {
                         } while(seedWord2Idx == seedWord1Idx);
                     } else {
                         if(popup.privacyStore.getMnemonicWordAtIndex(seedWord2Idx) !== txtFieldWord.text){
-                            //% "Wrong word"
-                            validationError = qsTrId("wrong-word");
+                            validationError = qsTr("Wrong word");
                             return;
                         }
 

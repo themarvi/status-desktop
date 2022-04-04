@@ -24,13 +24,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Account"
-            name: qsTrId("account-title")
-            //% "A"
+            name: qsTr("Account")
             //: This letter corresponds to the section title above, so here it is "A" because the title above is "Account"
-            letter: qsTrId("a")
-            //% "Your Status account, accessed by the seed phrase that you create or import during onboarding. A Status account can hold more than one Ethereum address, in addition to the one created during onboarding. We refer to these as additional accounts within the wallet"
-            description: qsTrId("your-status-account--accessed-by-the-seed-phrase-that-you-create-or-import-during-onboarding--a-status-account-can-hold-more-than-one-ethereum-address--in-addition-to-the-one-created-during-onboarding--we-refer-to-these-as-additional-accounts-within-the-wallet")
+            letter: qsTr("A")
+            description: qsTr("Your Status account, accessed by the seed phrase that you create or import during onboarding. A Status account can hold more than one Ethereum address, in addition to the one created during onboarding. We refer to these as additional accounts within the wallet")
         }
 
         GlossaryEntry {
@@ -38,13 +35,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Chat Key"
-            name: qsTrId("chat-key-title")
-            //% "C"
+            name: qsTr("Chat Key")
             //: This letter corresponds to the section title above, so here it is "C" because the title above is "Chat Key"
-            letter: qsTrId("c")
-            //% "Messages on the Status chat protocol are sent and received using encryption keys. The public chat key is a string of characters you share with others so they can send you messages in Status."
-            description: qsTrId("chat-key-content")
+            letter: qsTr("C")
+            description: qsTr("Messages on the Status chat protocol are sent and received using encryption keys. The public chat key is a string of characters you share with others so they can send you messages in Status.")
         }
 
         GlossaryEntry {
@@ -52,10 +46,8 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Chat Name"
-            name: qsTrId("chat-name-title")
-            //% "Three random words, derived algorithmically from your chat key and used as your default alias in chat. Chat names are completely unique; no other user can have the same three words."
-            description: qsTrId("chat-name-content")
+            name: qsTr("Chat Name")
+            description: qsTr("Three random words, derived algorithmically from your chat key and used as your default alias in chat. Chat names are completely unique; no other user can have the same three words.")
         }
 
         GlossaryEntry {
@@ -63,13 +55,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "ENS Name"
-            name: qsTrId("ens-name-title")
-            //% "E"
+            name: qsTr("ENS Name")
             //: This letter corresponds to the section title above, so here it is "E" because the title above is "ENS Name"
-            letter: qsTrId("e")
-            //% "Custom alias for your chat key that you can register using the Ethereum Name Service. ENS names are decentralized usernames."
-            description: qsTrId("ens-name-content")
+            letter: qsTr("E")
+            description: qsTr("Custom alias for your chat key that you can register using the Ethereum Name Service. ENS names are decentralized usernames.")
         }
 
         GlossaryEntry {
@@ -77,13 +66,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Mailserver"
-            name: qsTrId("mailserver-title")
-            //% "M"
+            name: qsTr("Mailserver")
             //: This letter corresponds to the section title above, so here it is "M" because the title above is "Mailserver"
-            letter: qsTrId("m")
-            //% "A node in the Status network that routes and stores messages, for up to 30 days."
-            description: qsTrId("mailserver-content")
+            letter: qsTr("M")
+            description: qsTr("A node in the Status network that routes and stores messages, for up to 30 days.")
         }
 
         GlossaryEntry {
@@ -91,13 +77,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Peer"
-            name: qsTrId("peer-title")
-            //% "P"
+            name: qsTr("Peer")
             //: This letter corresponds to the section title above, so here it is "P" because the title above is "Peer"
-            letter: qsTrId("p")
-            //% "A device connected to the Status chat network. Each user can represent one or more peers, depending on their number of devices"
-            description: qsTrId("a-device-connected-to-the-status-chat-network--each-user-can-represent-one-or-more-peers--depending-on-their-number-of-devices")
+            letter: qsTr("P")
+            description: qsTr("A device connected to the Status chat network. Each user can represent one or more peers, depending on their number of devices")
         }
 
         GlossaryEntry {
@@ -105,13 +88,10 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Seed Phrase"
-            name: qsTrId("seed-phrase-title")
-            //% "S"
+            name: qsTr("Seed Phrase")
             //: This letter corresponds to the section title above, so here it is "S" because the title above is "Seed Phrase"
-            letter: qsTrId("s")
-            //% "A 64 character hex address based on the Ethereum standard and beginning with 0x. Public-facing, your wallet key is shared with others when you want to receive funds. Also referred to as an “Ethereum address” or “wallet address."
-            description: qsTrId("a-64-character-hex-address-based-on-the-ethereum-standard-and-beginning-with-0x--public-facing--your-wallet-key-is-shared-with-others-when-you-want-to-receive-funds--also-referred-to-as-an--ethereum-address--or--wallet-address-")
+            letter: qsTr("S")
+            description: qsTr("A 64 character hex address based on the Ethereum standard and beginning with 0x. Public-facing, your wallet key is shared with others when you want to receive funds. Also referred to as an “Ethereum address” or “wallet address.")
         }
 
         StatusBaseText {
@@ -119,8 +99,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Frequently asked questions"
-            text: qsTrId("faq")
+            text: qsTr("Frequently asked questions")
             font.pixelSize: 15
             color: Theme.palette.primaryColor1
 
@@ -144,8 +123,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Submit a bug"
-            text: qsTrId("submit-bug")
+            text: qsTr("Submit a bug")
             font.pixelSize: 15
             color: Theme.palette.primaryColor1
 
@@ -169,8 +147,7 @@ SettingsContentBase {
             Layout.fillWidth: true
             Layout.leftMargin: Style.current.padding
             Layout.rightMargin: Style.current.padding
-            //% "Request a feature"
-            text: qsTrId("request-feature")
+            text: qsTr("Request a feature")
             font.pixelSize: 15
             color: Theme.palette.primaryColor1
 

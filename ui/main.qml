@@ -33,8 +33,7 @@ StatusWindow {
     color: Style.current.background
     title: {
         // Set application settings
-        //% "Status Desktop"
-        Qt.application.name = qsTrId("status-desktop")
+        Qt.application.name = qsTr("Status Desktop")
         Qt.application.organization = "Status"
         Qt.application.domain = "status.im"
         return Qt.application.name
@@ -225,8 +224,7 @@ StatusWindow {
 
         menu: Menu {
             MenuItem {
-                //% "Open Status"
-                text: qsTrId("open-status")
+                text: qsTr("Open Status")
                 onTriggered: {
                     applicationWindow.makeStatusAppActive()
                 }
@@ -236,8 +234,7 @@ StatusWindow {
             }
 
             MenuItem {
-                //% "Quit"
-                text: qsTrId("quit")
+                text: qsTr("Quit")
                 onTriggered: Qt.quit()
             }
         }
