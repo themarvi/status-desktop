@@ -231,7 +231,7 @@ Item {
                 onDisplayGroupInfoPopup: {
                     chatSectionModule.prepareChatContentModuleForChatId(chatId)
                     let chatContentModule = chatSectionModule.getChatContentModule()
-                    Global.openPopup(groupInfoPopupComponent, {
+                    Global.openPopup(root.store.groupInfoPopupComponent, {
                                          chatContentModule: chatContentModule,
                                          chatDetails: chatContentModule.chatDetails
                                      })
@@ -305,6 +305,15 @@ Item {
             onClosed: {
                 destroy()
             }
+            onOpenCommunityDetail: {
+                Global.openPopup(communityDetailPopup);
+            }
+            onImportCommunityClicked: {
+                Global.openPopup(importCommunitiesPopupComponent);
+            }
+            onCreateCommunityClicked: {
+                Global.openPopup(createCommunitiesPopupComponent);
+            }
         }
     }
 
@@ -314,6 +323,7 @@ Item {
             anchors.centerIn: parent
             store: root.store
             onClosed: {
+                Global.openPopup(communitiesPopupComponent)
                 destroy()
             }
         }

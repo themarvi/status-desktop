@@ -1010,6 +1010,9 @@ Item {
 
     Component.onCompleted: {
         Global.appMain = this;
+        Global.pinnedMessagesPopup = pinnedMessagesPopupComponent;
+        Global.communityProfilePopup = communityProfilePopup;
+        Global.inviteFriendsToCommunityPopup = inviteFriendsToCommunityPopup;
         const whitelist = appMain.rootStore.messagingStore.getLinkPreviewWhitelist()
         try {
             const whiteListedSites = JSON.parse(whitelist)

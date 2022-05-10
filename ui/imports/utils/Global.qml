@@ -14,6 +14,10 @@ QtObject {
 
     property var mainModuleInst
     property var privacyModuleInst
+    property var toastMessage
+    property var pinnedMessagesPopup
+    property var communityProfilePopup
+    property var inviteFriendsToCommunityPopup
     property bool profilePopupOpened: false
     property string currentNetworkId: ""
     property int currentChainId: 0

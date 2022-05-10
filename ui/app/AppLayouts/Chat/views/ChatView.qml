@@ -156,7 +156,6 @@ StatusAppThreePanelLayout {
         GroupInfoPopup {
             chatSectionModule: root.rootStore.chatCommunitySectionModule
             store: root.rootStore
-            pinnedMessagesPopupComponent: root.pinnedMessagesListPopupComponent
         }
     }
 
@@ -197,5 +196,9 @@ StatusAppThreePanelLayout {
             Global.changeAppSectionBySectionType(Constants.appSection.chat)
             root.rootStore.chatCommunitySectionModule.createOneToOneChat(communityId, chatId, ensName)
         }
+    }
+
+    Component.onCompleted: {
+        rootStore.groupInfoPopupComponent = groupInfoPopupComponent;
     }
 }

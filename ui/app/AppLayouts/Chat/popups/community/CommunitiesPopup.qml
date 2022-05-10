@@ -18,6 +18,9 @@ StatusModal {
     property var communitiesList
     signal setActiveCommunity(string id)
     signal setObservedCommunity(string id)
+    signal openCommunityDetail()
+    signal importCommunityClicked()
+    signal createCommunityClicked()
 
     onOpened: {
         contentItem.searchBox.input.text = "";
@@ -41,7 +44,9 @@ StatusModal {
                 icon.name: "download"
                 //% "Access existing community"
                 text: qsTrId("access-existing-community")
-                onTriggered: Global.openPopup(importCommunitiesPopupComponent)
+                onTriggered: {
+                    popup.importCommunityClicked();
+                }
             }
         }
     }
@@ -134,7 +139,7 @@ StatusModal {
                                 popup.setActiveCommunity(model.id);
                             } else {
                                 popup.setObservedCommunity(model.id);
-                                Global.openPopup(communityDetailPopup)
+                                popup.openCommunityDetail();
                             }
                             popup.close()
                         }
@@ -149,7 +154,7 @@ StatusModal {
             //% "Create a community"
             text: qsTrId("create-community")
             onClicked: {
-                Global.openPopup(createCommunitiesPopupComponent)
+                popup.createCommunityClicked();
                 popup.close()
             }
         }

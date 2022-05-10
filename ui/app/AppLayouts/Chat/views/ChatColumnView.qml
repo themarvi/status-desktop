@@ -223,6 +223,7 @@ Item {
                             rootStore: root.rootStore
                             contactsStore: root.contactsStore
                             emojiPopup: root.emojiPopup
+                            isConnected: root.isConnected
                             sendTransactionNoEnsModal: cmpSendTransactionNoEns
                             receiveTransactionModal: cmpReceiveTransaction
                             sendTransactionWithEnsModal: cmpSendTransactionWithEns
@@ -232,9 +233,16 @@ Item {
                             onOpenStickerPackPopup: {
                                 root.openStickerPackPopup(stickerPackId)
                             }
+                            onNotificationButtonClicked: {
+                                activityCenter.open();
+                            }
+                            onOpenAppSearch: {
+                                root.openAppSearch();
+                            }
                             Component.onCompleted: {
                                 parentModule.prepareChatContentModuleForChatId(model.itemId)
                                 chatContentModule = parentModule.getChatContentModule()
+                                chatSectionModule = root.chatSectionModule;
                             }
                         }
                     }
@@ -268,6 +276,7 @@ Item {
                         clip: true
                         rootStore: root.rootStore
                         contactsStore: root.contactsStore
+                        isConnected: root.isConnected
                         emojiPopup: root.emojiPopup
                         sendTransactionNoEnsModal: cmpSendTransactionNoEns
                         receiveTransactionModal: cmpReceiveTransaction
@@ -277,6 +286,12 @@ Item {
                         isActiveChannel: chatLoader.isActiveChannel
                         onOpenStickerPackPopup: {
                             root.openStickerPackPopup(stickerPackId)
+                        }
+                        onNotificationButtonClicked: {
+                            activityCenter.open();
+                        }
+                        onOpenAppSearch: {
+                            root.openAppSearch();
                         }
                         Component.onCompleted: {
                             parentModule.prepareChatContentModuleForChatId(model.itemId)

@@ -30,9 +30,11 @@ ColumnLayout {
     // Important:
     // Each chat/channel has its own ChatContentModule
     property var chatContentModule
+    property var chatSectionModule
     property var rootStore
     property var contactsStore
     property bool isActiveChannel: false
+    property bool isConnected: false
     property var emojiPopup
     property alias textInputField: chatInput
     property UsersStore usersStore: UsersStore {}
@@ -41,6 +43,8 @@ ColumnLayout {
         chatContentRoot.usersStore.usersModule = chatContentRoot.chatContentModule.usersModule
     }
 
+    signal openAppSearch()
+    signal notificationButtonClicked()
     signal openStickerPackPopup(string stickerPackId)
 
     property Component sendTransactionNoEnsModal
@@ -140,7 +144,7 @@ ColumnLayout {
             onClicked: {
                 switch (chatContentModule.chatDetails.type) {
                 case Constants.chatType.privateGroupChat:
-                    Global.openPopup(groupInfoPopupComponent, {
+                    Global.openPopup(chatContentRoot.rootStore.groupInfoPopupComponent, {
                                          chatContentModule: chatContentModule,
                                          chatDetails: chatContentModule.chatDetails
                                      })
@@ -157,11 +161,10 @@ ColumnLayout {
     Component {
         id: contactsSelector
         GroupChatPanel {
-            sectionModule: chatSectionModule
+            sectionModule: chatContentRoot.chatSectionModule
             chatContentModule: chatContentRoot.chatContentModule
             rootStore: chatContentRoot.rootStore
             maxHeight: chatContentRoot.height
-
             onPanelClosed: topBar.toolbarComponent = statusChatInfoButton
         }
     }
@@ -184,11 +187,11 @@ ColumnLayout {
 
         notificationCount: activityCenter.unreadNotificationsCount
 
-        onSearchButtonClicked: root.openAppSearch()
+        onSearchButtonClicked: chatContentRoot.openAppSearch()
 
         onMembersButtonClicked: localAccountSensitiveSettings.expandUsersList = !localAccountSensitiveSettings.expandUsersList
-        onNotificationButtonClicked: activityCenter.open()
-        notificationButton.highlighted: activityCenter.visible
+
+        onNotificationButtonClicked: chatContentRoot.notificationButtonClicked()
 
         popupMenu: ChatContextMenuView {
             emojiPopup: chatContentRoot.emojiPopup
@@ -254,7 +257,7 @@ ColumnLayout {
                 chatContentModule.leaveChat()
             }
 
-            onDeleteCommunityChat: root.rootStore.removeCommunityChat(chatId)
+            onDeleteCommunityChat: chatContentRoot.rootStore.removeCommunityChat(chatId)
 
             onDownloadMessages: {
                  if(!chatContentModule) {
@@ -269,7 +272,7 @@ ColumnLayout {
             }
 
             onDisplayGroupInfoPopup: {
-                Global.openPopup(groupInfoPopupComponent, {
+                Global.openPopup(chatContentRoot.rootStore.groupInfoPopupComponent, {
                                      chatContentModule: chatContentModule,
                                      chatDetails: chatContentModule.chatDetails
                                  })
@@ -329,10 +332,8 @@ ColumnLayout {
             onOnlineStatusChanged: {
                 if (connected === isConnected) return;
                 isConnected = connected;
-                if(isConnected){
-                    timer.setTimeout(function(){
-                        connectedStatusRect.visible = false;
-                    }, 5000);
+                if(isConnected) {
+                    onlineStatusTimer.start();
                 } else {
                     connectedStatusRect.visible = true;
                 }
@@ -343,6 +344,14 @@ ColumnLayout {
             if(!isConnected){
                 connectedStatusRect.visible = true
             }
+        }
+    }
+
+    Timer {
+        id: onlineStatusTimer
+        interval: 5000
+        onTriggered: {
+            connectedStatusRect.visible = false;
         }
     }
 
@@ -376,7 +385,7 @@ ColumnLayout {
                 console.debug("error on open pinned messages limit reached from message context menu - chat content module is not set")
                 return
             }
-            Global.openPopup(pinnedMessagesPopupComponent, {
+            Global.openPopup(Global.pinnedMessagesPopup, {
                                  store: rootStore,
                                  messageStore: messageStore,
                                  pinnedMessagesModel: chatContentModule.pinnedMessagesModel,
@@ -400,7 +409,7 @@ ColumnLayout {
 
         onCreateOneToOneChat: {
             Global.changeAppSectionBySectionType(Constants.appSection.chat)
-            root.rootStore.chatCommunitySectionModule.createOneToOneChat("", chatId, ensName)
+            chatContentRoot.rootStore.chatCommunitySectionModule.createOneToOneChat("", chatId, ensName)
         }
         onShowReplyArea: {
             let obj = messageStore.getMessageByIdAsJson(messageId)
@@ -437,7 +446,7 @@ ColumnLayout {
                 chatInput.showReplyArea(messageId, obj.senderDisplayName, obj.messageText, obj.senderIcon, obj.contentType, obj.messageImage, obj.sticker)
             }
             onOpenStickerPackPopup: {
-                root.openStickerPackPopup(stickerPackId);
+                chatContentRoot.openStickerPackPopup(stickerPackId);
             }
         }
 
@@ -451,8 +460,8 @@ ColumnLayout {
 
             Loader {
                 id: loadingMessagesIndicator
-                active: root.rootStore.loadingHistoryMessagesInProgress
-                visible: root.rootStore.loadingHistoryMessagesInProgress
+                active: chatContentRoot.rootStore.loadingHistoryMessagesInProgress
+                visible: chatContentRoot.rootStore.loadingHistoryMessagesInProgress
                 sourceComponent: LoadingAnimation { }
                 anchors {
                     right: parent.right
