@@ -146,26 +146,34 @@ Item {
         Item {
             id: chainsChatKeyImg
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 181
-            Layout.preferredHeight: 84
+            implicitWidth: 197
+            implicitHeight: 84
             Image {
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: Style.png("onboarding/chains")
             }
-            EmojiHash {
-                anchors.bottom: parent.bottom
-                publicKey: root.pubKey
-            }
-            StatusSmartIdenticon {
-                id: userImageCopy
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-                icon.width: 44
-                icon.height: 44
-                icon.color: "transparent"
-                ringSettings { ringSpecModel: Utils.getColorHashAsJson(root.pubKey) }
+            RowLayout {
+                id: test
+                anchors {
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                }
+                EmojiHash {
+                    publicKey: root.pubKey
+                }
+                StatusSmartIdenticon {
+                    id: userImageCopy
+                    Layout.alignment: Qt.AlignRight
+                    Layout.rightMargin: 18
+                    icon.width: 44
+                    icon.height: 44
+                    icon.color: "transparent"
+                    ringSettings { ringSpecModel: Utils.getColorHashAsJson(root.pubKey) }
+                }
             }
         }
+
         StatusButton {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             Layout.topMargin: 125
