@@ -1,4 +1,4 @@
-import strformat
+import strformat, strutils
 
 type
   Item* = object
@@ -6,6 +6,7 @@ type
     nativeCurrencyDecimals: int
     layer: int
     chainName: string
+    chainShortName: string
     rpcURL: string
     blockExplorerURL: string
     nativeCurrencyName: string
@@ -29,6 +30,7 @@ proc initItem*(
   result.nativeCurrencyDecimals = nativeCurrencyDecimals
   result.layer = layer
   result.chainName = chainName
+  result.chainShortName = chainName[0 .. 2].toLowerAscii
   result.rpcURL = rpcURL
   result.blockExplorerURL = blockExplorerURL
   result.nativeCurrencyName = nativeCurrencyName
@@ -40,6 +42,7 @@ proc `$`*(self: Item): string =
   result = fmt"""NetworkItem(
     chainId: {self.chainId},
     chainName: {self.chainName},
+    chainShortName: {self.chainShortName},
     layer: {self.layer},
     nativeCurrencyDecimals: {self.nativeCurrencyDecimals},
     rpcURL: {self.rpcURL},
@@ -61,6 +64,9 @@ proc getLayer*(self: Item): int =
 
 proc getChainName*(self: Item): string =
   return self.chainName
+
+proc getChainShortName*(self: Item): string =
+  return self.chainShortName
 
 proc getRpcURL*(self: Item): string =
   return self.rpcURL

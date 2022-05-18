@@ -8,6 +8,7 @@ type
     NativeCurrencyDecimals
     Layer
     ChainName
+    ChainShortName
     RpcURL
     BlockExplorerURL
     NativeCurrencyName
@@ -53,6 +54,7 @@ QtObject:
       ModelRole.NativeCurrencyDecimals.int:"nativeCurrencyDecimals",
       ModelRole.Layer.int:"layer",
       ModelRole.ChainName.int:"chainName",
+      ModelRole.ChainShortName.int: "chainShortName",
       ModelRole.RpcURL.int:"rpcURL",
       ModelRole.BlockExplorerURL.int:"blockExplorerURL",
       ModelRole.NativeCurrencyName.int:"nativeCurrencyName",
@@ -80,6 +82,8 @@ QtObject:
       result = newQVariant(item.getLayer())
     of ModelRole.ChainName:
       result = newQVariant(item.getChainName())
+    of ModelRole.ChainShortName:
+      result = newQVariant(item.getChainShortName())
     of ModelRole.RpcURL:
       result = newQVariant(item.getRpcURL())
     of ModelRole.BlockExplorerURL:

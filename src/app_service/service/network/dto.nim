@@ -17,7 +17,7 @@ type NetworkDto* = ref object
   enabled* {.serializedFieldName("enabled").}: bool
 
 proc `$`*(self: NetworkDto): string =
-  return fmt"Network(chainId:{self.chainId}, name:{self.chainName}, rpcURL:{self.rpcURL}, isTest:{self.isTest}, enabled:{self.enabled})"
+  return fmt"Network(chainId:{self.chainId}, nativeCurrencyDecimals:{self.nativeCurrencyDecimals}, layer:{self.layer}, chainName:{self.chainName}, name:{self.chainName}, rpcURL:{self.rpcURL}, blockExplorerURL:{self.blockExplorerURL}, iconURL:{self.iconURL}, nativeCurrencyName:{self.nativeCurrencyName}, nativeCurrencySymbol:{self.nativeCurrencySymbol}, isTest:{self.isTest}, enabled:{self.enabled})"
 
 proc hash*(self: NetworkDto): Hash =
   return self.chainId.hash

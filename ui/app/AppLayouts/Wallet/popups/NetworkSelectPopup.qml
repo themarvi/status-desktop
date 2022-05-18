@@ -59,6 +59,13 @@ Popup {
                 delegate: chainItem
             }
 
+            StatusBaseText {
+                font.pixelSize: Style.current.primaryTextFontSize
+                color: Theme.palette.baseColor1
+                text: qsTr("Layer 2")
+                visible: chainRepeater2.count > 0
+            }
+
             Repeater {
                 id: chainRepeater2
                 model: popup.layer2Networks
