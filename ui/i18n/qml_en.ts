@@ -9,7 +9,7 @@
     </message>
     <message id="this-fields-needs-to-be-a-valid-url">
         <source>This fields needs to be a valid URL</source>
-        <translation type="vanished">This fields needs to be a valid URL</translation>
+        <translation type="vanished">This needs to be a valid URL</translation>
     </message>
     <message id="please-enter-a-name">
         <source>Please enter a Name</source>
