@@ -5,7 +5,7 @@
     <name></name>
     <message id="please-enter-a-url">
         <source>Please enter a URL</source>
-        <translation type="vanished">Please enter a URL</translation>
+        <translation type="vanished">Plese enter a URL</translation>
     </message>
     <message id="this-fields-needs-to-be-a-valid-url">
         <source>This fields needs to be a valid URL</source>
