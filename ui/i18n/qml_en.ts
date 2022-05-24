@@ -4,8 +4,8 @@
 <context>
     <name></name>
     <message id="please-enter-a-url">
-        <source>TESTTEST enter a URL</source>
-        <translation type="vanished">TESTTEST enter a URL</translation>
+        <source>0524 enter a URL</source>
+        <translation type="vanished">0524 enter a URL</translation>
     </message>
     <message id="this-fields-needs-to-be-a-valid-url">
         <source>This fields needs to be a valid URL</source>
