@@ -71,6 +71,7 @@ target_link_libraries(${PROJECT_NAME}
         Onboarding
         Assets
         StatusQ
+        StatusGoQt
 )
 
 # QtCreator needs this
