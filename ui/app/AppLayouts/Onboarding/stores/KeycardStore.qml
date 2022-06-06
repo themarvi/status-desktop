@@ -1,20 +1,15 @@
-pragma Singleton
-
 import QtQuick 2.13
 
 QtObject {
-    // Not Refactored Yet
-//    property var keycardModelInst: keycardModel
+    id: root
 
-    function startConnection() {
-//        keycardModel.startConnection()
+    property var keycardModule
+
+    function startKeycardFlow() {
+        root.keycardModule.startKeycardFlow()
     }
 
-    function init(pin) {
-//        keycardModel.init(pin)
-    }
-
-    function recoverAccount() {
-//        keycardModel.recoverAccount()
+    function cancelFlow() {
+        root.keycardModule.cancelFlow()
     }
 }

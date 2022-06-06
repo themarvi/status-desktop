@@ -122,7 +122,7 @@ QtObject {
 
             DSM.State {
                 id: keycardState
-                onEntered: { onBoardingStepChanged(keycardFlowSelection, ""); }
+                onEntered: { onBoardingStepChanged(keycardFlow, ""); }
 
                 DSM.SignalTransition {
                     targetState: appState
@@ -163,7 +163,7 @@ QtObject {
             DSM.SignalTransition {
                 targetState: keycardState
                 signal: Global.applicationWindow.navigateTo
-                guard: path === "KeycardFlowSelection"
+                guard: path === "KeycardFlow"
             }
 
             DSM.FinalState {
@@ -218,7 +218,7 @@ QtObject {
                 }
             }
             onKeycardLinkClicked: {
-                Global.applicationWindow.navigateTo("KeycardFlowSelection");
+                Global.applicationWindow.navigateTo("KeycardFlow");
             }
             onSeedLinkClicked: {
                 if (state === "getkeys") {
@@ -276,15 +276,15 @@ QtObject {
         }
     }
 
-    property var keycardFlowSelectionComponent: Component {
-        id: keycardFlowSelection
-        KeycardFlowSelectionView {
-            onClosed: {
-                if (root.hasAccounts) {
-                    Global.applicationWindow.navigateTo("InitialState")
-                } else {
-                    Global.applicationWindow.navigateTo("KeysMain")
-                }
+    property var keycardFlowComponent: Component {
+        id: keycardFlow
+        KeycardFlowView {
+
+            keycardStore: OnboardingStore.keycardStore
+
+            onBackClicked: {
+                keycardStore.cancelFlow()
+                Global.applicationWindow.navigateTo("KeysMain")
             }
         }
     }

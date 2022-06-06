@@ -22,6 +22,10 @@ QtObject {
 
     property bool showBeforeGetStartedPopup: true
 
+    property KeycardStore keycardStore: KeycardStore {
+        keycardModule: onboardingModuleInst.keycardModule
+    }
+
     function generateImage(source, aX, aY, bX, bY) {
         return onboardingModuleInst.generateImage(source, aX, aY, bX, bY)
     }
