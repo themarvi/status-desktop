@@ -35,7 +35,7 @@ proc newModule*(delegate: delegate_interface.AccessInterface,
   accountsService)
   result.moduleLoaded = false
 
-  result.keycardModule = keycard_module.newModule(events, keycardService)
+  result.keycardModule = keycard_module.newModule(events, keycardService, accountsService)
 
 method delete*(self: Module) =
   self.view.delete

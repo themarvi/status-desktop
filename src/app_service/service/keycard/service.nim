@@ -56,6 +56,7 @@ const KeycardErrorLoading = "loading-keys"
 const SignalPluginKeycardReader* = "pluginKeycardReader"
 const SignalInsertKeycard* = "insertKeycard"
 const SignalReadingKeycard* = "readingKeycard"
+const SignalCreateKeycardPin* = "createKeycardPin"
 
 logScope:
   topics = "keycard-service"
@@ -121,6 +122,7 @@ QtObject:
 
     if(flowType == KeycardCardInserted):
       self.events.emit(SignalReadingKeycard, Args())
+      self.events.emit(SignalCreateKeycardPin, Args())
       return
 
   proc receiveKeycardSignal(self: Service, signal: string) {.slot.} =

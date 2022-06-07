@@ -33,7 +33,7 @@ proc newModule*(delegate: delegate_interface.AccessInterface, events: EventEmitt
   result.controller = controller.newController(result, events, accountsService, generalService)
   result.moduleLoaded = false
 
-  result.keycardModule = keycard_module.newModule(events, keycardService)
+  result.keycardModule = keycard_module.newModule(events, keycardService, accountsService)
 
 method delete*(self: Module) =
   self.view.delete

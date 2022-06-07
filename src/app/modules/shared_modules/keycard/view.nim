@@ -28,8 +28,29 @@ QtObject:
     read = getFlowState
     notify = flowStateChanged
 
+  proc checkKeycardPin*(self: View, pin: string): bool {.slot.} =
+    return self.delegate.checkKeycardPin(pin)
+
+  proc checkRepeatedKeycardPinCurrent*(self: View, pin: string): bool {.slot.} =
+    return self.delegate.checkRepeatedKeycardPinCurrent(pin)
+
+  proc checkRepeatedKeycardPin*(self: View, pin: string): bool {.slot.} =
+    return self.delegate.checkRepeatedKeycardPin(pin)
+
   proc startKeycardFlow*(self: View) {.slot.} =
     self.delegate.startKeycardFlow()
 
   proc cancelFlow*(self: View) {.slot.} =
     self.delegate.cancelFlow()
+
+  proc shouldExitKeycardFlow*(self: View): bool {.slot.} =
+    return self.delegate.shouldExitKeycardFlow()
+
+  proc backClicked*(self: View) {.slot.} =
+    self.delegate.backClicked()
+
+  proc nextState*(self: View) {.slot.} =
+    self.delegate.nextState()
+
+  proc getSeedPhrase*(self: View): string {.slot.} =
+    return self.delegate.getSeedPhrase()

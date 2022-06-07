@@ -100,6 +100,12 @@ QtObject {
                     signal: Global.applicationWindow.navigateTo
                     guard: path === "ImportSeed"
                 }
+
+                DSM.SignalTransition {
+                    targetState: keycardState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "KeycardFlow"
+                }
             }
 
             DSM.State {
@@ -122,12 +128,12 @@ QtObject {
 
             DSM.State {
                 id: keycardState
-                onEntered: { onBoardingStepChanged(keycardFlow, ""); }
+                onEntered: { onBoardingStepChanged(keycardFlowComponent, ""); }
 
                 DSM.SignalTransition {
-                    targetState: appState
-                    signal: startupModule.appStateChanged
-                    guard: state === Constants.appState.main
+                    targetState: genKeyState
+                    signal: Global.applicationWindow.navigateTo
+                    guard: path === "GenKey"
                 }
             }
 
@@ -261,7 +267,10 @@ QtObject {
         id: genKey
         GenKeyView {
             onExit: {
-                if (root.keysMainSetState === "importseed") {
+                if(OnboardingStore.keycardStore.keycardModule.flowState === Constants.keycard.state.yourProfileState) {
+                    Global.applicationWindow.navigateTo("KeycardFlow");
+                }
+                else if (root.keysMainSetState === "importseed") {
                     root.keysMainSetState = "connectkeys"
                     Global.applicationWindow.navigateTo("ImportSeed");
                 } else if (LoginStore.currentAccount.username !== "" && importSeedState.seedInputState === "existingUser") {
@@ -277,14 +286,28 @@ QtObject {
     }
 
     property var keycardFlowComponent: Component {
-        id: keycardFlow
         KeycardFlowView {
+            id: keycardFlowView
 
             keycardStore: OnboardingStore.keycardStore
 
             onBackClicked: {
-                keycardStore.cancelFlow()
-                Global.applicationWindow.navigateTo("KeysMain")
+                if(keycardStore.shouldExitKeycardFlow()) {
+                    keycardStore.cancelFlow()
+                    Global.applicationWindow.navigateTo("KeysMain")
+                    return
+                }
+                keycardStore.backClicked()
+            }
+
+            Connections {
+                target: keycardFlowView.keycardStore.keycardModule
+                onFlowStateChanged: {
+                    if(keycardFlowView.keycardStore.keycardModule.flowState === Constants.keycard.state.yourProfileState) {
+                        importSeedState.seedInputState = "newUser";
+                        Global.applicationWindow.navigateTo("GenKey");
+                    }
+                }
             }
         }
     }
