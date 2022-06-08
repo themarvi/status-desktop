@@ -4,12 +4,14 @@ import base
 
 import ../../../../app_service/service/message/dto/[message, pinned_message_update, reaction, removed_message]
 import ../../../../app_service/service/chat/dto/[chat]
+import ../../../../app_service/service/bookmarks/dto/[bookmark]
 import ../../../../app_service/service/community/dto/[community]
 import ../../../../app_service/service/activity_center/dto/[notification]
 import ../../../../app_service/service/contacts/dto/[contacts, status_update]
 import ../../../../app_service/service/devices/dto/[device]
 
 type MessageSignal* = ref object of Signal
+  bookmarks*: seq[BookmarkDto]
   messages*: seq[MessageDto]
   pinnedMessages*: seq[PinnedMessageUpdateDto]
   chats*: seq[ChatDto]
@@ -45,6 +47,11 @@ proc fromEvent*(T: type MessageSignal, event: JsonNode): MessageSignal =
     for jsonStatusUpdate in event["event"]["statusUpdates"]:
       var statusUpdate = jsonStatusUpdate.toStatusUpdateDto()
       signal.statusUpdates.add(statusUpdate)
+
+  if event["event"]{"bookmarks"} != nil:
+    for jsonBookmark in event["event"]["bookmarks"]:
+      var bookmark = jsonBookmark.toBookmarkDto()
+      signal.bookmarks.add(bookmark)
 
   if event["event"]{"installations"} != nil:
     for jsonDevice in event["event"]["installations"]:
