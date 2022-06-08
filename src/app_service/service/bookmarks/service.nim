@@ -1,8 +1,9 @@
-import Tables, json, sequtils, strformat, chronicles
+import Tables, json, sequtils, strformat, chronicles, strutils
 import result
 include ../../common/json_utils
 import ./dto/bookmark as bookmark_dto
 import ../../../backend/backend
+import ../../../backend/browser
 
 export bookmark_dto
 
@@ -26,6 +27,7 @@ proc init*(self: Service) =
   try:
     let response = backend.getBookmarks()
     for bookmark in response.result.getElems().mapIt(it.toBookmarkDto()):
+      if not bookmark.removed:
         self.bookmarks[bookmark.url] = bookmark
 
   except Exception as e:
@@ -37,12 +39,15 @@ proc getBookmarks*(self: Service): seq[BookmarkDto] =
 
 proc storeBookmark*(self: Service, url, name: string): R =
   try:
-    let response = backend.storeBookmark(backend.Bookmark(name: name, url: url)).result
-    self.bookmarks[url] = BookmarkDto()
-    self.bookmarks[url].url = url
-    self.bookmarks[url].name = name
-    discard response.getProp("imageUrl", self.bookmarks[url].imageUrl)
-    result.ok self.bookmarks[url]
+    if not url.isEmptyOrWhitespace:
+      let response = browser.addBookmark(backend.Bookmark(name: name, url: url)).result
+      self.bookmarks[url] = BookmarkDto()
+      self.bookmarks[url].url = url
+      self.bookmarks[url].name = name
+      discard response.getProp("imageUrl", self.bookmarks[url].imageUrl)
+      discard response.getProp("removed", self.bookmarks[url].removed)
+      discard response.getProp("deletedAt", self.bookmarks[url].deletedAt)
+      result.ok self.bookmarks[url]
   except Exception as e:
     let errDescription = e.msg
     error "error: ", errDescription
@@ -52,7 +57,7 @@ proc deleteBookmark*(self: Service, url: string): bool =
   try:
     if not self.bookmarks.hasKey(url):
       return
-    discard backend.deleteBookmark(url)
+    discard browser.removeBookmark(url).result
     self.bookmarks.del(url)
   except Exception as e:
     let errDescription = e.msg
