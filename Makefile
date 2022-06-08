@@ -205,7 +205,7 @@ $(DOTHERSIDE): | deps
 		cd build && \
 		rm -f CMakeCache.txt && \
 		cmake $(DOTHERSIDE_CMAKE_PARAMS)\
-			-DCMAKE_BUILD_TYPE=Release \
+			-DCMAKE_BUILD_TYPE=Debug \
 			-DENABLE_DOCS=OFF \
 			-DENABLE_TESTS=OFF \
 			.. $(HANDLE_OUTPUT) && \

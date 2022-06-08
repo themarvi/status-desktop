@@ -73,6 +73,8 @@ proc setupRemoteSignalsHandling() =
 
   status_go.setSignalEventCallback(callback)
 
+const debug {.booldefine.} = false
+
 proc mainProc() =
   if defined(macosx) and defined(production):
     setCurrentDir(getAppDir())
@@ -98,6 +100,9 @@ proc mainProc() =
   let appController = newAppController(statusFoundation)
   let singleInstance = newSingleInstance($toMD5(DATADIR), openUri)
   let networkAccessFactory = newQNetworkAccessManagerFactory(TMPDIR & "netcache")
+
+  if(debug):
+    setupDebugger()
 
   let isProductionQVariant = newQVariant(if defined(production): true else: false)
   let isExperimentalQVariant = newQVariant(isExperimental)
