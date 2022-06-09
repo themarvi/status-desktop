@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(TestStatusQ LANGUAGES CXX)
 
-enable_testing()
+enable_testing(true)
 
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
@@ -10,7 +10,7 @@ find_package(Qt6 ${STATUS_QT_VERSION} COMPONENTS Quick Qml QuickTest REQUIRED)
 qt6_standard_project_setup()
 
 qt6_add_qml_module(${PROJECT_NAME}
-    URI StatusQ.TestHelpers
+    URI Status.TestHelpers
     VERSION 1.0
     # TODO: temporary until we make qt_target_qml_sources work
     QML_FILES
