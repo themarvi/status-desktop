@@ -14,7 +14,9 @@ bool startMessenger()
     };
 
     auto callResult = Utils::callPrivateRpc<QJsonObject>(Utils::jsonToByteArray(payload));
-    return callResult.containsError();
+    if(callResult.containsError())
+        qWarning() << "Failed starting Messenger service. Error: " << callResult.error.message;
+    return !callResult.containsError();
 }
 
 }

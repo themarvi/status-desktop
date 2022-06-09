@@ -27,7 +27,7 @@ RpcResponse<QJsonArray> generateAddresses(const QVector<QString>& paths)
             throw std::domain_error(msg.toStdString());
         }
 
-        return Utils::buildJsonRpcResponse(jsonResult);
+        return Utils::buildPrivateRPCResponse(jsonResult);
     }
     catch (std::exception& e)
     {
@@ -52,7 +52,7 @@ RpcResponse<QString> generateIdenticon(const QString& publicKey)
         {
             identicon = Identicon(publicKey.toUtf8().data());
         }
-        return Utils::buildJsonRpcResponse(identicon);
+        return Utils::buildPrivateRPCResponse(identicon);
     }
     catch (...)
     {
@@ -72,7 +72,7 @@ RpcResponse<QString> generateAlias(const QString& publicKey)
             alias = GenerateAlias(publicKey.toUtf8().data());
         }
 
-        return Utils::buildJsonRpcResponse(alias);
+        return Utils::buildPrivateRPCResponse(alias);
     }
     catch (...)
     {
@@ -101,7 +101,9 @@ RpcResponse<QJsonObject> storeDerivedAccounts(const QString& id, const QString& 
             throw std::domain_error(msg.toStdString());
         }
 
-        return Utils::buildJsonRpcResponse(jsonResult);
+        RpcResponse<QJsonObject> rpcResponse(jsonResult);
+        rpcResponse.error = Utils::getRPCErrorInJson(jsonResult).value_or(RpcError());
+        return rpcResponse;
     }
     catch (std::exception& e)
     {
@@ -117,17 +119,16 @@ RpcResponse<QJsonObject> storeDerivedAccounts(const QString& id, const QString& 
     }
 }
 
-RpcResponse<QJsonObject> saveAccountAndLogin(const QString& hashedPassword, const QJsonObject& account,
-                                                       const QJsonArray& subaccounts, const QJsonObject& settings,
-                                                       const QJsonObject& nodeConfig)
+RpcResponse<QJsonObject> storeAccount(const QString& id, const QString& hashedPassword)
 {
+    QJsonObject payload{
+        {"accountID", id},
+        {"password", hashedPassword}
+    };
+
     try
     {
-        auto result = SaveAccountAndLogin(Utils::jsonToByteArray(std::move(account)).data(),
-                                          hashedPassword.toUtf8().data(),
-                                          Utils::jsonToByteArray(std::move(settings)).data(),
-                                          Utils::jsonToByteArray(std::move(nodeConfig)).data(),
-                                          Utils::jsonToByteArray(std::move(subaccounts)).data());
+        auto result = MultiAccountStoreAccount(Utils::jsonToByteArray(std::move(payload)).data());
         QJsonObject jsonResult;
         if(!Utils::checkReceivedResponse(result, jsonResult))
         {
@@ -135,39 +136,70 @@ RpcResponse<QJsonObject> saveAccountAndLogin(const QString& hashedPassword, cons
             throw std::domain_error(msg.toStdString());
         }
 
-        return Utils::buildJsonRpcResponse(jsonResult);
+        RpcResponse<QJsonObject> rpcResponse(jsonResult);
+        rpcResponse.error = Utils::getRPCErrorInJson(jsonResult).value_or(RpcError());
+        return rpcResponse;
     }
     catch (std::exception& e)
     {
         auto response = RpcResponse<QJsonObject>(QJsonObject());
-        response.error.message = QObject::tr("an error saving account and login occurred, msg: %1").arg(e.what());
+        response.error.message = QObject::tr("an error storing account occurred, msg: %1").arg(e.what());
         return response;
     }
     catch (...)
     {
         auto response = RpcResponse<QJsonObject>(QJsonObject());
-        response.error.message = QObject::tr("an error saving account and login occurred");
+        response.error.message = QObject::tr("an error storing account occurred");
         return response;
     }
 }
 
-RpcResponse<QJsonArray> openAccounts(const QString& path)
+bool saveAccountAndLogin(const QString& hashedPassword, const QJsonObject& account,
+                         const QJsonArray& subaccounts, const QJsonObject& settings,
+                         const QJsonObject& nodeConfig)
 {
     try
     {
-        auto result = OpenAccounts(path.toUtf8().data());
-        QJsonArray jsonResult;
+        auto result = SaveAccountAndLogin(Utils::jsonToByteArray(account).data(),
+                                          hashedPassword.toUtf8().data(),
+                                          Utils::jsonToByteArray(settings).data(),
+                                          Utils::jsonToByteArray(nodeConfig).data(),
+                                          Utils::jsonToByteArray(subaccounts).data());
+        QJsonObject jsonResult;
         if(!Utils::checkReceivedResponse(result, jsonResult))
         {
             auto msg = QObject::tr("parsing response failed");
             throw std::domain_error(msg.toStdString());
         }
 
-        return Utils::buildJsonRpcResponse(jsonResult);
+        return !Utils::getRPCErrorInJson(jsonResult).has_value();
+    } catch (std::exception& e) {
+        qWarning() << QString("an error saving account and login occurred, msg: %1").arg(e.what());
+    } catch (...) {
+        qWarning() << "an error saving account and login occurred";
+    }
+    return false;
+}
+
+RpcResponse<QJsonArray> openAccounts(const char* dataDirPath)
+{
+    try
+    {
+        auto result = QString(OpenAccounts(const_cast<char*>(dataDirPath)));
+        if(result == "null")
+            return RpcResponse<QJsonArray>(QJsonArray());
+
+        QJsonArray jsonResult;
+        if(!Utils::checkReceivedResponse(result, jsonResult)) {
+            throw std::domain_error("parsing response failed");
+        }
+
+        return Utils::buildPrivateRPCResponse(jsonResult);
     }
     catch (std::exception& e)
     {
         auto response = RpcResponse<QJsonArray>(QJsonArray());
+        // TODO: don't translate exception messages. Exceptions are for developers and should never reach users
         response.error.message = QObject::tr("an error opening accounts occurred, msg: %1").arg(e.what());
         return response;
     }
@@ -204,7 +236,7 @@ RpcResponse<QJsonObject> login(const QString& name, const QString& keyUid, const
             throw std::domain_error(msg.toStdString());
         }
 
-        return Utils::buildJsonRpcResponse(jsonResult);
+        return Utils::buildPrivateRPCResponse(jsonResult);
     }
     catch (std::exception& e)
     {

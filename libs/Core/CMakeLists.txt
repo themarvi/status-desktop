@@ -12,19 +12,11 @@ find_package(Qt6 ${STATUS_QT_VERSION} COMPONENTS Quick Qml REQUIRED)
 qt6_standard_project_setup()
 
 qt6_add_qml_module(${PROJECT_NAME}
-    URI Status.Core
+    URI Status.${PROJECT_NAME}
     VERSION 1.0
-
-    # TODO: temporary until we make qt_target_qml_sources work
-    QML_FILES
-        qml/Status/Core/DevTest.qml
-
-    # Required to suppress "qmllint may not work" warning
-    OUTPUT_DIRECTORY
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Status/Core
 )
+add_library(Status::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-add_subdirectory(qml/Status/Core)
 add_subdirectory(src)
 
 target_link_libraries(${PROJECT_NAME}
@@ -38,3 +30,7 @@ install(
         ${PROJECT_NAME}
     RUNTIME
 )
+
+# QtCreator needs this
+set(QML_IMPORT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/qml;${QML_IMPORT_PATH} CACHE STRING "For QtCreator" FORCE)
+list(REMOVE_DUPLICATES QML_IMPORT_PATH)

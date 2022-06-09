@@ -8,7 +8,7 @@ project(StatusGoQt
 
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
-find_package(Qt6 ${STATUS_QT_VERSION} COMPONENTS Core REQUIRED)
+find_package(Qt6 ${STATUS_QT_VERSION} COMPONENTS Core Concurrent REQUIRED)
 qt6_standard_project_setup()
 
 add_library(${PROJECT_NAME} SHARED "")
@@ -19,11 +19,14 @@ set_property(GLOBAL PROPERTY DEBUG_CONFIGURATIONS Debug)
 add_subdirectory(src)
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
+    PUBLIC
         Qt6::Core
+        Qt6::Concurrent
 
+    PRIVATE
         statusgo_shared
 )
+add_library(Status::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # Copy status-go lib close to the executable
 # Temporary workaround; TODO: see a better alternative that doesn't depend on target order (dedicated dependencies dir?)
@@ -35,10 +38,10 @@ add_custom_command(
     POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             $<TARGET_FILE:statusgo_shared>
-            $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMENT "Copying status-go lib near ${PROJECT_NAME}"
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Copying status-go lib beside project executable"
 )
-    
+
 install(
     IMPORTED_RUNTIME_ARTIFACTS
         statusgo_shared
