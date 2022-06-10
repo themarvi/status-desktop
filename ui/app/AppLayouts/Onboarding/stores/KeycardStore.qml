@@ -5,8 +5,8 @@ QtObject {
 
     property var keycardModule
 
-    function startKeycardFlow() {
-        root.keycardModule.startKeycardFlow()
+    function startOnboardingKeycardFlow() {
+        root.keycardModule.startOnboardingKeycardFlow()
     }
 
     function cancelFlow() {

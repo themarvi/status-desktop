@@ -304,7 +304,7 @@ QtObject {
                 target: keycardFlowView.keycardStore.keycardModule
                 onFlowStateChanged: {
                     if(keycardFlowView.keycardStore.keycardModule.flowState === Constants.keycard.state.yourProfileState) {
-                        importSeedState.seedInputState = "newUser";
+                        root.keysMainSetState = "importseed";
                         Global.applicationWindow.navigateTo("GenKey");
                     }
                 }

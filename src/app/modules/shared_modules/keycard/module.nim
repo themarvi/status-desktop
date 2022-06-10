@@ -1,4 +1,4 @@
-import NimQml, chronicles
+import NimQml, chronicles, strutils
 import io_interface
 import view, controller
 import ../../../core/eventemitter
@@ -18,6 +18,7 @@ type
     viewVariant: QVariant
     controller: Controller
     tmpPin: string
+    tmpSeedPhrases: string
 
 proc newModule*(events: EventEmitter, keycardService: keycard_service.Service, 
   accountsService: accounts_service.Service):
@@ -26,6 +27,10 @@ proc newModule*(events: EventEmitter, keycardService: keycard_service.Service,
   result.view = view.newView(result)
   result.viewVariant = newQVariant(result.view)
   result.controller = controller.newController(result, events, keycardService, accountsService)
+
+## Forward declaration
+proc tryToStorePin(self: Module)
+proc tryToStoreSeedPhrase(self: Module)
 
 method delete*(self: Module) =
   self.view.delete
@@ -41,8 +46,8 @@ method getModuleAsVariant*(self: Module): QVariant =
 method switchToState*(self: Module, state: FlowStateType) =
   self.view.setFlowState(state)
 
-method startKeycardFlow*(self: Module) =
-  self.controller.startKeycardFlow()
+method startOnboardingKeycardFlow*(self: Module) =
+  self.controller.startOnboardingKeycardFlow()
 
 method cancelFlow*(self: Module) =
   self.controller.cancelFlow()
@@ -84,18 +89,36 @@ method nextState*(self: Module) =
   if self.view.getFlowState() == $FlowStateType.CreateKeycardPin:
     self.view.setFlowState(FlowStateType.RepeatKeycardPin)
   elif self.view.getFlowState() == $FlowStateType.RepeatKeycardPin:
-    self.view.setFlowState(FlowStateType.KeycardPinSet)
+    self.tryToStorePin()
   elif self.view.getFlowState() == $FlowStateType.KeycardPinSet:
     self.view.setFlowState(FlowStateType.DisplaySeedPhrase)
   elif self.view.getFlowState() == $FlowStateType.DisplaySeedPhrase:
     self.view.setFlowState(FlowStateType.EnterSeedPhraseWords)
   elif self.view.getFlowState() == $FlowStateType.EnterSeedPhraseWords:
-    self.view.setFlowState(FlowStateType.YourProfileState)
+    self.tryToStoreSeedPhrase()
+  #   self.view.setFlowState(FlowStateType.YourProfileState)
 
 method getSeedPhrase*(self: Module): string =
-  let accounts = self.controller.getGeneratedAccounts()
-  if(accounts.len == 0):
-    error "cannot fetch generated account"
+  return self.tmpSeedPhrases
+
+proc tryToStorePin(self: Module) =
+  self.controller.storePin(self.tmpPin)
+  self.tmpPin = ""
+
+proc tryToStoreSeedPhrase(self: Module) =
+  self.controller.storeSeedPhrase(self.tmpSeedPhrases)
+
+method setSeedPhrasesAndSwitchToState*(self: Module, seedPhrases: seq[string], state: FlowStateType) =
+  self.tmpSeedPhrases = seedPhrases.join(" ")
+  self.switchToState(state)
+
+method setKeyUidAndSwitchToState*(self: Module, keyUid: string, state: FlowStateType) =
+  let res = self.controller.importMnemonic(self.tmpSeedPhrases)
+  if res.error.len > 0:
+    error "error importing account"
     return
-  # we always use account at index 0
-  return accounts[0].mnemonic
+  if res.generatedAcc.keyUid != ("0x" & keyUid):
+    error "error importing account different key-uid"
+    return
+  self.tmpSeedPhrases = ""
+  self.switchToState(state)

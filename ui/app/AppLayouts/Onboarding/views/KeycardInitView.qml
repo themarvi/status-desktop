@@ -84,7 +84,7 @@ Item {
                 target: title
                 text: qsTr("Reading Keycard...")
                 font.pixelSize: Constants.keycard.general.titleFontSize2
-                color: Theme.palette.dangerColor1
+                color: Theme.palette.baseColor1
             }
         }
     ]

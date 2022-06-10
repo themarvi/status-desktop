@@ -37,8 +37,8 @@ QtObject:
   proc checkRepeatedKeycardPin*(self: View, pin: string): bool {.slot.} =
     return self.delegate.checkRepeatedKeycardPin(pin)
 
-  proc startKeycardFlow*(self: View) {.slot.} =
-    self.delegate.startKeycardFlow()
+  proc startOnboardingKeycardFlow*(self: View) {.slot.} =
+    self.delegate.startOnboardingKeycardFlow()
 
   proc cancelFlow*(self: View) {.slot.} =
     self.delegate.cancelFlow()

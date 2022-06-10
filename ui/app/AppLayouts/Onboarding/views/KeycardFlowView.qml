@@ -12,7 +12,7 @@ OnboardingBasePage {
     property KeycardStore keycardStore
 
     Component.onCompleted: {
-        keycardStore.startKeycardFlow()
+        keycardStore.startOnboardingKeycardFlow()
     }
 
     Loader {

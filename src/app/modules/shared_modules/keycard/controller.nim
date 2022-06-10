@@ -31,23 +31,38 @@ proc delete*(self: Controller) =
   discard
 
 proc init*(self: Controller) =
-  self.events.on(SignalPluginKeycardReader) do(e: Args):
+  self.events.on(SignalKeycardReaderUnplugged) do(e: Args):
     self.delegate.switchToState(FlowStateType.PluginKeycard)
   
-  self.events.on(SignalInsertKeycard) do(e: Args):
+  self.events.on(SignalKeycardNotInserted) do(e: Args):
     self.delegate.switchToState(FlowStateType.InsertKeycard)
   
-  self.events.on(SignalReadingKeycard) do(e: Args):
+  self.events.on(SignalKeycardInserted) do(e: Args):
     self.delegate.switchToState(FlowStateType.ReadingKeycard)
 
   self.events.on(SignalCreateKeycardPin) do(e: Args):
     self.delegate.switchToState(FlowStateType.CreateKeycardPin)
 
-proc startKeycardFlow*(self: Controller) =
-  self.keycardService.startKeycardFlow()
+  self.events.on(SignalCreateSeedPhrase) do(e: Args):
+    let arg = KeycardArgs(e)
+    self.delegate.setSeedPhrasesAndSwitchToState(arg.seedPhrases, FlowStateType.KeycardPinSet)
+
+  self.events.on(SignalKeyUidReceived) do(e: Args):
+    let arg = KeycardArgs(e)
+    self.delegate.setKeyUidAndSwitchToState(arg.data, FlowStateType.YourProfileState)
+
+proc startOnboardingKeycardFlow*(self: Controller) =
+  self.keycardService.startOnboardingKeycardFlow()
+
+proc storePin*(self: Controller, pin: string) =
+  self.keycardService.resumeOnboardingKeycardFlow(pin, "")
+
+proc storeSeedPhrase*(self: Controller, seedPhrase: string) =
+  self.keycardService.resumeOnboardingKeycardFlow("", seedPhrase)
 
 proc cancelFlow*(self: Controller) =
   self.keycardService.cancelFlow()
 
-proc getGeneratedAccounts*(self: Controller): seq[GeneratedAccountDto] =
-  return self.accountsService.generatedAccounts()
+proc importMnemonic*(self: Controller, mnemonic: string): tuple[generatedAcc: GeneratedAccountDto, error: string] =
+  result.error = self.accountsService.importMnemonic(mnemonic)
+  result.generatedAcc = self.accountsService.getImportedAccount()

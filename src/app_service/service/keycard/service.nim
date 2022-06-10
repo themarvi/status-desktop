@@ -1,11 +1,12 @@
-import NimQml, json, os, chronicles # strutils, , json_serialization
+import NimQml, json, os, chronicles, random # strutils, , json_serialization
 import keycard_go
 import ../../../app/core/eventemitter
 import ../../../app/core/tasks/[qt, threadpool]
 import ../../../constants as status_const
 
 type FlowType {.pure.} = enum
-  GetAppInfo = 0
+  NoFlow = -1 # this type is added only for the desktop app purpose
+  GetAppInfo = 0 # enumeration of these flows should follow enumeration in the `status-keycard-go`
   RecoverAccount
   LoadAccount
   Login
@@ -18,62 +19,45 @@ type FlowType {.pure.} = enum
   UnpairOthers
   DeleteAccountAndUnpair
 
-const CheckForAKeycardReaderEveryMilliseconds = 5 * 1000 # 5 seconds
+const PUKLengthForStatusApp = 12
+const MnemonicLengthForStatusApp = 12
+const TimerIntervalInMilliseconds = 5 * 1000 # 5 seconds
 
-const KeycardResponseKeyType = "type"
-const KeycardResponseKeyEvent = "event"
-
-const KeycardKeycardFlowResult = "keycard.flow-result"
-const KeycardInsertCard = "keycard.action.insert-card"
-const KeycardCardInserted = "keycard.action.card-inserted"
-const KeycardSwapCard = "keycard.action.swap-card"
-const KeycardEnterPairing = "keycard.action.enter-pairing"
-const KeycardEnterPIN = "keycard.action.enter-pin"
-const KeycardEnterPUK = "keycard.action.enter-puk"
-const KeycardEnterNewPair = "keycard.action.enter-new-pairing"
-const KeycardEnterNewPIN = "keycard.action.enter-new-pin"
-const KeycardEnterNewPUK = "keycard.action.enter-new-puk"
-const KeycardEnterTXHash = "keycard.action.enter-tx-hash"
-const KeycardEnterPath = "keycard.action.enter-bip44-path"
-const KeycardEnterMnemonic = "keycard.action.enter-mnemonic"
-
-const KeycardErrorKey = "error"
-const KeycardErrorOK = "ok"
-const KeycardErrorCancel = "cancel"
-const KeycardErrorConnection = "connection-error"
-const KeycardErrorUnknownFlow = "unknown-flow"
-const KeycardErrorNotAKeycard = "not-a-keycard"
-const KeycardErrorNoKeys = "no-keys"
-const KeycardErrorHasKeys = "has-keys"
-const KeycardErrorRequireInit = "require-init"
-const KeycardErrorPairing = "pairing"
-const KeycardErrorUnblocking = "unblocking"
-const KeycardErrorSigning = "signing"
-const KeycardErrorExporting = "exporting"
-const KeycardErrorChanging = "changing-credentials"
-const KeycardErrorLoading = "loading-keys"
-
-const SignalPluginKeycardReader* = "pluginKeycardReader"
-const SignalInsertKeycard* = "insertKeycard"
-const SignalReadingKeycard* = "readingKeycard"
+const SignalKeycardReaderUnplugged* = "keycardReaderUnplugged"
+const SignalKeycardNotInserted* = "keycardNotInserted"
+const SignalKeycardInserted* = "keycardInserted"
 const SignalCreateKeycardPin* = "createKeycardPin"
+const SignalCreateSeedPhrase* = "createSeedPhrase"
+const SignalKeyUidReceived* = "keyUidReceived"
+const SignalKeycardError* = "keycardError"
+
+type
+  KeycardArgs* = ref object of Args
+    data*: string
+    seedPhrases*: seq[string]
+    errMessage*: string
 
 logScope:
   topics = "keycard-service"
 
-include async_tasks
+include constants
 include ../../common/json_utils
+include ../../common/mnemonics
+include async_tasks
 
 QtObject:
   type Service* = ref object of QObject
     events: EventEmitter
     threadpool: ThreadPool
     closingApp: bool
-    cancelFlow: bool 
+    cancelFlow: bool
+    currentFlow: FlowType
 
   #################################################
   # Forward declaration section
-  proc startCheckingForAKeycardReader(self: Service)
+  proc runTimer(self: Service)
+  proc handleMnemonic(self: Service, jsonObj: JsonNode)
+  proc handleKeyUid(self: Service, jsonObj: JsonNode)
 
   #################################################
 
@@ -91,9 +75,12 @@ QtObject:
     result.threadpool = threadpool
     result.closingApp = false
     result.cancelFlow = false
+    result.currentFlow = FlowType.NoFlow
 
   proc init*(self: Service) =
-    discard
+    debug "init keycard using ", pairingsJson=status_const.ROOTKEYCARDDIR
+    let initResp = keycard_go.keycardInitFlow(status_const.ROOTKEYCARDDIR)
+    debug "initialization response: ", initResp
 
   proc processSignal(self: Service, signal: string) =
     var jsonSignal: JsonNode
@@ -103,56 +90,117 @@ QtObject:
       error "Invalid signal received", data = signal
       return
 
+    echo "\n\nKEYCARD SIGNAL: ", $jsonSignal
+
     var typeObj, eventObj: JsonNode
-    if(not jsonSignal.getProp(KeycardResponseKeyType, typeObj) or 
-      not jsonSignal.getProp(KeycardResponseKeyEvent, eventObj)):
+    if(not jsonSignal.getProp(ResponseKeyType, typeObj) or 
+      not jsonSignal.getProp(ResponseKeyEvent, eventObj)):
       return
     
     let flowType = typeObj.getStr
-    let error = eventObj{KeycardErrorKey}.getStr
 
-    if(flowType == KeycardKeycardFlowResult and error == KeycardErrorConnection):
-      self.startCheckingForAKeycardReader()
-      self.events.emit(SignalPluginKeycardReader, Args())
-      return
-    
-    if(flowType == KeycardInsertCard):
-      self.events.emit(SignalInsertKeycard, Args())
+    if flowType == ResponseTypeValueKeycardFlowResult:  
+      if eventObj{ErrorKey}.getStr == ErrorConnection:
+        self.runTimer()
+        self.events.emit(SignalKeycardReaderUnplugged, Args())
+        return
+      if eventObj.contains(RequestParamKeyUID):
+        self.handleKeyUid(eventObj)
+        return
       return
 
-    if(flowType == KeycardCardInserted):
-      self.events.emit(SignalReadingKeycard, Args())
+    if(flowType == ResponseTypeValueInsertCard):
+      self.events.emit(SignalKeycardNotInserted, Args())
+      return
+
+    if(flowType == ResponseTypeValueCardInserted):
+      self.events.emit(SignalKeycardInserted, Args())
+      return
+  
+    if(flowType == ResponseTypeValueEnterPIN):
       self.events.emit(SignalCreateKeycardPin, Args())
+      return
+
+    if(flowType == ResponseTypeValueEnterMnemonic):
+      self.handleMnemonic(eventObj)
       return
 
   proc receiveKeycardSignal(self: Service, signal: string) {.slot.} =
     self.processSignal(signal)
 
-  proc checkForAKeycardReader*(self: Service, response: string) {.slot.} =
-    if(self.closingApp or self.cancelFlow):
+  proc handleMnemonic(self: Service, jsonObj: JsonNode) =
+    var indexesObj: JsonNode
+    if not jsonObj.getProp(RequestParamMnemonicIdxs, indexesObj) or indexesObj.kind != JArray:
+      let err = "cannot generate mnemonic"
+      error "keycard error: ", err
+      self.events.emit(SignalKeycardError, KeycardArgs(errMessage: err))
       return
-    let payload = "{}"
-    let startFlowResp = keycard_go.keycardStartFlow(FlowType.GetAppInfo.int, payload)
-    debug "get app info result: ", startFlowResp    
+    var seedPhrases: seq[string]
+    for ind in indexesObj:
+      seedPhrases.add(englishWords[ind.getInt])
+    self.events.emit(SignalCreateSeedPhrase, KeycardArgs(seedPhrases: seedPhrases))
 
-  proc startCheckingForAKeycardReader(self: Service) =
+  proc handleKeyUid(self: Service, jsonObj: JsonNode) =
+    var keyUidObj: JsonNode
+    if not jsonObj.getProp(RequestParamKeyUID, keyUidObj):
+      let err = "cannot generate key-uid"
+      error "keycard error: ", err
+      self.events.emit(SignalKeycardError, KeycardArgs(errMessage: err))
+      return
+    self.events.emit(SignalKeyUidReceived, KeycardArgs(data: keyUidObj.getStr))
+
+  proc startLoadAccountFlow(self: Service) {.slot.} =
+    let payload = %* { 
+      RequestParamOverwrite: true 
+    }
+    self.currentFlow = FlowType.LoadAccount
+    let response = keycard_go.keycardStartFlow(FlowType.LoadAccount.int, $payload)
+    debug "LoadAccount flow response: ", response
+
+  proc onTimeout(self: Service, response: string) {.slot.} =
+    if(self.closingApp or self.cancelFlow or self.currentFlow == FlowType.NoFlow):
+      return
+    debug "onTimeout, about to start flow: ", flowType=self.currentFlow
+    if self.currentFlow == FlowType.LoadAccount:
+      self.startLoadAccountFlow()
+
+  proc runTimer(self: Service) =
     if(self.closingApp or self.cancelFlow):
       return
 
     let arg = TimerTaskArg(
       tptr: cast[ByteAddress](timerTask),
       vptr: cast[ByteAddress](self.vptr),
-      slot: "checkForAKeycardReader",
-      timeoutInMilliseconds: CheckForAKeycardReaderEveryMilliseconds
+      slot: "onTimeout",
+      timeoutInMilliseconds: TimerIntervalInMilliseconds
     )
     self.threadpool.start(arg)
 
-  proc startKeycardFlow*(self: Service) =
+  proc startOnboardingKeycardFlow*(self: Service) =
     self.cancelFlow = false
-    debug "init keycard using ", pairingsJson=status_const.ROOTKEYCARDDIR
-    let initResp = keycard_go.keycardInitFlow(status_const.ROOTKEYCARDDIR)
-    debug "initialization result: ", initResp
-    self.checkForAKeycardReader("")
+    self.startLoadAccountFlow()
+
+  proc generateRandomPUK(self: Service): string =
+    for i in 0 .. PUKLengthForStatusApp:
+      result = result & $rand(0 .. 9)
+
+  proc resumeOnboardingKeycardFlow*(self: Service, pin: string, mnemonic: string) =
+    var payload = %* {
+      RequestParamOverwrite: true,
+      RequestParamMnemonicLen: MnemonicLengthForStatusApp,
+      RequestParamNewPUK: self.generateRandomPUK()
+    }
+    if pin.len > 0:
+      payload[RequestParamPIN] = newJString(pin)
+      payload[RequestParamNewPIN] = newJString(pin)
+    if mnemonic.len > 0:
+      payload[RequestParamMnemonic] = newJString(mnemonic)
+    echo "SENT PAYLOAD: ", $payload
+    let response = keycard_go.keycardResumeFlow($payload)
+    debug "resumeOnboardingKeycardFlow flow response: ", response
 
   proc cancelFlow*(self: Service) =
     self.cancelFlow = true
+    self.currentFlow = FlowType.LoadAccount
+    let response = keycard_go.keycardCancelFlow()
+    debug "cancel keycard flow response: ", response

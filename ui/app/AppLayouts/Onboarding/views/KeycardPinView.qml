@@ -17,7 +17,9 @@ Item {
     property KeycardStore keycardStore
 
     onStateChanged: {
-        if(state !== Constants.keycard.state.keycardPinSetState) {
+        if(state === Constants.keycard.state.keycardPinSetState) {
+            pinInputField.setPin("123456") // we are free to set fake pin in this case
+        } else {
             pinInputField.statesInitialization()
             pinInputField.forceFocus()
         }

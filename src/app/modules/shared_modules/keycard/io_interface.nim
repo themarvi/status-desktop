@@ -26,7 +26,7 @@ method getModuleAsVariant*(self: AccessInterface): QVariant {.base.} =
 method switchToState*(self: AccessInterface, state: FlowStateType) {.base.} =
   raise newException(ValueError, "No implementation available")
 
-method startKeycardFlow*(self: AccessInterface) {.base.} =
+method startOnboardingKeycardFlow*(self: AccessInterface) {.base.} =
   raise newException(ValueError, "No implementation available")
 
 method cancelFlow*(self: AccessInterface) {.base.} =
@@ -51,4 +51,10 @@ method nextState*(self: AccessInterface) {.base.} =
   raise newException(ValueError, "No implementation available")
 
 method getSeedPhrase*(self: AccessInterface): string {.base.} =
+  raise newException(ValueError, "No implementation available")
+
+method setSeedPhrasesAndSwitchToState*(self: AccessInterface, seedPhrases: seq[string], state: FlowStateType) {.base.} =
+  raise newException(ValueError, "No implementation available")
+
+method setKeyUidAndSwitchToState*(self: AccessInterface, keyUid: string, state: FlowStateType) {.base.} =
   raise newException(ValueError, "No implementation available")
