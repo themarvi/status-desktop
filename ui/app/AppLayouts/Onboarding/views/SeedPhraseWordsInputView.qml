@@ -125,10 +125,30 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.leftMargin: Style.current.xlPadding
                             input.edit.font.pixelSize: Constants.keycard.general.seedPhraseCellFontSize
+                            input.acceptReturn: true
 
                             onTextChanged: {
+                                if(text.length == 0)
+                                    return
+                                if(/(^\s|^\r|^\n)|(\s$|^\r$|^\n$)/.test(text)) {
+                                    text = text.trim()
+                                    return
+                                }
+                                else if(/\s|\r|\n/.test(text)) {
+                                    text = ""
+                                    return
+                                }
                                 valid = d.seedPhrases[model.modelData] === text
                                 d.updateValidity(index, valid, text !== "")
+                            }
+
+                            onKeyPressed: {
+                                if (d.allEntriesValid &&
+                                        (input.edit.keyEvent === Qt.Key_Return ||
+                                         input.edit.keyEvent === Qt.Key_Enter)) {
+                                    event.accepted = true
+                                    keycardStore.nextState()
+                                }
                             }
                         }
                     }

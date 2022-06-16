@@ -43,9 +43,12 @@ proc init*(self: Controller) =
   self.events.on(SignalCreateKeycardPin) do(e: Args):
     self.delegate.switchToState(FlowStateType.CreateKeycardPin)
 
+  self.events.on(SignalKeycardNotEmpty) do(e: Args):
+    self.delegate.switchToState(FlowStateType.KeycardNotEmpty)
+
   self.events.on(SignalCreateSeedPhrase) do(e: Args):
     let arg = KeycardArgs(e)
-    self.delegate.setSeedPhrasesAndSwitchToState(arg.seedPhrases, FlowStateType.KeycardPinSet)
+    self.delegate.setSeedPhraseAndSwitchToState(arg.seedPhrase, FlowStateType.KeycardPinSet)
 
   self.events.on(SignalKeyUidReceived) do(e: Args):
     let arg = KeycardArgs(e)
@@ -55,14 +58,20 @@ proc startOnboardingKeycardFlow*(self: Controller) =
   self.keycardService.startOnboardingKeycardFlow()
 
 proc storePin*(self: Controller, pin: string) =
-  self.keycardService.resumeOnboardingKeycardFlow(pin, "")
+  self.keycardService.storePin(pin)
 
 proc storeSeedPhrase*(self: Controller, seedPhrase: string) =
-  self.keycardService.resumeOnboardingKeycardFlow("", seedPhrase)
+  self.keycardService.storeSeedPhrase(seedPhrase)
 
-proc cancelFlow*(self: Controller) =
-  self.keycardService.cancelFlow()
+proc resumeCurrentFlow*(self: Controller) =
+  self.keycardService.resumeCurrentFlow()
 
-proc importMnemonic*(self: Controller, mnemonic: string): tuple[generatedAcc: GeneratedAccountDto, error: string] =
-  result.error = self.accountsService.importMnemonic(mnemonic)
-  result.generatedAcc = self.accountsService.getImportedAccount()
+proc factoryReset*(self: Controller) =
+  self.keycardService.factoryReset()
+
+proc cancelCurrentFlow*(self: Controller) =
+  self.keycardService.cancelCurrentFlow()
+
+# proc importMnemonic*(self: Controller, mnemonic: string): tuple[generatedAcc: GeneratedAccountDto, error: string] =
+#   result.error = self.accountsService.importMnemonic(mnemonic)
+#   result.generatedAcc = self.accountsService.getImportedAccount()

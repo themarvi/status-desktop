@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQml.StateMachine 1.14 as DSM
+import QtQuick.Dialogs 1.3
 import utils 1.0
 
 import "views"
@@ -302,12 +303,44 @@ QtObject {
 
             Connections {
                 target: keycardFlowView.keycardStore.keycardModule
-                onFlowStateChanged: {
-                    if(keycardFlowView.keycardStore.keycardModule.flowState === Constants.keycard.state.yourProfileState) {
-                        root.keysMainSetState = "importseed";
-                        Global.applicationWindow.navigateTo("GenKey");
-                    }
+
+                onContinueWithCreatingProfile: {
+                    console.warn("-----IMPORT ON KEYCARD")
+                    OnboardingStore.importMnemonic(seedPhrase)
                 }
+//                onFlowStateChanged: {
+//                    if(keycardFlowView.keycardStore.keycardModule.flowState === Constants.keycard.state.yourProfileState) {
+//                        root.keysMainSetState = "importseed";
+//                        Global.applicationWindow.navigateTo("GenKey");
+
+//                        root.keysMainSetState = "importseed";
+//                        Global.applicationWindow.navigateTo("GenKey");
+//                    }
+//                }
+            }
+
+            Connections {
+                target: OnboardingStore.onboardingModuleInst
+                onAccountImportError: {
+                    if (error === Constants.existingAccountError) {
+                        importSeedError.title = qsTr("Keys for this account already exist")
+                        importSeedError.text = qsTr("Keys for this account already exist and can't be added again. If you've lost your password, passcode or Keycard, uninstall the app, reinstall and access your keys by entering your seed phrase")
+                    } else {
+                        importSeedError.title = qsTr("Error importing seed")
+                        importSeedError.text = error
+                    }
+                    importSeedError.open()
+                }
+                onAccountImportSuccess: {
+                    root.keysMainSetState = "importseed";
+                    Global.applicationWindow.navigateTo("GenKey");
+                }
+            }
+
+            MessageDialog {
+                id: importSeedError
+                icon: StandardIcon.Critical
+                standardButtons: StandardButton.Ok
             }
         }
     }

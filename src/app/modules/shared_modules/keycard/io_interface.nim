@@ -10,6 +10,8 @@ type FlowStateType* {.pure.} = enum
   DisplaySeedPhrase = "displaySeedPhraseState"
   EnterSeedPhraseWords = "enterSeedPhraseWordsState"
   YourProfileState = "yourProfileState"
+  KeycardNotEmpty = "keycardNotEmpty"
+  KeycardLocked = "keycardLocked"
 
 type
   AccessInterface* {.pure inheritable.} = ref object of RootObj
@@ -53,8 +55,14 @@ method nextState*(self: AccessInterface) {.base.} =
 method getSeedPhrase*(self: AccessInterface): string {.base.} =
   raise newException(ValueError, "No implementation available")
 
-method setSeedPhrasesAndSwitchToState*(self: AccessInterface, seedPhrases: seq[string], state: FlowStateType) {.base.} =
+method setSeedPhraseAndSwitchToState*(self: AccessInterface, seedPhrase: seq[string], state: FlowStateType) {.base.} =
   raise newException(ValueError, "No implementation available")
 
 method setKeyUidAndSwitchToState*(self: AccessInterface, keyUid: string, state: FlowStateType) {.base.} =
+  raise newException(ValueError, "No implementation available")
+
+method factoryReset*(self: AccessInterface) {.base.} =
+  raise newException(ValueError, "No implementation available")
+
+method switchCard*(self: AccessInterface) {.base.} =
   raise newException(ValueError, "No implementation available")

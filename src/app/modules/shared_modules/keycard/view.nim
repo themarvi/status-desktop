@@ -54,3 +54,13 @@ QtObject:
 
   proc getSeedPhrase*(self: View): string {.slot.} =
     return self.delegate.getSeedPhrase()
+
+  proc continueWithCreatingProfile(self: View, seedPhrase: string) {.signal.}
+  proc sendContinueWithCreatingProfileSignal*(self: View, seedPhrase: string) =
+    self.continueWithCreatingProfile(seedPhrase)
+
+  proc factoryReset*(self: View) {.slot.} =
+    self.delegate.factoryReset()
+
+  proc switchCard*(self: View) {.slot.} =
+    self.delegate.switchCard()

@@ -32,6 +32,13 @@ Item {
         readonly property int columnSpacing: Style.current.bigPadding
     }
 
+    Keys.onPressed: {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+            event.accepted = true
+            keycardStore.nextState()
+        }
+    }
+
     Item {
         anchors.top: parent.top
         anchors.bottom: footerWrapper.top
@@ -112,6 +119,7 @@ Item {
             anchors.topMargin: Style.current.padding
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Next")
+            focus: true
             onClicked: {
                 keycardStore.nextState()
             }

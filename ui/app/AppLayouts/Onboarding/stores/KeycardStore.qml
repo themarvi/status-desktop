@@ -40,4 +40,12 @@ QtObject {
     function nextState() {
         return root.keycardModule.nextState()
     }
+
+    function factoryReset() {
+        return root.keycardModule.factoryReset()
+    }
+
+    function switchCard() {
+        return root.keycardModule.switchCard()
+    }
 }

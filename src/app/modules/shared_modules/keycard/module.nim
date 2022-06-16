@@ -18,7 +18,7 @@ type
     viewVariant: QVariant
     controller: Controller
     tmpPin: string
-    tmpSeedPhrases: string
+    tmpSeedPhrase: string
 
 proc newModule*(events: EventEmitter, keycardService: keycard_service.Service, 
   accountsService: accounts_service.Service):
@@ -50,7 +50,7 @@ method startOnboardingKeycardFlow*(self: Module) =
   self.controller.startOnboardingKeycardFlow()
 
 method cancelFlow*(self: Module) =
-  self.controller.cancelFlow()
+  self.controller.cancelCurrentFlow()
 
 method checkKeycardPin*(self: Module, pin: string): bool =
   self.tmpPin = pin
@@ -74,7 +74,9 @@ method shouldExitKeycardFlow*(self: Module): bool =
   return self.view.getFlowState() == $FlowStateType.PluginKeycard or
     self.view.getFlowState() == $FlowStateType.InsertKeycard or
     self.view.getFlowState() == $FlowStateType.ReadingKeycard or
-    self.view.getFlowState() == $FlowStateType.CreateKeycardPin
+    self.view.getFlowState() == $FlowStateType.CreateKeycardPin or
+    self.view.getFlowState() == $FlowStateType.KeycardNotEmpty or
+    self.view.getFlowState() == $FlowStateType.KeycardLocked
 
 method backClicked*(self: Module) =
   if self.view.getFlowState() == $FlowStateType.RepeatKeycardPin or
@@ -99,26 +101,33 @@ method nextState*(self: Module) =
   #   self.view.setFlowState(FlowStateType.YourProfileState)
 
 method getSeedPhrase*(self: Module): string =
-  return self.tmpSeedPhrases
+  return self.tmpSeedPhrase
 
 proc tryToStorePin(self: Module) =
   self.controller.storePin(self.tmpPin)
   self.tmpPin = ""
 
 proc tryToStoreSeedPhrase(self: Module) =
-  self.controller.storeSeedPhrase(self.tmpSeedPhrases)
+  self.controller.storeSeedPhrase(self.tmpSeedPhrase)
 
-method setSeedPhrasesAndSwitchToState*(self: Module, seedPhrases: seq[string], state: FlowStateType) =
-  self.tmpSeedPhrases = seedPhrases.join(" ")
+method setSeedPhraseAndSwitchToState*(self: Module, seedPhrase: seq[string], state: FlowStateType) =
+  self.tmpSeedPhrase = seedPhrase.join(" ")
   self.switchToState(state)
 
 method setKeyUidAndSwitchToState*(self: Module, keyUid: string, state: FlowStateType) =
-  let res = self.controller.importMnemonic(self.tmpSeedPhrases)
-  if res.error.len > 0:
-    error "error importing account"
-    return
-  if res.generatedAcc.keyUid != ("0x" & keyUid):
-    error "error importing account different key-uid"
-    return
-  self.tmpSeedPhrases = ""
-  self.switchToState(state)
+  ## The correct flow should be, just from this procedure to import account from `accountsService` using 
+  ## `self.tmpSeedPhrase` and call `self.switchToState(state)`, but...
+  ## 
+  ## ...because of the current state of the onboarding flow (which need to be refactored, cause there is no clear 
+  ## resposibillyty defined and the way it's developed is very hard for maintaining) we're forced to send signal 
+  ## from this state and continue creating a profile using onboarding module and current code we have.
+  ## SeedPhraseGenerated
+  
+  self.view.sendContinueWithCreatingProfileSignal(self.tmpSeedPhrase)
+  self.tmpSeedPhrase = ""
+
+method factoryReset*(self: Module) =
+  self.controller.factoryReset()
+
+method switchCard*(self: Module) =
+  self.controller.resumeCurrentFlow()

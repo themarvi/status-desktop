@@ -38,6 +38,11 @@ OnboardingBasePage {
             {
                 return seedphraseWordsInputViewComponent
             }
+            else if (keycardStore.keycardModule.flowState === Constants.keycard.state.keycardNotEmpty ||
+                     keycardStore.keycardModule.flowState === Constants.keycard.state.keycardLocked)
+            {
+                return keycardNotEmptyViewComponent
+            }
 
             return undefined
         }
@@ -63,6 +68,12 @@ OnboardingBasePage {
 
     property var seedphraseWordsInputViewComponent: Component {
         SeedPhraseWordsInputView {
+            keycardStore: root.keycardStore
+        }
+    }
+
+    property var keycardNotEmptyViewComponent: Component {
+        KeycardNotEmpty {
             keycardStore: root.keycardStore
         }
     }

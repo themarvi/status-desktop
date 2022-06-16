@@ -29,12 +29,17 @@ const SignalKeycardInserted* = "keycardInserted"
 const SignalCreateKeycardPin* = "createKeycardPin"
 const SignalCreateSeedPhrase* = "createSeedPhrase"
 const SignalKeyUidReceived* = "keyUidReceived"
+const SignalSwapKeycard* = "swapKeycard"
 const SignalKeycardError* = "keycardError"
+const SignalMaxPINRetriesFetched* = "maxPINRetriesFetched"
+const SignalMaxPUKRetriesFetched* = "maxPUKRetriesFetched"
+const SignalMaxPairingSlotsFetched* = "maxPairingSlotsFetched"
+const SignalKeycardNotEmpty* = "keycardNotEmpty"
 
 type
   KeycardArgs* = ref object of Args
     data*: string
-    seedPhrases*: seq[string]
+    seedPhrase*: seq[string]
     errMessage*: string
 
 logScope:
@@ -58,6 +63,7 @@ QtObject:
   proc runTimer(self: Service)
   proc handleMnemonic(self: Service, jsonObj: JsonNode)
   proc handleKeyUid(self: Service, jsonObj: JsonNode)
+  proc handleError(self: Service, jsonObj: JsonNode): bool
 
   #################################################
 
@@ -100,29 +106,36 @@ QtObject:
     let flowType = typeObj.getStr
 
     if flowType == ResponseTypeValueKeycardFlowResult:  
-      if eventObj{ErrorKey}.getStr == ErrorConnection:
-        self.runTimer()
-        self.events.emit(SignalKeycardReaderUnplugged, Args())
+      if self.handleError(eventObj):
         return
       if eventObj.contains(RequestParamKeyUID):
         self.handleKeyUid(eventObj)
         return
       return
 
-    if(flowType == ResponseTypeValueInsertCard):
+    if flowType == ResponseTypeValueInsertCard:
       self.events.emit(SignalKeycardNotInserted, Args())
       return
 
-    if(flowType == ResponseTypeValueCardInserted):
+    if flowType == ResponseTypeValueCardInserted:
       self.events.emit(SignalKeycardInserted, Args())
       return
   
-    if(flowType == ResponseTypeValueEnterPIN):
+    if flowType == ResponseTypeValueEnterPIN or
+      flowType == ResponseTypeValueEnterNewPIN:
+      if self.handleError(eventObj):
+        return
       self.events.emit(SignalCreateKeycardPin, Args())
       return
 
-    if(flowType == ResponseTypeValueEnterMnemonic):
+    if flowType == ResponseTypeValueEnterMnemonic:
       self.handleMnemonic(eventObj)
+      return
+
+    if flowType == ResponseTypeValueSwapCard:
+      if self.handleError(eventObj):
+        return
+      self.events.emit(SignalSwapKeycard, Args())
       return
 
   proc receiveKeycardSignal(self: Service, signal: string) {.slot.} =
@@ -135,10 +148,10 @@ QtObject:
       error "keycard error: ", err
       self.events.emit(SignalKeycardError, KeycardArgs(errMessage: err))
       return
-    var seedPhrases: seq[string]
+    var seedPhrase: seq[string]
     for ind in indexesObj:
-      seedPhrases.add(englishWords[ind.getInt])
-    self.events.emit(SignalCreateSeedPhrase, KeycardArgs(seedPhrases: seedPhrases))
+      seedPhrase.add(englishWords[ind.getInt])
+    self.events.emit(SignalCreateSeedPhrase, KeycardArgs(seedPhrase: seedPhrase))
 
   proc handleKeyUid(self: Service, jsonObj: JsonNode) =
     var keyUidObj: JsonNode
@@ -149,10 +162,31 @@ QtObject:
       return
     self.events.emit(SignalKeyUidReceived, KeycardArgs(data: keyUidObj.getStr))
 
+  proc handleError(self: Service, jsonObj: JsonNode): bool =
+    var errValueObj: JsonNode
+    if jsonObj.getProp(ErrorKey, errValueObj):
+      if errValueObj.getStr == ErrorConnection:
+        self.runTimer()
+        self.events.emit(SignalKeycardReaderUnplugged, Args())
+        return true
+      if errValueObj.getStr == RequestParamPIN:
+        self.events.emit(SignalMaxPINRetriesFetched, KeycardArgs())
+        return true
+      if errValueObj.getStr == RequestParamPUK:
+        # A keycard is locked in real when PUK is missed 5 times.
+        self.events.emit(SignalMaxPUKRetriesFetched, KeycardArgs())
+        return true
+      if errValueObj.getStr == RequestParamFreeSlots:
+        self.events.emit(SignalMaxPairingSlotsFetched, KeycardArgs())
+        return true
+      if errValueObj.getStr == ErrorHasKeys:
+        self.events.emit(SignalKeycardNotEmpty, KeycardArgs())
+        return true
+      return false
+    return false
+
   proc startLoadAccountFlow(self: Service) {.slot.} =
-    let payload = %* { 
-      RequestParamOverwrite: true 
-    }
+    let payload = %* { }
     self.currentFlow = FlowType.LoadAccount
     let response = keycard_go.keycardStartFlow(FlowType.LoadAccount.int, $payload)
     debug "LoadAccount flow response: ", response
@@ -181,25 +215,49 @@ QtObject:
     self.startLoadAccountFlow()
 
   proc generateRandomPUK(self: Service): string =
-    for i in 0 .. PUKLengthForStatusApp:
+    for i in 0 ..< PUKLengthForStatusApp:
       result = result & $rand(0 .. 9)
 
-  proc resumeOnboardingKeycardFlow*(self: Service, pin: string, mnemonic: string) =
+  proc resumeFlow(self: Service, payload: JsonNode) =
+    let response = keycard_go.keycardResumeFlow($payload)
+    debug "resumeCurrentFlow flow response: ", response
+
+  proc storePin*(self: Service, pin: string) =
+    if pin.len == 0:
+      info "empty pin provided"
+      return
     var payload = %* {
       RequestParamOverwrite: true,
       RequestParamMnemonicLen: MnemonicLengthForStatusApp,
-      RequestParamNewPUK: self.generateRandomPUK()
+      RequestParamNewPUK: self.generateRandomPUK(),
+      RequestParamPIN: pin,
+      RequestParamNewPIN: pin
     }
-    if pin.len > 0:
-      payload[RequestParamPIN] = newJString(pin)
-      payload[RequestParamNewPIN] = newJString(pin)
-    if mnemonic.len > 0:
-      payload[RequestParamMnemonic] = newJString(mnemonic)
-    echo "SENT PAYLOAD: ", $payload
-    let response = keycard_go.keycardResumeFlow($payload)
-    debug "resumeOnboardingKeycardFlow flow response: ", response
+    self.resumeFlow(payload)
 
-  proc cancelFlow*(self: Service) =
+  proc storeSeedPhrase*(self: Service, seedPhrase: string) =
+    if seedPhrase.len == 0:
+      info "empty seed phrase provided"
+      return
+    var payload = %* {
+      RequestParamOverwrite: true,
+      RequestParamMnemonicLen: MnemonicLengthForStatusApp,
+      RequestParamNewPUK: self.generateRandomPUK(),
+      RequestParamMnemonic: seedPhrase
+    }
+    self.resumeFlow(payload)
+
+  proc resumeCurrentFlow*(self: Service) =
+    var payload = %* { }
+    self.resumeFlow(payload)
+
+  proc factoryReset*(self: Service) =
+    var payload = %* { 
+      RequestParamFactoryReset: true
+    }
+    self.resumeFlow(payload)  
+
+  proc cancelCurrentFlow*(self: Service) =
     self.cancelFlow = true
     self.currentFlow = FlowType.LoadAccount
     let response = keycard_go.keycardCancelFlow()

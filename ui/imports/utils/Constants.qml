@@ -202,6 +202,7 @@ QtObject {
             readonly property int seedPhraseCellHeight: 60
             readonly property int seedPhraseCellNumberWidth: 24
             readonly property int seedPhraseCellFontSize: 12
+            readonly property int buttonFontSize: 15
         }
 
         readonly property QtObject state: QtObject {
@@ -214,6 +215,8 @@ QtObject {
             readonly property string displaySeedPhraseState: "displaySeedPhraseState"
             readonly property string enterSeedPhraseWordsState: "enterSeedPhraseWordsState"
             readonly property string yourProfileState: "yourProfileState"
+            readonly property string keycardNotEmpty: "keycardNotEmpty"
+            readonly property string keycardLocked: "keycardLocked"
         }
     }
 
