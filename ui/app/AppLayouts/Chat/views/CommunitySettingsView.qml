@@ -131,7 +131,6 @@ StatusAppTwoPanelLayout {
                 requestToJoinEnabled: root.community.access === Constants.communityChatOnRequestAccess
                 pinMessagesEnabled: root.community.pinMessageAllMembersEnabled
 
-                archiveSupportOptionVisible: root.rootStore.isCommunityHistoryArchiveSupportEnabled
                 editable: root.community.amISectionAdmin
 
                 onEdited: {

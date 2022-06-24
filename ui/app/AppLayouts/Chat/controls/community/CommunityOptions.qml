@@ -9,8 +9,6 @@ import StatusQ.Controls 0.1
 ColumnLayout {
     id: root
 
-    property alias archiveSupportOptionVisible: archiveSupport.visible
-
     property alias archiveSupportEnabled: archiveSupportToggle.checked
     property alias requestToJoinEnabled: requestToJoinToggle.checked
     property alias pinMessagesEnabled: pinMessagesToggle.checked

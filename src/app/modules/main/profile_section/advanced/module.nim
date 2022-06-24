@@ -165,11 +165,5 @@ method toggleCommunitiesPortalSection*(self: Module) =
 method toggleNodeManagementSection*(self: Module) =
   self.controller.toggleNodeManagementSection()
 
-method onCommunityHistoryArchiveSupportToggled*(self: Module) =
-  self.view.emitCommunityHistoryArchiveSupportEnabledSignal()
-
-method toggleCommunityHistoryArchiveSupport*(self: Module) =
-  self.controller.toggleCommunityHistoryArchiveSupport()
-
 method isCommunityHistoryArchiveSupportEnabled*(self: Module): bool =
   self.controller.isCommunityHistoryArchiveSupportEnabled()

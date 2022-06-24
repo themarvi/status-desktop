@@ -136,8 +136,6 @@ QtObject {
 
     property var walletSectionTransactionsInst: walletSectionTransactions
 
-    property bool isCommunityHistoryArchiveSupportEnabled: advancedModule? advancedModule.isCommunityHistoryArchiveSupportEnabled : false
-
     property string communityTags: communitiesModule.tags
 
     function reCalculateAddToGroupContacts(channel) {

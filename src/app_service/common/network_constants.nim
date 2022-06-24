@@ -317,7 +317,7 @@ var NODE_CONFIG* = %* {
   },
   "Networks": Networks,
   "TorrentConfig": {
-    "Enabled": false,
+    "Enabled": true,
     "Port": DEFAULT_TORRENT_CONFIG_PORT,
     "DataDir": DEFAULT_TORRENT_CONFIG_DATADIR,
     "TorrentDir": DEFAULT_TORRENT_CONFIG_TORRENTDIR

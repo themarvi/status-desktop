@@ -68,24 +68,6 @@ proc saveConfiguration(self: Service, configuration: NodeConfigDto): bool =
   self.configuration = configuration
   return true
 
-method enableCommunityHistoryArchiveSupport*(self: Service): bool =
-  let response = status_node_config.enableCommunityHistoryArchiveSupport()
-  if(not response.error.isNil):
-    error "error enabling community history archive support: ", errDescription = response.error.message
-    return false
-
-  self.fetchNodeConfig()
-  return true
-
-method disableCommunityHistoryArchiveSupport*(self: Service): bool =
-  let response = status_node_config.disableCommunityHistoryArchiveSupport()
-  if(not response.error.isNil):
-    error "error disabling community history archive support: ", errDescription = response.error.message
-    return false
-
-  self.fetchNodeConfig()
-  return true
-
 proc getWakuVersion*(self: Service): int =
   if self.configuration.WakuConfig.Enabled:
     return WAKU_VERSION_1

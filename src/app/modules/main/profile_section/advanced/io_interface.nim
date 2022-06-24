@@ -122,6 +122,3 @@ method enableDeveloperFeatures*(self: AccessInterface) {.base.} =
 
 method isCommunityHistoryArchiveSupportEnabled*(self: AccessInterface): bool {.base.} =
   raise newException(ValueError, "No implementation available")
-
-method toggleCommunityHistoryArchiveSupport*(self: AccessInterface) {.base.} =
-  raise newException(ValueError, "No implementation available")

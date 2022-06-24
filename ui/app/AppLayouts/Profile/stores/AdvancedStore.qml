@@ -16,7 +16,6 @@ QtObject {
     property bool isTelemetryEnabled: advancedModule? advancedModule.isTelemetryEnabled : false
     property bool isAutoMessageEnabled: advancedModule? advancedModule.isAutoMessageEnabled : false
     property bool isDebugEnabled: advancedModule? advancedModule.isDebugEnabled : false
-    property bool isCommunityHistoryArchiveSupportEnabled: advancedModule? advancedModule.isCommunityHistoryArchiveSupportEnabled : false
 
     property var customNetworksModel: advancedModule? advancedModule.customNetworksModel : []
 
