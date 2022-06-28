@@ -241,7 +241,20 @@ proc createChannelGroupItem[T](self: Module[T], c: ChannelGroupDto): SectionItem
       x.our
     )) else: @[],
     communityDetails.settings.historyArchiveSupportEnabled,
-    communityDetails.adminSettings.pinMessageAllMembersEnabled
+    communityDetails.adminSettings.pinMessageAllMembersEnabled,
+    c.bannedMembersIds.map(proc(bannedMemberId: string): MemberItem=
+      let contactDetails = self.controller.getContactDetails(bannedMemberId)
+      result = initMemberItem(
+        pubKey = bannedMemberId,
+        displayName = contactDetails.displayName,
+        ensName = contactDetails.details.name,
+        localNickname = contactDetails.details.localNickname,
+        alias = contactDetails.details.alias,
+        icon = contactDetails.icon,
+        onlineStatus = OnlineStatus.Offline,
+        isContact = contactDetails.details.added # FIXME
+      )
+    )
   )
 
 
@@ -510,6 +523,7 @@ proc notifySubModulesAboutChange[T](self: Module[T], sectionId: string) =
 
 method activeSectionSet*[T](self: Module[T], sectionId: string) =
   let item = self.view.model().getItemById(sectionId)
+
   if(item.isEmpty()):
     # should never be here
     echo "main-module, incorrect section id: ", sectionId

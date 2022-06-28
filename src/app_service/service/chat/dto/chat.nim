@@ -92,6 +92,7 @@ type ChannelGroupDto* = object
   muted*: bool
   historyArchiveSupportEnabled*: bool
   pinMessageAllMembersEnabled*: bool
+  bannedMembersIds*: seq[string]
 
 type ClearedHistoryDto* = object
   chatId*: string
@@ -265,6 +266,11 @@ proc toChannelGroupDto*(jsonObj: JsonNode): ChannelGroupDto =
   if(jsonObj.getProp("members", membersObj) and membersObj.kind == JObject):
     for memberId, memberObj in membersObj:
       result.members.add(toChatMember(memberObj, memberId))
+
+  var bannedMembersIdsObj: JsonNode
+  if(jsonObj.getProp("banList", bannedMembersIdsObj) and bannedMembersIdsObj.kind == JArray):
+    for bannedMemberId in bannedMembersIdsObj:
+      result.bannedMembersIds.add(bannedMemberId.getStr)
 
   discard jsonObj.getProp("canManageUsers", result.canManageUsers)
   discard jsonObj.getProp("color", result.color)

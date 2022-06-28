@@ -68,6 +68,7 @@ type CommunityDto* = object
   pendingRequestsToJoin*: seq[CommunityMembershipRequestDto]
   settings*: CommunitySettingsDto
   adminSettings*: CommunityAdminSettingsDto
+  bannedMembersIds*: seq[string]
 
 type CuratedCommunity* = object
     available*: bool
@@ -116,6 +117,11 @@ proc toCommunityDto*(jsonObj: JsonNode): CommunityDto =
   if(jsonObj.getProp("members", membersObj) and membersObj.kind == JObject):
     for memberId, memberObj in membersObj:
       result.members.add(toMember(memberObj, memberId))
+
+  var bannedMembersIdsObj: JsonNode
+  if(jsonObj.getProp("banList", bannedMembersIdsObj) and bannedMembersIdsObj.kind == JArray):
+    for bannedMemberId in bannedMembersIdsObj:
+      result.bannedMembersIds.add(bannedMemberId.getStr)
 
   discard jsonObj.getProp("canRequestAccess", result.canRequestAccess)
   discard jsonObj.getProp("canManageUsers", result.canManageUsers)
@@ -190,7 +196,8 @@ proc toChannelGroupDto*(communityDto: CommunityDto): ChannelGroupDto =
       )),
     canManageUsers: communityDto.canManageUsers,
     muted: communityDto.muted,
-    historyArchiveSupportEnabled: communityDto.settings.historyArchiveSupportEnabled
+    historyArchiveSupportEnabled: communityDto.settings.historyArchiveSupportEnabled,
+    bannedMembersIds: communityDto.bannedMembersIds
   )
 
 proc parseCommunitiesSettings*(response: RpcResponse[JsonNode]): seq[CommunitySettingsDto] =

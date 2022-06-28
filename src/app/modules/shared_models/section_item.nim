@@ -41,6 +41,7 @@ type
     pendingRequestsToJoinModel: PendingRequestModel
     historyArchiveSupportEnabled: bool
     pinMessageAllMembersEnabled: bool
+    bannedMembersModel: member_model.Model
 
 proc initItem*(
     id: string,
@@ -69,7 +70,8 @@ proc initItem*(
     members: seq[MemberItem] = @[],
     pendingRequestsToJoin: seq[PendingRequestItem] = @[],
     historyArchiveSupportEnabled = false,
-    pinMessageAllMembersEnabled = false
+    pinMessageAllMembersEnabled = false,
+    bannedMembers: seq[MemberItem] = @[],
     ): SectionItem =
   result.id = id
   result.sectionType = sectionType
@@ -100,6 +102,8 @@ proc initItem*(
   result.pendingRequestsToJoinModel.setItems(pendingRequestsToJoin)
   result.historyArchiveSupportEnabled = historyArchiveSupportEnabled
   result.pinMessageAllMembersEnabled = pinMessageAllMembersEnabled
+  result.bannedMembersModel = newModel()
+  result.bannedMembersModel.setItems(bannedMembers)
 
 proc isEmpty*(self: SectionItem): bool =
   return self.id.len == 0
@@ -132,6 +136,7 @@ proc `$`*(self: SectionItem): string =
     members:{self.membersModel},
     historyArchiveSupportEnabled:{self.historyArchiveSupportEnabled},
     pinMessageAllMembersEnabled:{self.pinMessageAllMembersEnabled},
+    bannedMembers:{self.bannedMembersModel},
     ]"""
 
 proc id*(self: SectionItem): string {.inline.} =
@@ -233,6 +238,9 @@ proc updateMember*(
     alias: string,
     image: string) =
   self.membersModel.updateItem(pubkey, name, ensName, nickname, alias, image)
+
+proc bannedMembers*(self: SectionItem): member_model.Model {.inline.} =
+  self.bannedMembersModel
 
 proc pendingRequestsToJoin*(self: SectionItem): PendingRequestModel {.inline.} =
   self.pendingRequestsToJoinModel

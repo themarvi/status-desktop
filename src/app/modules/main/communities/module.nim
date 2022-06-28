@@ -110,7 +110,20 @@ method getCommunityItem(self: Module, c: CommunityDto): SectionItem =
           onlineStatus = OnlineStatus.Offline, # TODO get the actual status?
           isContact = contactDetails.details.added, # FIXME
           )),
-      historyArchiveSupportEnabled = c.settings.historyArchiveSupportEnabled
+      historyArchiveSupportEnabled = c.settings.historyArchiveSupportEnabled,
+      bannedMembers = c.bannedMembersIds.map(proc(bannedMemberId: string): MemberItem =
+        let contactDetails = self.controller.getContactDetails(bannedMemberId)
+        result = initMemberItem(
+          pubKey = bannedMemberId,
+          displayName = contactDetails.displayName,
+          ensName = contactDetails.details.name,
+          localNickname = contactDetails.details.localNickname,
+          alias = contactDetails.details.alias,
+          icon = contactDetails.icon,
+          onlineStatus = OnlineStatus.Offline, # TODO get the actual status?
+          isContact = contactDetails.details.added, # FIXME
+        )
+      ),
     )
 
 method getCuratedCommunityItem(self: Module, c: CuratedCommunity): CuratedCommunityItem =
