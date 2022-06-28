@@ -100,10 +100,7 @@ Item {
             var popup = changeProfilePicComponent.createObject(appMain);
             popup.open();
         }
-        onOpenBackUpSeedPopup: {
-            var popup = backupSeedModalComponent.createObject(appMain)
-            popup.open()
-        }
+        onOpenBackUpSeedPopup: Global.openPopup(backupSeedModalComponent)
         onDisplayToastMessage: {
             appMain.rootStore.mainModuleInst.displayEphemeralNotification(title, subTitle, icon, loading, ephNotifType, url);
         }
@@ -149,6 +146,7 @@ Item {
         id: backupSeedModal
         anchors.centerIn: parent
         privacyStore: appMain.rootStore.profileSectionStore.privacyStore
+        onClosed: destroy()
     }
 
     Component {

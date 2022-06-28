@@ -86,6 +86,7 @@ Flickable {
 
                 StatusStackModal {
                     anchors.centerIn: parent
+                    width: 640
                     replaceItem: CommunityColorPanel {
                         Component.onCompleted: color = colorPicker.color
                         onAccepted: {
@@ -108,6 +109,7 @@ Flickable {
 
                 StatusStackModal {
                     anchors.centerIn: parent
+                    width: 640
                     replaceItem: CommunityTagsPanel {
                         Component.onCompleted: {
                             tags = tagsPicker.tags;
