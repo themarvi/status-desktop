@@ -1,5 +1,6 @@
 import NimQml
 
+
 QtObject:
   type ChatDetails* = ref object of QObject
     # fixed props
@@ -17,6 +18,7 @@ QtObject:
     notificationsCount: int
     muted: bool
     position: int
+    isUntrustworthy: bool
 
   proc delete*(self: ChatDetails) =
     self.QObject.delete
@@ -26,8 +28,9 @@ QtObject:
     result.QObject.setup
 
   proc setChatDetails*(self: ChatDetails, id: string, `type`: int, belongsToCommunity,
-    isUsersListAvailable: bool, name, icon: string, color, description,
-    emoji: string, hasUnreadMessages: bool, notificationsCount: int, muted: bool, position: int) =
+      isUsersListAvailable: bool, name, icon: string, color, description,
+      emoji: string, hasUnreadMessages: bool, notificationsCount: int, muted: bool, position: int,
+      isUntrustworthy: bool) =
     self.id = id
     self.`type` = `type`
     self.belongsToCommunity = belongsToCommunity
@@ -41,6 +44,7 @@ QtObject:
     self.notificationsCount = notificationsCount
     self.muted = muted
     self.position = position
+    self.isUntrustworthy = isUntrustworthy
 
   proc getId(self: ChatDetails): string {.slot.} =
     return self.id
@@ -160,3 +164,14 @@ QtObject:
   proc setPotion*(self: ChatDetails, value: int) = # this is not a slot
     self.position = value
     self.positionChanged()
+
+  proc isUntrustworthyChanged(self: ChatDetails) {.signal.}
+  proc getIsUntrustworthy(self: ChatDetails): bool {.slot.} =
+    return self.isUntrustworthy
+  QtProperty[bool] isUntrustworthy:
+    read = getIsUntrustworthy
+    notify = isUntrustworthyChanged
+
+  proc setIsUntrustworthy*(self: ChatDetails, value: bool) = # this is not a slot
+    self.isUntrustworthy = value
+    self.isUntrustworthyChanged()

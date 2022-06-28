@@ -125,6 +125,7 @@ StatusAppTwoPanelLayout {
 
                 messagingStore: profileView.store.messagingStore
                 sectionTitle: profileView.store.getNameForSubsection(Constants.settingsSubsection.messaging)
+                contactsStore: profileView.store.contactsStore
                 contentWidth: d.contentWidth
             }
 

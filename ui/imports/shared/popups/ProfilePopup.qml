@@ -8,6 +8,9 @@ import shared 1.0
 import shared.popups 1.0
 import shared.stores 1.0
 import shared.controls.chat 1.0
+import shared.panels 1.0
+import shared.views.chat 1.0
+
 
 import StatusQ.Core 0.1
 import StatusQ.Core.Theme 0.1
@@ -29,12 +32,38 @@ StatusModal {
     property string userNickname: ""
     property string userEnsName: ""
     property string userIcon: ""
+    property int userTrustStatus: Constants.trustStatus.unknown
+    property int verificationStatus: Constants.verificationStatus.unverified
     property string text: ""
+    property string challenge: ""
+    property string response: ""
 
     property bool userIsEnsVerified: false
     property bool userIsBlocked: false
+    property bool userIsUntrustworthy: false
+    property bool userTrustIsUnknown: false
     property bool isCurrentUser: false
     property bool isAddedContact: false
+    property bool isMutualContact: false
+    property bool isVerificationSent: false
+    property bool isVerified: false
+    property bool isTrusted: false
+    property bool hasReceivedVerificationRequest: false
+
+    property bool showRemoveVerified: false
+    property bool showVerifyIdentitySection: false
+    property bool showVerificationPendingSection: false
+    property bool showIdentityVerified: false
+    property bool showIdentityVerifiedUntrustworthy: false
+
+    property string verificationChallenge: ""
+    property string verificationResponse: ""
+    property string verificationResponseDisplayName: ""
+    property string verificationResponseIcon: ""
+    property string verificationRequestedAt: ""
+    property string verificationRepliedAt: ""
+
+    readonly property int animationDuration: 500
 
     signal blockButtonClicked(name: string, address: string)
     signal unblockButtonClicked(name: string, address: string)
@@ -55,6 +84,30 @@ StatusModal {
         userIsEnsVerified = contactDetails.ensVerified;
         userIsBlocked = contactDetails.isBlocked;
         isAddedContact = contactDetails.isContact;
+        isMutualContact = contactDetails.isContact && contactDetails.hasAddedUs
+        userTrustStatus = contactDetails.trustStatus
+        userTrustIsUnknown = contactDetails.trustStatus === Constants.trustStatus.unknown
+        userIsUntrustworthy = contactDetails.trustStatus === Constants.trustStatus.untrustworthy
+        verificationStatus = contactDetails.verificationStatus
+        isVerificationSent = verificationStatus !== Constants.verificationStatus.unverified
+
+        if (isMutualContact && popup.contactsStore.hasReceivedVerificationRequestFrom(publicKey)) {
+            popup.hasReceivedVerificationRequest = true
+        }
+
+        if(isMutualContact && isVerificationSent) {
+            let verificationDetails = popup.contactsStore.getSentVerificationDetailsAsJson(publicKey);
+
+            verificationStatus = verificationDetails.requestStatus;
+            verificationChallenge = verificationDetails.challenge;
+            verificationResponse = verificationDetails.response;
+            verificationResponseDisplayName = verificationDetails.displayName;
+            verificationResponseIcon = verificationDetails.icon;
+            verificationRequestedAt = verificationDetails.requestedAt;
+            verificationRepliedAt = verificationDetails.repliedAt;
+        }
+        isTrusted = verificationStatus === Constants.verificationStatus.trusted
+        isVerified = verificationStatus === Constants.verificationStatus.verified
 
         text = ""; // this is most likely unneeded
         isCurrentUser = popup.profileStore.pubkey === publicKey;
@@ -72,6 +125,59 @@ StatusModal {
         }
     }
 
+    SequentialAnimation {
+        id: wizardAnimation
+        ScriptAction {
+            id: step1
+            property int loadingTime: 0
+            Behavior on loadingTime { NumberAnimation { duration: animationDuration }}
+            onLoadingTimeChanged: {
+                if (isVerificationSent) {
+                    stepsListModel.setProperty(1, "loadingTime", step1.loadingTime);
+                }
+            }
+            script: {
+                step1.loadingTime = animationDuration;
+                stepsListModel.setProperty(0, "loadingTime", step1.loadingTime);
+
+                if (isVerificationSent) {
+                    stepsListModel.setProperty(0, "stepCompleted", true);
+                }
+            }
+        }
+        PauseAnimation {
+            duration: animationDuration + 100
+        }
+        ScriptAction {
+            id: step2
+            property int loadingTime: 0
+            Behavior on loadingTime { NumberAnimation { duration: animationDuration } }
+            onLoadingTimeChanged: {
+                if (isVerificationSent && !!verificationResponse) {
+                    stepsListModel.setProperty(2, "loadingTime", step2.loadingTime);
+                }
+            }
+            script: {
+                if (isVerificationSent && !!verificationChallenge) {
+                    step2.loadingTime = animationDuration;
+                    if (isVerificationSent && !!verificationResponse) {
+                        stepsListModel.setProperty(1, "stepCompleted", true);
+                    }
+                }
+            }
+        }
+        PauseAnimation {
+            duration: animationDuration + 100
+        }
+        ScriptAction {
+            script: {
+                if (verificationStatus === Constants.verificationStatus.trusted) {
+                    stepsListModel.setProperty(2, "stepCompleted", true);
+                }
+            }
+        }
+    }
+
     function blockUser() {
         contentItem.blockContactConfirmationDialog.contactName = userName;
         contentItem.blockContactConfirmationDialog.contactAddress = userPublicKey;
@@ -84,7 +190,14 @@ StatusModal {
         contentItem.unblockContactConfirmationDialog.open();
     }
 
-    header.title: userDisplayName + qsTr("'s Profile")
+    width: 700
+
+    header.title: {
+        if(showVerifyIdentitySection || showVerificationPendingSection){
+            return qsTr("Verify %1's Identity").arg(userIsEnsVerified ? userName : userDisplayName)
+        }
+        return qsTr("%1's Profile").arg(userIsEnsVerified ? userName : userDisplayName)
+    }
     header.subTitle: userIsEnsVerified ? userName : Utils.getElidedCompressedPk(userPublicKey)
     header.subTitleElide: Text.ElideMiddle
 
@@ -95,7 +208,7 @@ StatusModal {
         readonly property int contentMargins: 16
     }
 
-    headerActionButton: StatusFlatRoundButton {
+    headerActionButton:  StatusFlatRoundButton {
         type: StatusFlatRoundButton.Type.Secondary
         width: 32
         height: 32
@@ -114,9 +227,21 @@ StatusModal {
             pubkey: popup.userPublicKey
             icon: popup.isCurrentUser ? popup.profileStore.icon : popup.userIcon
 
+            trustStatus: popup.userTrustStatus
+            isContact: isAddedContact
+            store: profileStore
             displayNameVisible: false
             pubkeyVisible: false
             compact: false
+            displayNamePlusIconsVisible: true
+            pubkeyVisibleWithCopy: true
+            onEditClicked: {
+                if(!isCurrentUser){
+                    nicknamePopup.open()
+                } else {
+                    Global.openEditDisplayNamePopup()
+                }
+            }
 
             imageOverlay: Item {
                 visible: popup.isCurrentUser
@@ -153,12 +278,12 @@ StatusModal {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: d.contentMargins
         spacing: d.contentSpacing
+
         clip: true
 
         Item {
-            implicitHeight: d.contentSpacing
+            implicitHeight: 32
             Layout.fillWidth: true
         }
 
@@ -174,76 +299,133 @@ StatusModal {
             Layout.fillWidth: true
         }
 
-        StatusDescriptionListItem {
-            title: userIsEnsVerified ?
-                qsTr("ENS username") :
-                qsTr("Username")
-            subTitle: userIsEnsVerified ? userEnsName : userName
-            tooltip.text: qsTr("Copy to clipboard")
-            icon.name: "copy"
-            iconButton.onClicked: {
-                globalUtils.copyToClipboard(subTitle)
-                tooltip.visible = !tooltip.visible
-            }
+        ListModel {
+            id: stepsListModel
+            ListElement {description:"Send Request"; loadingTime: 0; stepCompleted: false}
+            ListElement {description:"Receive Response"; loadingTime: 0; stepCompleted: false}
+            ListElement {description:"Confirm Identity"; loadingTime: 0; stepCompleted: false}
+        }
+
+        StatusWizardStepper {
+            id: wizardStepper
+            maxDuration: animationDuration
+            visible: showVerifyIdentitySection || showVerificationPendingSection || showIdentityVerified || showIdentityVerifiedUntrustworthy
+            width: parent.width
+            stepsModel: stepsListModel
+        }
+
+        Separator {
+            visible: wizardStepper.visible
+            implicitHeight: 32
+        }
+
+        StatusBaseText {
+            id: confirmLbl
+            visible: showIdentityVerified
+            text: qsTr("You have confirmed %1's identity. From now on this verification emblem will always be displayed alongside %1's nickname.").arg(userIsEnsVerified ? userEnsName : userDisplayName)
+            font.pixelSize: Style.current.additionalTextSize
+            horizontalAlignment : Text.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 363
+            wrapMode: Text.WordWrap
+            color: Theme.palette.baseColor1
+        }
+        
+
+        StatusBaseText {
+            id: confirmUntrustworthyLbl
+            visible: showIdentityVerifiedUntrustworthy
+            text: qsTr("You have marked %1 as Untrustworthy. From now on this Untrustworthy emblem will always be displayed alongside %1's nickname.").arg(userIsEnsVerified ? userEnsName : userDisplayName)
+            font.pixelSize: Style.current.additionalTextSize
+            horizontalAlignment : Text.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 363
+            wrapMode: Text.WordWrap
+            color: Theme.palette.baseColor1
+        }
+
+        Item {
+            visible: checkboxIcon.visible || dangerIcon.visible
+            height: visible ? 16 : 0
+            width: parent.width
+        }
+
+        StatusRoundIcon {
+            id: checkboxIcon
+            visible: confirmLbl.visible
+            icon.name: "checkbox"
+            icon.width: 16
+            icon.height: 16
+            icon.color: Theme.palette.white
+            Layout.alignment: Qt.AlignHCenter
+            color: Theme.palette.primaryColor1
+            width: 32
+            height: 32
+        }
+
+        StatusRoundIcon {
+            id: dangerIcon
+            visible: confirmUntrustworthyLbl.visible
+            icon.name: "tiny/subtract"
+            icon.width: 5
+            icon.height: 21
+            icon.color: Theme.palette.white
+            Layout.alignment: Qt.AlignHCenter
+            color: Theme.palette.dangerColor1
+            width: 32
+            height: 32
+        }
+
+        Item {
+            visible: checkboxIcon.visible || dangerIcon.visible
+            height: visible ? 16 : 0
             Layout.fillWidth: true
         }
 
-        StatusDescriptionListItem {
-            title: qsTr("Chat key")
-            subTitle: Utils.getCompressedPk(userPublicKey)
-            subTitleComponent.elide: Text.ElideMiddle
-            subTitleComponent.width: 320
-            subTitleComponent.font.family: Theme.palette.monoFont.name
-            tooltip.text: qsTr("Copy to clipboard")
-            icon.name: "copy"
-            iconButton.onClicked: {
-                globalUtils.copyToClipboard(subTitle)
-                tooltip.visible = !tooltip.visible
-            }
+        StatusInput {
+            id: challengeTxt
+            visible: showVerifyIdentitySection
+            charLimit: 280
+            input.text: popup.challenge
             Layout.fillWidth: true
+            Layout.rightMargin: d.contentMargins
+            Layout.leftMargin: d.contentMargins
+            input.multiline: true
+            input.implicitHeight: 152
+            input.placeholderText: qsTr("Ask a question that only the real %1 will be able to answer e.g. a question about a shared experience, or ask Mark to enter a code or phrase you have sent to them via a different communication channel (phone, post, etc...).").arg(userIsEnsVerified ? userEnsName : userDisplayName)
         }
 
-        StatusDescriptionListItem {
-            title: qsTr("Share Profile URL")
-            subTitle: {
-
-                let user = ""
-                if (isCurrentUser) {
-                    user = popup.profileStore.ensName !== "" ? popup.profileStore.ensName :
-                                                                (popup.profileStore.pubkey.substring(0, 5) + "..." + popup.profileStore.pubkey.substring(popup.profileStore.pubkey.length - 5))
-                } else if (userIsEnsVerified) {
-                    user = userEnsName
-                }
-
-                if (user === ""){
-                    user = userPublicKey.substr(0, 4) + "..." + userPublicKey.substr(userPublicKey.length - 5)
-                }
-                return Constants.userLinkPrefix +  user;
-            }
-            tooltip.text: qsTr("Copy to clipboard")
-            icon.name: "copy"
-            iconButton.onClicked: {
-                let user = ""
-                if (isCurrentUser) {
-                    user = popup.profileStore.ensName !== "" ? popup.profileStore.ensName : popup.profileStore.pubkey
-                } else {
-                    user = (userEnsName !== "" ? userEnsName : userPublicKey)
-                }
-                popup.profileStore.copyToClipboard(Constants.userLinkPrefix + user)
-                tooltip.visible = !tooltip.visible
-            }
+        MessageView {
+            id: challengeMessage
+            visible: showVerificationPendingSection
             Layout.fillWidth: true
+            isMessage: true
+            shouldRepeatHeader: true
+            messageTimestamp: popup.verificationRequestedAt
+            senderDisplayName: userProfile.name
+            senderIcon: userProfile.icon
+            message: popup.verificationChallenge
+            messageContentType: Constants.messageContentType.messageType
+            placeholderMessage: true
         }
 
-        StatusDescriptionListItem {
-            visible: !isCurrentUser
-            title: qsTr("Chat settings")
-            subTitle: qsTr("Nickname")
-            value: userNickname ? userNickname : qsTr("None")
-            sensor.enabled: true
-            sensor.onClicked: {
-                nicknamePopup.open()
-            }
+        MessageView {
+            id: responseMessage
+            visible: showVerificationPendingSection && !!verificationResponse
+            width: parent.width
+            isMessage: true
+            shouldRepeatHeader: true
+            messageTimestamp: popup.verificationRepliedAt
+            senderDisplayName: popup.verificationResponseDisplayName
+            senderIcon: popup.verificationResponseIcon
+            message: popup.verificationResponse
+            messageContentType: Constants.messageContentType.messageType
+            placeholderMessage: true
+        }
+
+
+        Item {
+            height: 32
             Layout.fillWidth: true
         }
     }
@@ -319,13 +501,23 @@ StatusModal {
         id: sendContactRequestModal
         anchors.centerIn: parent
         width: popup.width
-        height: popup.height
         visible: false
         header.title: qsTr("Send Contact Request to") + " " + userDisplayName
         topComponent: contactTopComponent
         onAccepted: popup.contactsStore.sendContactRequest(userPublicKey, message)
         onClosed: popup.close()
     }
+    
+    leftButtons:[
+        StatusButton {
+            text: qsTr("Cancel verification")
+            visible: !isVerified && isMutualContact && isVerificationSent && showVerificationPendingSection
+            onClicked: {
+                popup.contactsStore.cancelVerificationRequest(userPublicKey);
+                popup.close()
+            }
+        }
+    ]
 
     rightButtons: [
         StatusFlatButton {
@@ -333,11 +525,12 @@ StatusModal {
                 qsTr("Unblock User") :
                 qsTr("Block User")
             type: StatusBaseButton.Type.Danger
+            visible: !isAddedContact
             onClicked: userIsBlocked ? unblockUser() : blockUser()
         },
 
         StatusFlatButton {
-            visible: !userIsBlocked && isAddedContact
+            visible:  !showRemoveVerified && !showIdentityVerified && !showVerifyIdentitySection && !showVerificationPendingSection && !userIsBlocked && isAddedContact
             type: StatusBaseButton.Type.Danger
             text: qsTr('Remove Contact')
             onClicked: {
@@ -350,6 +543,160 @@ StatusModal {
             text: qsTr("Send Contact Request")
             visible: !userIsBlocked && !isAddedContact
             onClicked: sendContactRequestModal.open()
+        },
+
+        StatusButton {
+            text: qsTr("Mark Untrustworthy")
+            visible:!showIdentityVerifiedUntrustworthy && !showIdentityVerified && !showVerifyIdentitySection && userTrustIsUnknown
+            enabled: !showVerificationPendingSection || verificationResponse !== ""
+            type: StatusBaseButton.Type.Danger
+            onClicked: {
+                if (showVerificationPendingSection) {
+                    popup.showIdentityVerified = false;
+                    popup.showIdentityVerifiedUntrustworthy = true;
+                    popup.showVerificationPendingSection = false;
+                    popup.showVerifyIdentitySection = false;
+                    stepsListModel.setProperty(2, "stepCompleted", true);
+                    popup.contactsStore.verifiedUntrustworthy(userPublicKey);
+                } else {
+                    popup.contactsStore.markUntrustworthy(userPublicKey);
+                    popup.close();
+                }
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Remove 'Identity Verified' status")
+            visible: isTrusted && !showIdentityVerified && !showRemoveVerified
+            type: StatusBaseButton.Type.Danger
+            onClicked: {
+                showRemoveVerified = true
+            }
+        },
+
+        StatusButton {
+            text: qsTr("No")
+            visible: showRemoveVerified
+            type: StatusBaseButton.Type.Danger
+            onClicked: {
+                showRemoveVerified = false
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Yes")
+            visible: showRemoveVerified
+            onClicked: {
+                popup.contactsStore.removeTrustStatus(userPublicKey);
+                popup.close();
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Remove Untrustworthy Mark")
+            visible: userIsUntrustworthy
+            onClicked: {
+                popup.contactsStore.removeTrustStatus(userPublicKey);
+                popup.close();
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Verify Identity")
+            visible: !showIdentityVerifiedUntrustworthy && !showIdentityVerified &&
+                !showVerifyIdentitySection && isMutualContact  && !isVerificationSent
+                && !hasReceivedVerificationRequest
+            onClicked: {
+                popup.showVerifyIdentitySection = true
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Verify Identity pending...")
+            visible: (!showIdentityVerifiedUntrustworthy && !showIdentityVerified && !isTrusted
+                && isMutualContact && isVerificationSent && !showVerificationPendingSection) ||
+                (hasReceivedVerificationRequest && !isTrusted)
+            onClicked: {
+                if (hasReceivedVerificationRequest) {
+                    try {
+                        let request = popup.contactsStore.getVerificationDetailsFromAsJson(popup.userPublicKey)
+                        Global.openPopup(contactVerificationRequestPopupComponent, {
+                            senderPublicKey: request.from,
+                            senderDisplayName: request.displayName,
+                            senderIcon: request.icon,
+                            challengeText: request.challenge,
+                            responseText: request.response,
+                            messageTimestamp: request.requestedAt,
+                            responseTimestamp: request.repliedAt
+                        })
+                    } catch (e) {
+                        console.error("Error getting or parsing verification data", e)
+                    }
+                } else {
+                    popup.showVerificationPendingSection = true
+                    wizardAnimation.running = true
+                }
+            }
+        },
+
+
+        StatusButton {
+            text: qsTr("Send verification request")
+            visible: showVerifyIdentitySection && isMutualContact  && !isVerificationSent
+            onClicked: {
+                popup.contactsStore.sendVerificationRequest(userPublicKey, Utils.escapeHtml(challengeTxt.input.text));
+                stepsListModel.setProperty(1, "stepCompleted", true);
+                Global.displayToastMessage(qsTr("Verification request sent"),
+                                       "",
+                                       "checkmark-circle",
+                                       false,
+                                       Constants.ephemeralNotificationType.normal,
+                                       "");
+                popup.close();
+            }
+        },
+
+        StatusButton {
+            text: qsTr("Confirm Identity")
+            visible: isMutualContact  && isVerificationSent && isVerified && !isTrusted && showVerificationPendingSection
+            enabled: verificationChallenge !== "" && verificationResponse !== ""
+            onClicked: {
+                popup.showIdentityVerified = true;
+                popup.showIdentityVerifiedUntrustworthy = false;
+                popup.showVerificationPendingSection = false;
+                popup.showVerifyIdentitySection = false;
+                stepsListModel.setProperty(2, "stepCompleted", true);
+                popup.contactsStore.verifiedTrusted(userPublicKey);
+                popup.isTrusted = true
+            }
+        },
+
+        StatusButton {
+            visible: showIdentityVerified || showIdentityVerifiedUntrustworthy
+            text: qsTr("Rename")
+            onClicked: {
+                nicknamePopup.open()
+            }
+        },
+
+        StatusButton {
+            visible: showIdentityVerified || showIdentityVerifiedUntrustworthy
+            text: qsTr("Close")
+            onClicked: {
+                popup.close();
+            }
         }
     ]
+
+    Component {
+        id: contactVerificationRequestPopupComponent
+        ContactVerificationRequestPopup {
+            onResponseSent: {
+                popup.contactsStore.acceptVerificationRequest(senderPublicKey, response)
+            }
+            onVerificationRefused: {
+                popup.contactsStore.declineVerificationRequest(senderPublicKey)
+            }
+        }
+    }
 }
