@@ -62,6 +62,13 @@ Item {
                 readonly property bool isHovered: !memberItem.itsMe && memberItem.sensor.containsMouse
 
                 components: [
+                    StatusButton {
+                        visible: (root.panelType === CommunityMembersTabPanel.TabType.AllMembers) && isHovered
+                        text: qsTr("Kick")
+                        type: StatusBaseButton.Type.Danger
+                        size: StatusBaseButton.Size.Small
+                        onClicked: root.kickUserClicked(model.pubKey, model.displayName)
+                    },
 
                     StatusButton {
                         visible: (root.panelType === CommunityMembersTabPanel.TabType.AllMembers) && isHovered
@@ -69,14 +76,6 @@ Item {
                         type: StatusBaseButton.Type.Danger
                         size: StatusBaseButton.Size.Small
                         onClicked: root.banUserClicked(model.pubKey, model.displayName)
-                    },
-
-                    StatusButton {
-                        visible: (root.panelType === CommunityMembersTabPanel.TabType.AllMembers) && isHovered
-                        text: qsTr("Kick")
-                        type: StatusBaseButton.Type.Danger
-                        size: StatusBaseButton.Size.Small
-                        onClicked: root.kickUserClicked(model.pubKey, model.displayName)
                     },
 
                     StatusButton {
