@@ -45,7 +45,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_PROJECT_APPLICATION_NAM
 target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_BINARY_DIR=${CMAKE_BINARY_DIR})
 target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_SOURCE_DIR=${CMAKE_SOURCE_DIR})
 
-add_subdirectory(qml)
 add_subdirectory(qml/Status/Application/Navigation)
 add_subdirectory(src)
 add_subdirectory(res)
@@ -63,15 +62,15 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt6::Quick
 
-        StatusQ_Application_Navigation
+        Status::Application::Navigation
 
         # TODO: Use Status:: namespace
-        #Core
-        Helpers
-        Onboarding
-        Assets
-        StatusQ
-        StatusGoQt
+        Status::Core
+        Status::Helpers
+        Status::Onboarding
+        Status::Assets
+        Status::StatusQ
+        Status::StatusGoQt
 )
 
 # QtCreator needs this

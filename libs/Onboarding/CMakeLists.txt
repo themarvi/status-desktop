@@ -42,7 +42,9 @@ target_link_libraries(Onboarding
         Qt6::Qml
         Qt6::Concurrent
 
-        StatusGoQt
+        Status::Core
+
+        Status::StatusGoQt
         Status::StatusGoConfig
 )
 

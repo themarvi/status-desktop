@@ -5,7 +5,8 @@
 #include <Keychain/ServiceInterface.h>
 #include <Onboarding/Accounts/LocalAccountSettings.h>
 
-#include <QStandardPaths>
+#include <Core/StaticUserConfiguration.h>
+#include <Core/UserConfiguration.h>
 
 #include <filesystem>
 
@@ -38,13 +39,17 @@ public:
     void subscribe(std::weak_ptr<Keychain::Listener>) {};
 };
 
-
-OnboardingModule::OnboardingModule(QObject *parent)
+OnboardingModule::OnboardingModule(const fs::path& userDataPath, QObject *parent)
     : QObject{parent}
     , m_accountsService(std::make_shared<Accounts::Service>())
 {
-    auto userConfigFolder = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
-    initWithUserDataPath(fs::path(userConfigFolder)/"cpp-dev");
+    initWithUserDataPath(userDataPath);
+}
+
+OnboardingModule *OnboardingModule::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    auto conf = Status::Core::getStaticConfiguration();
+    return new OnboardingModule(conf->userDataFolder);
 }
 
 OnboardingController* OnboardingModule::controller() const

@@ -7,6 +7,8 @@
 #include <Helpers/helpers.h>
 #include <Helpers/logs.h>
 
+#include <Core/StaticUserConfiguration.h>
+
 #include <QDir>
 #include <QDebug>
 
