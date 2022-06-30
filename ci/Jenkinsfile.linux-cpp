@@ -41,7 +41,9 @@ pipeline {
   stages {
     stage('CMake Build') {
       steps {
-        sh "qt-cmake ${env.WORKSPACE} -G Ninja -B ${env.WORKSPACE}/build -DCMAKE_BUILD_TYPE=Release"
+        sh "conan install ${env.WORKSPACE}/ --profile=${env.WORKSPACE}/vendor/conan-configs/linux.ini -s build_type=Release --build=missing -if=${env.WORKSPACE}/build/conan  -of=${env.WORKSPACE}/build"
+        // TODO: switch CMAKE_PREFIX_PATH with "-DCMAKE_TOOLCHAIN_FILE=${env.WORKSPACE}/build/conan/conan_toolchain.cmake" after fixing error "c++: error: unrecognized command line option '-stdlib=libc++'"
+        sh "qt-cmake ${env.WORKSPACE} -G Ninja -B ${env.WORKSPACE}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/home/user/.conan/data/gtest/1.11.0/_/_/package/521ce6d2b56041e08ea425948717819429cfbc29/"
         sh "cmake --build ${env.WORKSPACE}/build"
       }
     }
