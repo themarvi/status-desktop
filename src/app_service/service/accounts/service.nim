@@ -21,6 +21,8 @@ logScope:
 const PATHS = @[PATH_WALLET_ROOT, PATH_EIP_1581, PATH_WHISPER, PATH_DEFAULT_WALLET]
 const ACCOUNT_ALREADY_EXISTS_ERROR =  "account already exists"
 
+const output_csv {.booldefine.} = false
+
 type
   Service* = ref object of RootObj
     fleetConfiguration: FleetConfiguration
@@ -373,6 +375,7 @@ proc login*(self: Service, account: AccountDto, password: string): string =
         "Port": DEFAULT_TORRENT_CONFIG_PORT
       },
       "Networks": NETWORKS,
+      "OutputMessageCSVEnabled": output_csv
     }
 
     let response = status_account.login(account.name, account.keyUid, hashedPassword, thumbnailImage,

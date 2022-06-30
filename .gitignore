@@ -33,6 +33,7 @@ status-react-translations/
 notarization.log
 status-desktop.log
 nim_status_client.log
+*.csv
 
 
 # CPP app =====================================================================
