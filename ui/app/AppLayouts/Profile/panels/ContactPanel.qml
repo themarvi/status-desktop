@@ -22,15 +22,15 @@ StatusListItem {
     visible: container.isMutualContact && (container.searchStr == "" || container.name.includes(container.searchStr))
     height: visible ? implicitHeight : 0
     title: container.name
-    image.source: container.icon
 
     property string name: "Jotaro Kujo"
     property string publicKey: "0x04d8c07dd137bd1b73a6f51df148b4f77ddaa11209d36e43d8344c0a7d6db1cad6085f27cfb75dd3ae21d86ceffebe4cf8a35b9ce8d26baa19dc264efe6d8f221b"
-    property string icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+    property string iconSource: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
     property bool isMutualContact: false
     property bool isBlocked: false
     property bool isVerified: false
     property bool isUntrustworthy: false
+    property bool isOnline: false
 
     property string searchStr: ""
 
@@ -48,6 +48,28 @@ StatusListItem {
     signal contactRequestRejected(string publicKey)
     signal rejectionRemoved(string publicKey)
     signal textClicked(string publicKey)
+
+    subTitle: Utils.getElidedCompressedPk(container.publicKey)
+
+    image {
+        width: 40
+        height: 40
+        source: container.iconSource
+    }
+
+    icon {
+        width: 40
+        height: 40
+        color: Utils.colorForPubkey(container.publicKey)
+        letterSize: Math.max(4, root.image.width / 2.4)
+        charactersLen: 2
+        isLetterIdenticon: !container.image.source.toString()
+    }
+
+    ringSettings {
+        ringSpecModel: Utils.getColorHashAsJson(container.publicKey)
+        ringPxSize: Math.max(icon.width / 24.0)
+    }
 
     components: [
         StatusFlatRoundButton {
@@ -120,7 +142,7 @@ StatusListItem {
 
                     displayName: container.name
                     pubkey: container.publicKey
-                    icon: container.icon
+                    icon: container.iconSource
                 }
 
                 Item {
