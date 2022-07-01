@@ -152,3 +152,6 @@ QtObject:
 
   proc removeContactRequestRejection*(self: View, publicKey: string) {.slot.} =
     self.delegate.removeContactRequestRejection(publicKey)
+
+  proc acceptContactRequest*(self: View, publicKey: string) {.slot.} =
+    self.delegate.acceptContactRequest(publicKey)
