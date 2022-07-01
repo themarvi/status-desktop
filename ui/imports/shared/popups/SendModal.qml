@@ -272,12 +272,12 @@ StatusModal {
 
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOff
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                contentHeight: recipientSelector.height + addressSelector.height + networkSelector.height + gasSelector.height + gasValidator.height
+                contentHeight: recipientSelector.height + addressSelector.height + networkSelector.height + gasSelector.height + gasValidator.height + Style.current.halfPadding
                 clip: true
 
                 // To-do use standard StatusInput component once the flow for ens name resolution is clear
                 RecipientSelector {
-                    anchors.top: assetAndAmmountSelector.bottom
+                    anchors.top: parent.top
                     anchors.topMargin: Style.current.halfPadding
                     anchors.right: parent.right
                     anchors.left: parent.left
@@ -313,9 +313,12 @@ StatusModal {
 
                 NetworkSelector {
                     id: networkSelector
+                    store: popup.store
+                    selectedAccount: popup.selectedAccount
                     anchors.top: addressSelector.bottom
                     anchors.right: parent.right
                     anchors.left: parent.left
+                    amountToSend: parseFloat(amountToSendInput.text)
                     onNetworkChanged: function(chainId) {
                         gasSelector.suggestedFees = popup.store.suggestedFees(chainId)
                         gasSelector.updateGasEthValue()
