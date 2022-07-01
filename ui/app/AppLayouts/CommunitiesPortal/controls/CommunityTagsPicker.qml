@@ -19,7 +19,7 @@ ColumnLayout {
 
     onSelectedTagsChanged: {
         var obj = JSON.parse(tags);
-        var array = JSON.parse(selectedTags);
+        var array = selectedTags.length ? JSON.parse(selectedTags) : [];
 
         d.tagsModel.clear();
         for (const key of Object.keys(obj)) {
