@@ -14,6 +14,7 @@ enable_testing()
 add_executable(${PROJECT_NAME}
     test_accounts.cpp
     test_messaging.cpp
+    test_wallet.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

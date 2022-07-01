@@ -8,8 +8,6 @@ project(Core
 
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS true)
 
-#find_package(nlohmann_json 3.2.0 REQUIRED)
-
 find_package(Qt6 ${STATUS_QT_VERSION} COMPONENTS Quick Qml REQUIRED)
 qt6_standard_project_setup()
 

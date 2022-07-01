@@ -1,4 +1,4 @@
-# Base library. Expect most of the module libraries to depend on it
+# Onboarding Module build definition
 #
 cmake_minimum_required(VERSION 3.21)
 
