@@ -45,3 +45,6 @@ proc areTestNetworksEnabled*(self: Controller): bool =
 
 proc toggleTestNetworksEnabled*(self: Controller) =
   self.walletAccountService.toggleTestNetworksEnabled()
+
+proc getNetworkCurrencyBalance*(self: Controller, network: NetworkDto): float64 = 
+  return self.walletAccountService.getNetworkCurrencyBalance(network)

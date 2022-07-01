@@ -409,3 +409,9 @@ QtObject:
 
   proc onIsWalletEnabledChanged*(self: Service) {.slot.} =
     self.buildAllTokens()
+
+  proc getNetworkCurrencyBalance*(self: Service, network: NetworkDto): float64 =
+    for walletAccount in toSeq(self.walletAccounts.values):
+      for token in walletAccount.tokens:
+        let balance = token.balancesPerChain[network.chainId]
+        result += balance.currencyBalance
